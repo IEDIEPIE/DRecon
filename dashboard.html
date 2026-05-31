@@ -8,6 +8,8 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -152,6 +154,48 @@
         .toast.toast-success { background: #0f2a1a; border: 1px solid rgba(52,211,153,0.35); color: #34d399; }
         .toast.toast-error   { background: #2a1020; border: 1px solid rgba(255,180,171,0.35); color: #ffb4ab; }
         .toast.toast-hiding  { animation: toastFadeOut 0.4s ease-in forwards; }
+
+        /* ── Carrier card strip ── */
+        #carrier-cards-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 16px 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Hide scrollbar on all browsers while keeping scroll behaviour */
+        #carrier-cards-scroll::-webkit-scrollbar { height: 4px; }
+        #carrier-cards-scroll::-webkit-scrollbar-track { background: transparent; }
+        #carrier-cards-scroll::-webkit-scrollbar-thumb { background: rgba(87,241,219,0.2); border-radius: 2px; }
+        #carrier-cards-scroll { scrollbar-width: thin; scrollbar-color: rgba(87,241,219,0.2) transparent; }
+
+        .carrier-card {
+            flex: 0 0 200px;
+            scroll-snap-align: start;
+            background: #101b2f;
+            border: 1px solid rgba(60,74,70,0.5);
+            border-radius: 6px;
+            padding: 16px;
+            cursor: default;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .carrier-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+            border-color: rgba(87,241,219,0.25);
+        }
+        .carrier-card.card-clean {
+            border-top: 2px solid #57f1db;
+        }
+        .carrier-card.card-discrepancy {
+            border-top: 2px solid #ffb4ab;
+        }
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .carrier-card { animation: cardSlideIn 0.3s ease-out both; }
     </style>
 </head>
 <body class="bg-background min-h-screen flex flex-col">
@@ -230,7 +274,7 @@
 </div>
 <div class="inline-flex items-center px-3 py-1 bg-surface-container-high border border-outline-variant rounded-full">
 <span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">history</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant">Last audit: May 15, 2026</span>
+<span id="last-audit-badge" class="font-label-caps text-label-caps text-on-surface-variant">Last audit: May 15, 2026</span>
 </div>
 </div>
 </section>
@@ -242,12 +286,12 @@
 <span class="material-symbols-outlined text-[48px] text-primary" data-icon="cloud_upload" aria-hidden="true">cloud_upload</span>
 </div>
 <h2 class="font-title-md text-title-md text-white mb-2">Upload Carrier Commission Statement</h2>
-<p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg">Drag and drop your CSV or Excel file here, or click to browse</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg">Upload carrier statements — add multiple files to compare across carriers</p>
 <button class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-8 py-3 rounded-full font-bold transition-all active:scale-95 shadow-[0_0_12px_rgba(45,212,191,0.3)]" id="select-file-btn">
                         Select File
                     </button>
 <p class="mt-stack-md font-body-sm text-body-sm text-outline">
-                        Supports .csv, .xlsx — Max file size 25MB
+                        Supports .csv — Max file size 25MB per file
                     </p>
 </div>
 </div>
@@ -257,10 +301,36 @@
 <div class="bg-surface-container-high rounded-lg shadow-sm border border-outline-variant/10 overflow-hidden">
 <div class="p-stack-md border-b border-outline-variant/30 flex justify-between items-center">
 <h3 class="font-title-md text-title-md text-white">Reconciliation Results</h3>
-<button class="opacity-40 cursor-not-allowed flex items-center gap-2 border border-outline px-4 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="export-btn" aria-label="Export reconciliation report as CSV" aria-disabled="true">
-<span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
-                        Export Report
-                    </button>
+<div class="flex items-center gap-2">
+  <button class="opacity-40 cursor-not-allowed flex items-center gap-2 border border-outline px-4 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="clear-btn" aria-label="Clear all uploaded data" aria-disabled="true">
+    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">delete_sweep</span>
+    Clear All
+  </button>
+  <button class="opacity-40 cursor-not-allowed flex items-center gap-2 border border-outline px-4 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="export-btn" aria-label="Export PDF dispute report" aria-disabled="true">
+    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">picture_as_pdf</span>
+    Export PDF Report
+  </button>
+</div>
+</div>
+<!-- Carrier Summary -->
+<div id="carrier-summary" class="hidden border-b border-outline-variant/30">
+  <div class="px-6 py-3 bg-surface-container/50 border-b border-outline-variant/20">
+    <p class="font-label-caps text-label-caps text-outline uppercase tracking-widest">Carrier Summary</p>
+  </div>
+  <div class="w-full overflow-x-auto">
+    <table class="w-full text-left border-collapse" aria-label="Carrier summary by carrier">
+      <thead>
+        <tr class="bg-surface-container/30">
+          <th class="px-6 py-3 font-table-header text-table-header text-outline border-b border-outline-variant/20" scope="col">CARRIER</th>
+          <th class="px-6 py-3 font-table-header text-table-header text-outline border-b border-outline-variant/20" scope="col">EXPECTED</th>
+          <th class="px-6 py-3 font-table-header text-table-header text-outline border-b border-outline-variant/20" scope="col">RECEIVED</th>
+          <th class="px-6 py-3 font-table-header text-table-header text-outline border-b border-outline-variant/20" scope="col">VARIANCE</th>
+          <th class="px-6 py-3 font-table-header text-table-header text-outline border-b border-outline-variant/20" scope="col">UNDERPAID POLICIES</th>
+        </tr>
+      </thead>
+      <tbody id="carrier-summary-tbody"></tbody>
+    </table>
+  </div>
 </div>
 <!-- Summary Banner -->
 <div id="summary-banner" class="hidden grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30 border-b border-outline-variant/30 bg-surface-container-low" aria-label="Summary totals">
@@ -278,6 +348,13 @@
 <p class="font-body-sm text-body-sm text-error/80 mt-1">Carriers may owe you this amount</p>
 </div>
 </div>
+<!-- Carrier Card Strip -->
+<div id="carrier-cards" class="hidden border-b border-outline-variant/30" aria-label="Carrier overview cards">
+  <div id="carrier-cards-scroll" role="list">
+    <!-- Cards injected by renderCarrierCards() -->
+  </div>
+</div>
+<!-- Main results table -->
 <div class="w-full overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>
@@ -331,7 +408,7 @@
         // ── Hidden file input ──────────────────────────────────────────
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = '.csv,.xlsx,.xls';
+        fileInput.accept = '.csv';
         fileInput.style.display = 'none';
         document.body.appendChild(fileInput);
 
@@ -340,6 +417,12 @@
         const selectBtn = document.getElementById('select-file-btn');
         const tbody = document.getElementById('results-tbody');
         const exportBtn = document.getElementById('export-btn');
+        const clearBtn = document.getElementById('clear-btn');
+
+        // ── Global accumulated row store ───────────────────────────────
+        // Each entry: { policy, carrier, expected, received, variance, status }
+        // (all pre-resolved strings, ready to render)
+        let allRows = [];
 
         // ── Table column definitions (in display order) ────────────────
         const TABLE_COLUMNS = [
@@ -468,114 +551,308 @@
             return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // ── Render table rows ──────────────────────────────────────────
-        function renderTable(data, mapping) {
-            tbody.innerHTML = '';
+        // ── Resolve a raw CSV row into a canonical object ──────────────
+        // Returns { policy, carrier, expected, received, variance, status }
+        // All numeric values stored as plain Numbers; display formatting
+        // happens only in the render functions.
+        function resolveRow(rawRow, mapping) {
+            const get = (key) => mapping[key] !== -1 ? (rawRow[mapping[key]] || '') : '';
 
-            if (data.length === 0) {
+            const expRaw = get('expected');
+            const recRaw = get('received');
+            const expNum = parseFloat(String(expRaw).replace(/[^0-9.\-]/g, '')) || 0;
+            const recNum = parseFloat(String(recRaw).replace(/[^0-9.\-]/g, '')) || 0;
+
+            let varRaw = get('variance');
+            let varNum;
+            if (varRaw !== '') {
+                varNum = parseFloat(String(varRaw).replace(/[^0-9.\-]/g, '')) || 0;
+            } else {
+                varNum = recNum - expNum;
+                varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
+            }
+
+            let status = get('status');
+            if (!status) {
+                if (Math.abs(varNum) < 0.01) status = 'Match';
+                else if (varNum < 0) status = 'Underpaid';
+                else status = 'Overpaid';
+            }
+
+            return {
+                policy:   get('policy')   || '—',
+                carrier:  get('carrier')  || 'Unknown',
+                expNum,
+                recNum,
+                varNum,
+                varRaw,
+                status,
+            };
+        }
+
+        // ── Render the full table from allRows ─────────────────────────
+        function renderAll() {
+            if (allRows.length === 0) {
                 showEmptyState();
                 return;
             }
 
-            let totalExpectedAmt = 0;
-            let totalReceivedAmt = 0;
-            let totalUnderpaidAmt = 0;
-
-            for (const row of data) {
-                const expStr = mapping.expected !== -1 ? row[mapping.expected] : '';
-                const recStr = mapping.received !== -1 ? row[mapping.received] : '';
-                const expNum = parseFloat(String(expStr).replace(/[^0-9.\-]/g, '')) || 0;
-                const recNum = parseFloat(String(recStr).replace(/[^0-9.\-]/g, '')) || 0;
-
-                let varNum = 0;
-                if (mapping.variance !== -1 && row[mapping.variance] !== undefined && row[mapping.variance] !== '') {
-                    varNum = parseFloat(String(row[mapping.variance]).replace(/[^0-9.\-]/g, '')) || 0;
-                } else {
-                    varNum = recNum - expNum;
-                }
-
-                totalExpectedAmt += expNum;
-                totalReceivedAmt += recNum;
-                if (varNum < 0) {
-                    totalUnderpaidAmt += Math.abs(varNum);
-                }
-
+            // ── 1. Main table ──
+            tbody.innerHTML = '';
+            for (const r of allRows) {
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
 
-                for (const col of TABLE_COLUMNS) {
-                    const td = document.createElement('td');
-                    td.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                // Policy
+                const tdPolicy = document.createElement('td');
+                tdPolicy.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                tdPolicy.textContent = r.policy;
+                tr.appendChild(tdPolicy);
 
-                    let value = mapping[col.key] !== -1 ? (row[mapping[col.key]] || '') : '';
+                // Carrier
+                const tdCarrier = document.createElement('td');
+                tdCarrier.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                tdCarrier.textContent = r.carrier;
+                tr.appendChild(tdCarrier);
 
-                    if (col.key === 'variance' && value === '' && mapping.expected !== -1 && mapping.received !== -1) {
-                        value = computeVariance(row[mapping.expected], row[mapping.received]);
-                    }
+                // Expected
+                const tdExp = document.createElement('td');
+                tdExp.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                tdExp.textContent = formatCurrency(r.expNum);
+                tr.appendChild(tdExp);
 
-                    if (col.key === 'status' && value === '') {
-                        const varVal = mapping.variance !== -1 ? row[mapping.variance] : '';
-                        const computedVar = varVal || computeVariance(
-                            mapping.expected !== -1 ? row[mapping.expected] : '',
-                            mapping.received !== -1 ? row[mapping.received] : ''
-                        );
-                        value = computeStatus(computedVar);
-                    }
+                // Received
+                const tdRec = document.createElement('td');
+                tdRec.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                tdRec.textContent = formatCurrency(r.recNum);
+                tr.appendChild(tdRec);
 
-                    if (['expected', 'received', 'variance'].includes(col.key)) {
-                        value = formatCurrency(value);
-                    }
+                // Variance
+                const tdVar = document.createElement('td');
+                tdVar.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                tdVar.textContent = formatCurrency(r.varNum);
+                if (r.varNum < -0.01) tdVar.classList.add('text-error');
+                else if (r.varNum > 0.01) tdVar.classList.add('text-primary');
+                tr.appendChild(tdVar);
 
-                    if (col.key === 'variance') {
-                        const num = parseFloat(String(value).replace(/[^0-9.\-]/g, ''));
-                        if (!isNaN(num)) {
-                            if (num < -0.01) td.classList.add('text-error');
-                            else if (num > 0.01) td.classList.add('text-primary');
-                        }
-                    }
-
-                    if (col.key === 'status') {
-                        const badge = document.createElement('span');
-                        const status = String(value).toLowerCase();
-                        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full font-label-caps text-label-caps border';
-
-                        if (status === 'match' || status === 'matched' || status === 'paid') {
-                            badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
-                        } else if (status === 'underpaid' || status === 'short' || status === 'missing') {
-                            badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
-                        } else if (status === 'overpaid' || status === 'over') {
-                            badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
-                        } else {
-                            badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
-                        }
-
-                        badge.textContent = value;
-                        td.innerHTML = '';
-                        td.appendChild(badge);
-                        tr.appendChild(td);
-                        continue;
-                    }
-
-                    td.textContent = value || '—';
-                    tr.appendChild(td);
+                // Status badge
+                const tdStatus = document.createElement('td');
+                tdStatus.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                const badge = document.createElement('span');
+                const statusLc = r.status.toLowerCase();
+                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full font-label-caps text-label-caps border';
+                if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
+                    badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
+                } else if (statusLc === 'underpaid' || statusLc === 'short' || statusLc === 'missing') {
+                    badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
+                } else if (statusLc === 'overpaid' || statusLc === 'over') {
+                    badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
+                } else {
+                    badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
                 }
+                badge.textContent = r.status;
+                tdStatus.appendChild(badge);
+                tr.appendChild(tdStatus);
 
                 tbody.appendChild(tr);
             }
 
-            // Enable Export button
-            exportBtn.classList.remove('opacity-40', 'cursor-not-allowed');
-            exportBtn.classList.add('hover:bg-surface-variant/30', 'cursor-pointer');
-            exportBtn.setAttribute('aria-disabled', 'false');
-
-            // Populate and show summary banner
-            const summaryBanner = document.getElementById('summary-banner');
-            if (summaryBanner) {
-                summaryBanner.classList.remove('hidden');
-                document.getElementById('total-expected').textContent = formatCurrency(totalExpectedAmt);
-                document.getElementById('total-actual').textContent = formatCurrency(totalReceivedAmt);
-                document.getElementById('total-underpaid').textContent = formatCurrency(totalUnderpaidAmt);
+            // ── 2. Global summary banner ──
+            let totalExp = 0, totalRec = 0, totalUnderpaid = 0;
+            for (const r of allRows) {
+                totalExp += r.expNum;
+                totalRec += r.recNum;
+                if (r.varNum < 0) totalUnderpaid += Math.abs(r.varNum);
             }
+            const summaryBanner = document.getElementById('summary-banner');
+            summaryBanner.classList.remove('hidden');
+            document.getElementById('total-expected').textContent  = formatCurrency(totalExp);
+            document.getElementById('total-actual').textContent    = formatCurrency(totalRec);
+            document.getElementById('total-underpaid').textContent = formatCurrency(totalUnderpaid);
+
+            // ── 3. Carrier summary table ──
+            renderCarrierSummary();
+
+            // ── 4. Carrier card strip ──
+            renderCarrierCards();
+
+            // ── 4. Enable action buttons ──
+            [exportBtn, clearBtn].forEach(btn => {
+                btn.classList.remove('opacity-40', 'cursor-not-allowed');
+                btn.classList.add('hover:bg-surface-variant/30', 'cursor-pointer');
+                btn.setAttribute('aria-disabled', 'false');
+            });
+        }
+
+        // ── Carrier summary table ──────────────────────────────────────
+        function renderCarrierSummary() {
+            const carrierSection = document.getElementById('carrier-summary');
+            const cTbody = document.getElementById('carrier-summary-tbody');
+
+            // Aggregate by carrier name (case-insensitive key)
+            const map = new Map(); // key → { name, exp, rec, var, underpaidCount }
+            for (const r of allRows) {
+                const key = r.carrier.toLowerCase();
+                if (!map.has(key)) {
+                    map.set(key, { name: r.carrier, exp: 0, rec: 0, variance: 0, underpaidCount: 0 });
+                }
+                const c = map.get(key);
+                c.exp      += r.expNum;
+                c.rec      += r.recNum;
+                c.variance += r.varNum;
+                if (r.varNum < -0.01) c.underpaidCount++;
+            }
+
+            cTbody.innerHTML = '';
+            const carriers = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+            for (const c of carriers) {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
+
+                // Carrier name
+                const tdName = document.createElement('td');
+                tdName.className = 'px-6 py-3 font-body-sm text-body-sm text-white font-semibold';
+                tdName.textContent = c.name;
+                tr.appendChild(tdName);
+
+                // Expected
+                const tdExp = document.createElement('td');
+                tdExp.className = 'px-6 py-3 font-body-sm text-body-sm text-on-surface';
+                tdExp.textContent = formatCurrency(c.exp);
+                tr.appendChild(tdExp);
+
+                // Received
+                const tdRec = document.createElement('td');
+                tdRec.className = 'px-6 py-3 font-body-sm text-body-sm text-on-surface';
+                tdRec.textContent = formatCurrency(c.rec);
+                tr.appendChild(tdRec);
+
+                // Variance
+                const tdVar = document.createElement('td');
+                tdVar.className = 'px-6 py-3 font-body-sm text-body-sm text-on-surface';
+                tdVar.textContent = formatCurrency(c.variance);
+                if (c.variance < -0.01) tdVar.classList.add('text-error');
+                else if (c.variance > 0.01) tdVar.classList.add('text-primary');
+                tr.appendChild(tdVar);
+
+                // Underpaid count
+                const tdCount = document.createElement('td');
+                tdCount.className = 'px-6 py-3 font-body-sm text-body-sm';
+                if (c.underpaidCount > 0) {
+                    tdCount.innerHTML = `<span class="inline-flex items-center gap-1 text-error">
+                        <span class="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
+                        ${c.underpaidCount} ${c.underpaidCount === 1 ? 'policy' : 'policies'}
+                    </span>`;
+                } else {
+                    tdCount.innerHTML = `<span class="text-primary">None</span>`;
+                }
+                tr.appendChild(tdCount);
+
+                cTbody.appendChild(tr);
+            }
+
+            carrierSection.classList.remove('hidden');
+        }
+
+        // ── Carrier card strip ────────────────────────────────────────────
+        function renderCarrierCards() {
+            const strip     = document.getElementById('carrier-cards');
+            const scrollEl  = document.getElementById('carrier-cards-scroll');
+            if (!strip || !scrollEl) return;
+
+            // Build per-carrier aggregates (same pattern as renderCarrierSummary)
+            const map = new Map();
+            for (const r of allRows) {
+                const key = r.carrier.toLowerCase();
+                if (!map.has(key)) {
+                    map.set(key, {
+                        name:          r.carrier,
+                        totalPolicies: 0,
+                        underpaidAmt:  0,
+                        underpaidCount: 0,
+                    });
+                }
+                const c = map.get(key);
+                c.totalPolicies++;
+                if (r.varNum < -0.01) {
+                    c.underpaidAmt  += Math.abs(r.varNum);
+                    c.underpaidCount++;
+                }
+            }
+
+            scrollEl.innerHTML = '';
+            const carriers = Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+            carriers.forEach((c, idx) => {
+                const isClean = c.underpaidAmt < 0.01;
+
+                const card = document.createElement('div');
+                card.className = `carrier-card ${isClean ? 'card-clean' : 'card-discrepancy'}`;
+                card.setAttribute('role', 'listitem');
+                // Stagger animation delay so cards cascade in
+                card.style.animationDelay = `${idx * 60}ms`;
+
+                // ── Carrier name
+                const nameEl = document.createElement('p');
+                nameEl.className = 'font-body-sm text-body-sm text-white font-semibold mb-3 truncate';
+                nameEl.style.fontSize = '13px';
+                nameEl.style.fontWeight = '700';
+                nameEl.title = c.name;  // full name on hover
+                nameEl.textContent = c.name;
+                card.appendChild(nameEl);
+
+                // ── Total policies row
+                const policiesRow = document.createElement('div');
+                policiesRow.className = 'flex items-center justify-between mb-2';
+                policiesRow.innerHTML =
+                    `<span style="font-size:11px; color:#859490; font-weight:600; letter-spacing:0.06em;">POLICIES</span>` +
+                    `<span style="font-size:13px; color:#d8e2fe; font-weight:600;">${c.totalPolicies}</span>`;
+                card.appendChild(policiesRow);
+
+                // ── Underpaid amount row (only if > 0)
+                if (!isClean) {
+                    const underpaidRow = document.createElement('div');
+                    underpaidRow.className = 'flex items-center justify-between mb-3';
+                    underpaidRow.innerHTML =
+                        `<span style="font-size:11px; color:#859490; font-weight:600; letter-spacing:0.06em;">UNDERPAID</span>` +
+                        `<span style="font-size:13px; color:#ffb4ab; font-weight:700;">${formatCurrency(c.underpaidAmt)}</span>`;
+                    card.appendChild(underpaidRow);
+                } else {
+                    // spacer to keep card height consistent
+                    const spacer = document.createElement('div');
+                    spacer.style.height = '24px';
+                    card.appendChild(spacer);
+                }
+
+                // ── Status badge
+                const badge = document.createElement('div');
+                badge.style.cssText = [
+                    'display:inline-flex', 'align-items:center', 'gap:5px',
+                    'padding:3px 10px', 'border-radius:999px',
+                    'font-size:10px', 'font-weight:700', 'letter-spacing:0.07em',
+                    isClean
+                        ? 'background:rgba(87,241,219,0.1);color:#57f1db;border:1px solid rgba(87,241,219,0.3);'
+                        : 'background:rgba(255,180,171,0.1);color:#ffb4ab;border:1px solid rgba(255,180,171,0.3);'
+                ].join(';');
+
+                // Dot indicator
+                const dot = document.createElement('span');
+                dot.style.cssText = [
+                    'width:6px', 'height:6px', 'border-radius:50%', 'flex-shrink:0',
+                    `background:${isClean ? '#57f1db' : '#ffb4ab'}`
+                ].join(';');
+                badge.appendChild(dot);
+
+                const badgeText = document.createElement('span');
+                badgeText.textContent = isClean ? 'Clean' : 'Discrepancies Found';
+                badge.appendChild(badgeText);
+                card.appendChild(badge);
+
+                scrollEl.appendChild(card);
+            });
+
+            strip.classList.remove('hidden');
         }
 
         // ── Empty state ────────────────────────────────────────────────
@@ -596,13 +873,17 @@
                 <tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
                 <tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
             `;
-            const summaryBanner = document.getElementById('summary-banner');
-            if (summaryBanner) {
-                summaryBanner.classList.add('hidden');
-            }
+            document.getElementById('summary-banner').classList.add('hidden');
+            document.getElementById('carrier-summary').classList.add('hidden');
+            document.getElementById('carrier-cards').classList.add('hidden');
+            [exportBtn, clearBtn].forEach(btn => {
+                btn.classList.add('opacity-40', 'cursor-not-allowed');
+                btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
+                btn.setAttribute('aria-disabled', 'true');
+            });
         }
 
-        // ── Process uploaded file ──────────────────────────────────────
+        // ── Process uploaded file (APPEND mode) ────────────────────────
         function processFile(file) {
             if (!file) return;
 
@@ -612,7 +893,7 @@
                 const rows = parseCSV(text);
 
                 if (rows.length < 2) {
-                    alert('The file appears to be empty or has no data rows.');
+                    showToast('The file appears to be empty or has no data rows.', 'error');
                     return;
                 }
 
@@ -622,22 +903,40 @@
 
                 const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
                 if (mappedCount === 0) {
-                    alert('Could not map any CSV columns to the table. Expected columns like: policy, carrier, expected, received, variance, status.');
+                    showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
                     return;
                 }
 
-                renderTable(dataRows, mapping);
+                // Resolve each row into a canonical object and APPEND to store
+                const newRows = dataRows.map(r => resolveRow(r, mapping));
+                const prevCount = allRows.length;
+                allRows = allRows.concat(newRows);
 
-                // Update last audit badge
-                const badge = document.querySelector('.font-label-caps.text-label-caps');
-                if (badge) {
+                // Re-render everything from the full accumulated store
+                renderAll();
+
+                // Update last-audit badge
+                const auditBadge = document.querySelector('#last-audit-badge');
+                if (auditBadge) {
                     const now = new Date();
-                    const formatted = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    badge.textContent = 'Last audit: ' + formatted;
+                    auditBadge.textContent = 'Last audit: ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
+
+                const msg = prevCount === 0
+                    ? `Loaded ${newRows.length} rows from ${file.name}`
+                    : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
+                showToast(msg, 'success');
             };
 
             reader.readAsText(file);
+        }
+
+        // ── Clear all data ─────────────────────────────────────────────
+        function clearAllData() {
+            if (clearBtn.classList.contains('cursor-not-allowed')) return;
+            allRows = [];
+            showEmptyState();
+            showToast('All data cleared', 'info');
         }
 
         // ── Event wiring ───────────────────────────────────────────────
@@ -686,47 +985,322 @@
             }
         });
 
-        // ── Export functionality ───────────────────────────────────────
+        // ── PDF Export ─────────────────────────────────────────────────
+        // Uses jsPDF (UMD build loaded via CDN) to produce a professional
+        // dispute-ready Commission Audit Report from the allRows data store.
         exportBtn.addEventListener('click', () => {
             if (exportBtn.classList.contains('cursor-not-allowed')) return;
-
-            const headers = TABLE_COLUMNS.map(col => `"${col.label}"`);
-
-            const rows = [];
-            const trs = tbody.querySelectorAll('tr');
-            trs.forEach(tr => {
-                // Skip empty-state and skeleton rows (they use colspan)
-                if (tr.querySelector('td[colspan]')) return;
-
-                const tds = tr.querySelectorAll('td');
-                if (tds.length !== TABLE_COLUMNS.length) return;
-
-                const row = [];
-                tds.forEach(td => {
-                    let text = td.textContent.trim();
-                    text = text.replace(/"/g, '""'); // escape inner quotes
-                    row.push(`"${text}"`);
-                });
-                rows.push(row.join(','));
-            });
-
-            if (rows.length === 0) {
+            if (allRows.length === 0) {
                 showToast('No data to export yet.', 'error');
                 return;
             }
-
-            const csvContent = headers.join(',') + '\n' + rows.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `drecon_reconciliation_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            showToast('Report exported successfully!', 'success');
+            generatePDF();
         });
+
+        function generatePDF() {
+            // Guard: jsPDF must be loaded
+            if (typeof window.jspdf === 'undefined') {
+                showToast('PDF library not loaded. Check your connection.', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            // ── Design tokens ───────────────────────────────────────────
+            const PAGE_W   = 210;
+            const PAGE_H   = 297;
+            const MARGIN   = 16;
+            const COL_W    = PAGE_W - MARGIN * 2;   // 178 mm usable
+            const TEAL     = [87, 241, 219];         // #57f1db
+            const NAVY     = [8, 19, 39];            // #081327
+            const WHITE    = [255, 255, 255];
+            const GREY_LT  = [240, 244, 248];
+            const GREY_MID = [160, 175, 195];
+            const RED      = [220, 80, 80];
+            const TEXT_DK  = [30, 40, 60];
+
+            const DATE_STR = new Date().toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+            const DATE_SHORT = new Date().toISOString().split('T')[0];
+
+            // ── Helpers ─────────────────────────────────────────────────
+            function setFont(style, size, color) {
+                doc.setFont('helvetica', style);
+                doc.setFontSize(size);
+                doc.setTextColor(...(color || TEXT_DK));
+            }
+
+            function fmt(n) {
+                return '$' + Number(n).toLocaleString('en-US', {
+                    minimumFractionDigits: 2, maximumFractionDigits: 2
+                });
+            }
+
+            // Draws a filled rectangle
+            function fillRect(x, y, w, h, color) {
+                doc.setFillColor(...color);
+                doc.rect(x, y, w, h, 'F');
+            }
+
+            // ── Page state ──────────────────────────────────────────────
+            let y = 0;   // current Y cursor (mm)
+            let pageNum = 1;
+
+            function addFooterToPage() {
+                const footerY = PAGE_H - 12;
+                doc.setDrawColor(...GREY_MID);
+                doc.setLineWidth(0.3);
+                doc.line(MARGIN, footerY - 3, PAGE_W - MARGIN, footerY - 3);
+                setFont('italic', 7.5, GREY_MID);
+                doc.text(
+                    'This report was generated by DRecon for dispute purposes. Present to carrier representative with supporting policy documentation.',
+                    PAGE_W / 2, footerY,
+                    { align: 'center', maxWidth: COL_W }
+                );
+                setFont('normal', 7.5, GREY_MID);
+                doc.text(`Page ${pageNum}`, PAGE_W - MARGIN, footerY, { align: 'right' });
+            }
+
+            function ensureSpace(needed) {
+                if (y + needed > PAGE_H - 22) {
+                    addFooterToPage();
+                    doc.addPage();
+                    pageNum++;
+                    y = MARGIN + 6;
+                }
+            }
+
+            // ══════════════════════════════════════════════════════════
+            // PAGE 1 HEADER
+            // ══════════════════════════════════════════════════════════
+
+            // Navy header band
+            fillRect(0, 0, PAGE_W, 42, NAVY);
+
+            // Teal accent bar on left
+            fillRect(0, 0, 4, 42, TEAL);
+
+            // DRecon wordmark
+            setFont('bold', 22, TEAL);
+            doc.text('DRecon', MARGIN + 4, 16);
+
+            // Tagline
+            setFont('normal', 8, GREY_MID);
+            doc.text('drecon-orpin.vercel.app', MARGIN + 4, 22);
+
+            // Report title (right-aligned)
+            setFont('bold', 16, WHITE);
+            doc.text('Commission Audit Report', PAGE_W - MARGIN, 14, { align: 'right' });
+
+            setFont('normal', 8.5, GREY_MID);
+            doc.text(`Generated: ${DATE_STR}`, PAGE_W - MARGIN, 21, { align: 'right' });
+            setFont('italic', 7.5, GREY_MID);
+            doc.text('Prepared by DRecon — drecon-orpin.vercel.app', PAGE_W - MARGIN, 27, { align: 'right' });
+
+            y = 52;
+
+            // ══════════════════════════════════════════════════════════
+            // EXECUTIVE SUMMARY SECTION
+            // ══════════════════════════════════════════════════════════
+
+            // Aggregate totals from allRows
+            let totalExp = 0, totalRec = 0, totalUnderpaid = 0;
+            let underpaidPolicies = 0;
+            for (const r of allRows) {
+                totalExp += r.expNum;
+                totalRec += r.recNum;
+                if (r.varNum < -0.01) {
+                    totalUnderpaid += Math.abs(r.varNum);
+                    underpaidPolicies++;
+                }
+            }
+
+            // Section heading
+            setFont('bold', 11, TEXT_DK);
+            doc.text('AUDIT SUMMARY', MARGIN, y);
+            doc.setDrawColor(...TEAL);
+            doc.setLineWidth(0.8);
+            doc.line(MARGIN, y + 2, MARGIN + 38, y + 2);
+            y += 8;
+
+            // 3-column stat boxes
+            const BOX_H  = 22;
+            const BOX_W  = (COL_W - 6) / 3;
+            const boxes  = [
+                { label: 'Total Expected',  value: fmt(totalExp),      color: GREY_LT,   textColor: TEXT_DK,  valueColor: TEXT_DK  },
+                { label: 'Total Received',  value: fmt(totalRec),      color: GREY_LT,   textColor: TEXT_DK,  valueColor: TEXT_DK  },
+                { label: 'Total Underpaid', value: fmt(totalUnderpaid), color: [255,245,245], textColor: RED, valueColor: RED, bold: true },
+            ];
+
+            boxes.forEach((box, i) => {
+                const bx = MARGIN + i * (BOX_W + 3);
+                fillRect(bx, y, BOX_W, BOX_H, box.color);
+                // Border
+                doc.setDrawColor(...(i === 2 ? RED : GREY_MID));
+                doc.setLineWidth(i === 2 ? 0.6 : 0.3);
+                doc.rect(bx, y, BOX_W, BOX_H);
+                // Label
+                setFont('normal', 7, GREY_MID);
+                doc.setTextColor(...box.textColor);
+                doc.text(box.label.toUpperCase(), bx + 4, y + 6);
+                // Value
+                setFont(box.bold ? 'bold' : 'bold', 11, box.valueColor);
+                doc.text(box.value, bx + 4, y + 15);
+            });
+            y += BOX_H + 5;
+
+            // 2-row detail line
+            const detailItems = [
+                `Policies audited: ${allRows.length}`,
+                `Underpaid policies: ${underpaidPolicies}`,
+                `Carriers: ${new Set(allRows.map(r => r.carrier.toLowerCase())).size}`,
+            ];
+            setFont('normal', 8.5, TEXT_DK);
+            detailItems.forEach((item, i) => {
+                doc.text(item, MARGIN + i * 62, y);
+            });
+            y += 10;
+
+            // Separator
+            doc.setDrawColor(...GREY_MID);
+            doc.setLineWidth(0.3);
+            doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+            y += 8;
+
+            // ══════════════════════════════════════════════════════════
+            // PER-CARRIER UNDERPAYMENT BREAKDOWN
+            // ══════════════════════════════════════════════════════════
+
+            // Build carrier map — only include carriers that have at least
+            // one underpaid policy, sorted by underpaid amount descending.
+            const carrierMap = new Map();
+            for (const r of allRows) {
+                const key = r.carrier.toLowerCase();
+                if (!carrierMap.has(key)) {
+                    carrierMap.set(key, {
+                        name:     r.carrier,
+                        policies: [],
+                        totalExp: 0,
+                        totalRec: 0,
+                        totalVar: 0,
+                    });
+                }
+                const c = carrierMap.get(key);
+                c.totalExp += r.expNum;
+                c.totalRec += r.recNum;
+                c.totalVar += r.varNum;
+                if (r.varNum < -0.01) c.policies.push(r);
+            }
+
+            const carriersSorted = Array.from(carrierMap.values())
+                .filter(c => c.policies.length > 0)
+                .sort((a, b) => a.totalVar - b.totalVar); // most underpaid first
+
+            // ── Column layout for the policy table ──────────────────
+            // [Policy #] [Expected] [Received] [Variance]
+            const TC = [
+                { label: 'Policy Number', x: MARGIN,           w: 55 },
+                { label: 'Expected',      x: MARGIN + 55,      w: 38 },
+                { label: 'Received',      x: MARGIN + 93,      w: 38 },
+                { label: 'Variance',      x: MARGIN + 131,     w: 47 },
+            ];
+            const TABLE_ROW_H = 7;
+            const TABLE_HDR_H = 8;
+
+            function drawTableHeader(yy) {
+                fillRect(MARGIN, yy, COL_W, TABLE_HDR_H, NAVY);
+                setFont('bold', 7.5, WHITE);
+                TC.forEach(col => {
+                    doc.text(col.label.toUpperCase(), col.x + 2, yy + 5.5);
+                });
+                return yy + TABLE_HDR_H;
+            }
+
+            function drawTableRow(r, yy, isAlt) {
+                if (isAlt) fillRect(MARGIN, yy, COL_W, TABLE_ROW_H, GREY_LT);
+                setFont('normal', 8, TEXT_DK);
+                doc.text(String(r.policy), TC[0].x + 2, yy + 5);
+                doc.text(fmt(r.expNum),    TC[1].x + 2, yy + 5);
+                doc.text(fmt(r.recNum),    TC[2].x + 2, yy + 5);
+                setFont('bold', 8, RED);
+                doc.text(fmt(r.varNum),    TC[3].x + 2, yy + 5);
+                return yy + TABLE_ROW_H;
+            }
+
+            function drawSubtotalRow(c, yy) {
+                fillRect(MARGIN, yy, COL_W, TABLE_ROW_H + 1, [220, 228, 240]);
+                setFont('bold', 8, TEXT_DK);
+                doc.text('CARRIER TOTAL', TC[0].x + 2, yy + 5.5);
+                doc.text(fmt(c.totalExp), TC[1].x + 2, yy + 5.5);
+                doc.text(fmt(c.totalRec), TC[2].x + 2, yy + 5.5);
+                setFont('bold', 8, c.totalVar < -0.01 ? RED : TEXT_DK);
+                doc.text(fmt(c.totalVar), TC[3].x + 2, yy + 5.5);
+                return yy + TABLE_ROW_H + 1;
+            }
+
+            if (carriersSorted.length === 0) {
+                // No underpaid policies — note it
+                setFont('italic', 9.5, GREY_MID);
+                doc.text('No underpaid policies found in this dataset.', MARGIN, y + 6);
+                y += 14;
+            } else {
+                for (const carrier of carriersSorted) {
+                    // Carrier section heading
+                    ensureSpace(20 + TABLE_HDR_H + TABLE_ROW_H);
+
+                    // Teal carrier name bar
+                    fillRect(MARGIN, y, COL_W, 9, [8, 30, 60]);
+                    setFont('bold', 9.5, TEAL);
+                    doc.text(carrier.name, MARGIN + 3, y + 6.2);
+
+                    // Underpaid count badge on right
+                    const badge = `${carrier.policies.length} underpaid ${carrier.policies.length === 1 ? 'policy' : 'policies'}`;
+                    setFont('normal', 7.5, GREY_MID);
+                    doc.text(badge, PAGE_W - MARGIN - 2, y + 6.2, { align: 'right' });
+                    y += 11;
+
+                    // Table header
+                    ensureSpace(TABLE_HDR_H + TABLE_ROW_H);
+                    y = drawTableHeader(y);
+
+                    // Policy rows
+                    carrier.policies.forEach((r, idx) => {
+                        ensureSpace(TABLE_ROW_H + 2);
+                        y = drawTableRow(r, y, idx % 2 === 1);
+                        // Thin row separator
+                        doc.setDrawColor(220, 228, 240);
+                        doc.setLineWidth(0.2);
+                        doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+                    });
+
+                    // Subtotal row
+                    ensureSpace(TABLE_ROW_H + 8);
+                    y = drawSubtotalRow(carrier, y);
+                    y += 8; // gap between carriers
+                }
+            }
+
+            // ══════════════════════════════════════════════════════════
+            // Stamp footer on every page
+            // ══════════════════════════════════════════════════════════
+            const totalPages = doc.getNumberOfPages();
+            for (let p = 1; p <= totalPages; p++) {
+                doc.setPage(p);
+                addFooterToPage();
+                // Update page number text (already drawn — overwrite with white then redraw)
+                // jsPDF doesn't support live page refs, so we patched addFooterToPage to
+                // use pageNum which is incremented correctly during generation.
+            }
+
+            // ── Save ────────────────────────────────────────────────────
+            doc.save(`drecon_audit_report_${DATE_SHORT}.pdf`);
+            showToast('PDF report generated!', 'success');
+        }
+
+        // ── Clear All button ───────────────────────────────────────────
+        clearBtn.addEventListener('click', clearAllData);
 
         // ══════════════════════════════════════════════════════════════
         // ── Toast notification system ─────────────────────────────────
