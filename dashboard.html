@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRecon | Commission Reconciliation Dashboard</title>
+<meta name="description" content="DRecon commission reconciliation dashboard. Upload carrier CSVs, flag underpayments, and export dispute-ready reports." />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#ffd1aa",
+                        "surface-container-high": "#1f2a3f",
+                        "surface-container": "#151f34",
+                        "primary": "#57f1db",
+                        "on-secondary-container": "#a8b5d9",
+                        "on-primary-container": "#00574d",
+                        "primary-fixed-dim": "#3cddc7",
+                        "tertiary-container": "#ffac5a",
+                        "primary-fixed": "#62fae3",
+                        "surface": "#081327",
+                        "secondary-container": "#3a4665",
+                        "surface-container-lowest": "#030e21",
+                        "on-primary-fixed-variant": "#005047",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b9c6eb",
+                        "outline": "#859490",
+                        "on-surface-variant": "#bacac5",
+                        "on-primary": "#003731",
+                        "primary-container": "#2dd4bf",
+                        "on-tertiary-container": "#744000",
+                        "on-tertiary": "#4b2800",
+                        "on-surface": "#d8e2fe",
+                        "inverse-primary": "#006b5f",
+                        "on-secondary": "#23304d",
+                        "secondary-fixed": "#d9e2ff",
+                        "surface-bright": "#2f394f",
+                        "inverse-on-surface": "#263045",
+                        "inverse-surface": "#d8e2fe",
+                        "secondary": "#b9c6eb",
+                        "on-tertiary-fixed": "#2d1600",
+                        "surface-variant": "#2a354a",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "on-secondary-fixed": "#0d1b37",
+                        "surface-container-low": "#101b2f",
+                        "surface-tint": "#3cddc7",
+                        "surface-dim": "#081327",
+                        "background": "#081327",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "tertiary-fixed": "#ffdcc0",
+                        "on-background": "#d8e2fe",
+                        "outline-variant": "#3c4a46",
+                        "surface-container-highest": "#2a354a",
+                        "on-primary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#3a4665"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-lg": "32px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "section-gap": "48px",
+                        "container-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "table-header": ["Inter"],
+                        "title-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                        "title-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "table-header": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "title-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #081327;
+            font-family: 'Inter', sans-serif;
+            color: #d8e2fe;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .upload-glow:hover {
+            box-shadow: 0 0 12px rgba(45, 212, 191, 0.2);
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+        .custom-dashed-border {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%233C4A46' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+
+        /* ── Toast notification ── */
+        @keyframes toastSlideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastFadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        #toast-container {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .toast {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.01em;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            animation: toastSlideUp 0.3s ease-out forwards;
+            pointer-events: auto;
+            white-space: nowrap;
+        }
+        .toast.toast-info    { background: #1a2f4a; border: 1px solid rgba(87,241,219,0.35); color: #57f1db; }
+        .toast.toast-success { background: #0f2a1a; border: 1px solid rgba(52,211,153,0.35); color: #34d399; }
+        .toast.toast-error   { background: #2a1020; border: 1px solid rgba(255,180,171,0.35); color: #ffb4ab; }
+        .toast.toast-hiding  { animation: toastFadeOut 0.4s ease-in forwards; }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container shadow-sm border-b border-white/5 h-16">
+<div class="flex justify-between items-center px-gutter h-full w-full max-w-[1440px] mx-auto">
+  <!-- DRecon Logo -->
+  <a href="index.html" class="flex items-center gap-2" aria-label="DRecon Home">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+      <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+      <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+    </svg>
+    <span class="text-lg font-bold text-white tracking-tight">DRecon</span>
+  </a>
+
+  <!-- Desktop Navigation -->
+  <nav class="hidden md:flex items-center gap-8 h-full" aria-label="Dashboard navigation">
+    <a id="nav-dashboard" class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Dashboard</a>
+    <a id="nav-reports"   class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Reports</a>
+    <a id="nav-settings"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Settings</a>
+    <a href="index.html"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 flex items-center gap-1">
+      <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
+      Back to Home
+    </a>
+  </nav>
+
+  <!-- Right side: notifications + avatar + mobile hamburger -->
+  <div class="flex items-center gap-3">
+    <button class="text-on-surface-variant hover:text-primary transition-colors duration-200 relative p-2" aria-label="Notifications">
+      <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+      <span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+    </button>
+    <div class="w-10 h-10 rounded-full bg-secondary-container hidden md:flex items-center justify-center text-on-secondary-container font-bold cursor-pointer hover:bg-surface-variant transition-all border border-outline-variant/30" aria-label="User menu" role="button" tabindex="0">
+      DA
+    </div>
+    <!-- Hamburger (mobile only) -->
+    <button id="mobile-menu-btn" class="md:hidden text-on-surface-variant hover:text-white p-2 transition-colors" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile Dropdown Menu -->
+<div id="mobile-menu" class="hidden md:hidden border-t border-white/5" style="background: rgba(21,31,52,0.98); backdrop-filter: blur(12px);">
+  <nav class="px-6 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
+    <a id="mob-nav-dashboard" class="flex items-center gap-3 px-3 py-3 rounded-lg text-primary font-semibold text-sm cursor-pointer hover:bg-white/5 transition-colors">
+      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
+      Dashboard
+    </a>
+    <a id="mob-nav-reports" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
+      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">bar_chart</span>
+      Reports
+    </a>
+    <a id="mob-nav-settings" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
+      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+      Settings
+    </a>
+    <a href="index.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm hover:bg-white/5 transition-colors">
+      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+      Back to Home
+    </a>
+  </nav>
+</div>
+</header>
+
+<!-- Toast container (rendered once, reused) -->
+<div id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+<main class="flex-grow pt-24 px-gutter max-w-[1440px] mx-auto w-full pb-stack-lg">
+<!-- Title Section -->
+<section class="mb-stack-lg animate-fade-in">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-title-lg text-title-lg text-white mb-2">Commission Reconciliation</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Upload carrier statements to audit commissions and detect underpayments</p>
+</div>
+<div class="inline-flex items-center px-3 py-1 bg-surface-container-high border border-outline-variant rounded-full">
+<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">history</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Last audit: May 15, 2026</span>
+</div>
+</div>
+</section>
+<!-- CSV Upload Zone -->
+<section class="mb-stack-lg" aria-label="CSV upload area">
+<div class="bg-surface-container-high rounded-lg p-stack-lg shadow-sm upload-glow border border-outline-variant/10">
+<div class="custom-dashed-border rounded-lg p-10 flex flex-col items-center justify-center text-center group cursor-pointer transition-colors hover:bg-surface-variant/20" id="dropzone" role="button" tabindex="0" aria-label="Drop CSV file here or click to select">
+<div class="mb-stack-md bg-primary/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-[48px] text-primary" data-icon="cloud_upload" aria-hidden="true">cloud_upload</span>
+</div>
+<h2 class="font-title-md text-title-md text-white mb-2">Upload Carrier Commission Statement</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg">Drag and drop your CSV or Excel file here, or click to browse</p>
+<button class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-8 py-3 rounded-full font-bold transition-all active:scale-95 shadow-[0_0_12px_rgba(45,212,191,0.3)]" id="select-file-btn">
+                        Select File
+                    </button>
+<p class="mt-stack-md font-body-sm text-body-sm text-outline">
+                        Supports .csv, .xlsx — Max file size 25MB
+                    </p>
+</div>
+</div>
+</section>
+<!-- Results Table -->
+<section aria-label="Reconciliation results">
+<div class="bg-surface-container-high rounded-lg shadow-sm border border-outline-variant/10 overflow-hidden">
+<div class="p-stack-md border-b border-outline-variant/30 flex justify-between items-center">
+<h3 class="font-title-md text-title-md text-white">Reconciliation Results</h3>
+<button class="opacity-40 cursor-not-allowed flex items-center gap-2 border border-outline px-4 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="export-btn" aria-label="Export reconciliation report as CSV" aria-disabled="true">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span>
+                        Export Report
+                    </button>
+</div>
+<!-- Summary Banner -->
+<div id="summary-banner" class="hidden grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30 border-b border-outline-variant/30 bg-surface-container-low" aria-label="Summary totals">
+<div class="p-6">
+<p class="font-label-caps text-label-caps text-outline mb-1">TOTAL EXPECTED COMMISSION</p>
+<p id="total-expected" class="font-title-lg text-title-lg text-white">$0.00</p>
+</div>
+<div class="p-6">
+<p class="font-label-caps text-label-caps text-outline mb-1">TOTAL ACTUAL COMMISSION</p>
+<p id="total-actual" class="font-title-lg text-title-lg text-white">$0.00</p>
+</div>
+<div class="p-6 bg-error/5 relative overflow-hidden">
+<p class="font-label-caps text-label-caps text-error mb-1">TOTAL UNDERPAID</p>
+<p id="total-underpaid" class="font-title-lg text-title-lg text-error font-bold">$0.00</p>
+<p class="font-body-sm text-body-sm text-error/80 mt-1">Carriers may owe you this amount</p>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container/50">
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">POLICY NUMBER</th>
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">CARRIER</th>
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">EXPECTED</th>
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">RECEIVED</th>
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">VARIANCE</th>
+<th class="px-6 py-4 font-table-header text-table-header text-outline border-b border-outline-variant/30" scope="col">STATUS</th>
+</tr>
+</thead>
+<tbody id="results-tbody">
+<!-- Empty State Row -->
+<tr>
+<td class="px-6 py-24" colspan="6">
+<div class="flex flex-col items-center justify-center text-center opacity-60">
+<div class="mb-4">
+<span class="material-symbols-outlined text-[64px] text-outline" aria-hidden="true">content_paste_off</span>
+</div>
+<p class="font-title-md text-title-md text-on-surface-variant mb-1">No data yet</p>
+<p class="font-body-sm text-body-sm text-outline">Upload a carrier statement above to start the reconciliation process.</p>
+</div>
+</td>
+</tr>
+<!-- Faint Skeleton Lines -->
+<tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+<tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+<tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface border-t border-outline-variant w-full py-stack-md mt-section-gap">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter max-w-[1440px] mx-auto w-full">
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4 md:mb-0">
+                © 2026 DRecon. Built for independent agencies.
+            </p>
+<nav class="flex gap-6" aria-label="Footer links">
+<a id="footer-privacy" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy Policy</a>
+<a id="footer-terms"   class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms of Service</a>
+<a id="footer-security" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Security</a>
+<a href="index.html"   class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">← Home</a>
+</nav>
+</div>
+</footer>
+<script>
+        // ── Hidden file input ──────────────────────────────────────────
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.csv,.xlsx,.xls';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+
+        // ── References ─────────────────────────────────────────────────
+        const dropzone = document.getElementById('dropzone');
+        const selectBtn = document.getElementById('select-file-btn');
+        const tbody = document.getElementById('results-tbody');
+        const exportBtn = document.getElementById('export-btn');
+
+        // ── Table column definitions (in display order) ────────────────
+        const TABLE_COLUMNS = [
+            { key: 'policy',   label: 'POLICY NUMBER' },
+            { key: 'carrier',  label: 'CARRIER' },
+            { key: 'expected', label: 'EXPECTED' },
+            { key: 'received', label: 'RECEIVED' },
+            { key: 'variance', label: 'VARIANCE' },
+            { key: 'status',   label: 'STATUS' },
+        ];
+
+        // ── Fuzzy column-name mapping ──────────────────────────────────
+        const COLUMN_ALIASES = {
+            policy:   ['policy', 'policy_number', 'policy_num', 'policy_no', 'policynumber', 'policyno', 'pol_num', 'pol_no', 'pol', 'policy #', 'policy#'],
+            carrier:  ['carrier', 'carrier_name', 'carriername', 'insurance_carrier', 'insurer', 'company', 'company_name'],
+            expected: ['expected', 'expected_commission', 'expected_amount', 'exp', 'exp_commission', 'expected_comm', 'expectedcommission'],
+            received: ['received', 'received_commission', 'received_amount', 'rec', 'rec_commission', 'actual', 'actual_commission', 'paid', 'paid_amount', 'receivedcommission'],
+            variance: ['variance', 'var', 'difference', 'diff', 'delta', 'discrepancy', 'gap'],
+            status:   ['status', 'state', 'result', 'flag', 'audit_status', 'match_status'],
+        };
+
+        function normalise(str) {
+            return str.toLowerCase().replace(/[^a-z0-9#]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+        }
+
+        function mapHeaders(csvHeaders) {
+            const mapping = {};
+            const normalisedHeaders = csvHeaders.map(normalise);
+
+            for (const col of TABLE_COLUMNS) {
+                const aliases = COLUMN_ALIASES[col.key];
+                let foundIdx = -1;
+
+                for (const alias of aliases) {
+                    const idx = normalisedHeaders.indexOf(normalise(alias));
+                    if (idx !== -1) { foundIdx = idx; break; }
+                }
+
+                if (foundIdx === -1) {
+                    for (let i = 0; i < normalisedHeaders.length; i++) {
+                        for (const alias of aliases) {
+                            const na = normalise(alias);
+                            if (normalisedHeaders[i].includes(na) || na.includes(normalisedHeaders[i])) {
+                                foundIdx = i; break;
+                            }
+                        }
+                        if (foundIdx !== -1) break;
+                    }
+                }
+
+                mapping[col.key] = foundIdx;
+            }
+
+            return mapping;
+        }
+
+        // ── CSV parser (handles quoted fields with commas) ─────────────
+        function parseCSV(text) {
+            const rows = [];
+            let current = '';
+            let inQuotes = false;
+            const lines = [];
+
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                if (ch === '"') {
+                    inQuotes = !inQuotes;
+                    current += ch;
+                } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+                    if (current.trim().length > 0) lines.push(current);
+                    current = '';
+                    if (ch === '\r' && text[i + 1] === '\n') i++;
+                } else {
+                    current += ch;
+                }
+            }
+            if (current.trim().length > 0) lines.push(current);
+
+            for (const line of lines) {
+                const fields = [];
+                let field = '';
+                let q = false;
+                for (let i = 0; i < line.length; i++) {
+                    const ch = line[i];
+                    if (ch === '"') {
+                        if (q && line[i + 1] === '"') { field += '"'; i++; }
+                        else q = !q;
+                    } else if (ch === ',' && !q) {
+                        fields.push(field.trim());
+                        field = '';
+                    } else {
+                        field += ch;
+                    }
+                }
+                fields.push(field.trim());
+                rows.push(fields);
+            }
+
+            return rows;
+        }
+
+        // ── Compute variance if missing ────────────────────────────────
+        function computeVariance(expected, received) {
+            const e = parseFloat(String(expected).replace(/[^0-9.\-]/g, ''));
+            const r = parseFloat(String(received).replace(/[^0-9.\-]/g, ''));
+            if (isNaN(e) || isNaN(r)) return '';
+            const v = r - e;
+            const sign = v >= 0 ? '+' : '';
+            return sign + v.toFixed(2);
+        }
+
+        // ── Compute status if missing ──────────────────────────────────
+        function computeStatus(variance) {
+            const v = parseFloat(String(variance).replace(/[^0-9.\-]/g, ''));
+            if (isNaN(v)) return 'Unknown';
+            if (Math.abs(v) < 0.01) return 'Match';
+            if (v < 0) return 'Underpaid';
+            return 'Overpaid';
+        }
+
+        // ── Format currency values ─────────────────────────────────────
+        function formatCurrency(val) {
+            if (val === '' || val == null) return '—';
+            const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
+            if (isNaN(num)) return val;
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ── Render table rows ──────────────────────────────────────────
+        function renderTable(data, mapping) {
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            let totalExpectedAmt = 0;
+            let totalReceivedAmt = 0;
+            let totalUnderpaidAmt = 0;
+
+            for (const row of data) {
+                const expStr = mapping.expected !== -1 ? row[mapping.expected] : '';
+                const recStr = mapping.received !== -1 ? row[mapping.received] : '';
+                const expNum = parseFloat(String(expStr).replace(/[^0-9.\-]/g, '')) || 0;
+                const recNum = parseFloat(String(recStr).replace(/[^0-9.\-]/g, '')) || 0;
+
+                let varNum = 0;
+                if (mapping.variance !== -1 && row[mapping.variance] !== undefined && row[mapping.variance] !== '') {
+                    varNum = parseFloat(String(row[mapping.variance]).replace(/[^0-9.\-]/g, '')) || 0;
+                } else {
+                    varNum = recNum - expNum;
+                }
+
+                totalExpectedAmt += expNum;
+                totalReceivedAmt += recNum;
+                if (varNum < 0) {
+                    totalUnderpaidAmt += Math.abs(varNum);
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
+
+                for (const col of TABLE_COLUMNS) {
+                    const td = document.createElement('td');
+                    td.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+
+                    let value = mapping[col.key] !== -1 ? (row[mapping[col.key]] || '') : '';
+
+                    if (col.key === 'variance' && value === '' && mapping.expected !== -1 && mapping.received !== -1) {
+                        value = computeVariance(row[mapping.expected], row[mapping.received]);
+                    }
+
+                    if (col.key === 'status' && value === '') {
+                        const varVal = mapping.variance !== -1 ? row[mapping.variance] : '';
+                        const computedVar = varVal || computeVariance(
+                            mapping.expected !== -1 ? row[mapping.expected] : '',
+                            mapping.received !== -1 ? row[mapping.received] : ''
+                        );
+                        value = computeStatus(computedVar);
+                    }
+
+                    if (['expected', 'received', 'variance'].includes(col.key)) {
+                        value = formatCurrency(value);
+                    }
+
+                    if (col.key === 'variance') {
+                        const num = parseFloat(String(value).replace(/[^0-9.\-]/g, ''));
+                        if (!isNaN(num)) {
+                            if (num < -0.01) td.classList.add('text-error');
+                            else if (num > 0.01) td.classList.add('text-primary');
+                        }
+                    }
+
+                    if (col.key === 'status') {
+                        const badge = document.createElement('span');
+                        const status = String(value).toLowerCase();
+                        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full font-label-caps text-label-caps border';
+
+                        if (status === 'match' || status === 'matched' || status === 'paid') {
+                            badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
+                        } else if (status === 'underpaid' || status === 'short' || status === 'missing') {
+                            badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
+                        } else if (status === 'overpaid' || status === 'over') {
+                            badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
+                        } else {
+                            badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
+                        }
+
+                        badge.textContent = value;
+                        td.innerHTML = '';
+                        td.appendChild(badge);
+                        tr.appendChild(td);
+                        continue;
+                    }
+
+                    td.textContent = value || '—';
+                    tr.appendChild(td);
+                }
+
+                tbody.appendChild(tr);
+            }
+
+            // Enable Export button
+            exportBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+            exportBtn.classList.add('hover:bg-surface-variant/30', 'cursor-pointer');
+            exportBtn.setAttribute('aria-disabled', 'false');
+
+            // Populate and show summary banner
+            const summaryBanner = document.getElementById('summary-banner');
+            if (summaryBanner) {
+                summaryBanner.classList.remove('hidden');
+                document.getElementById('total-expected').textContent = formatCurrency(totalExpectedAmt);
+                document.getElementById('total-actual').textContent = formatCurrency(totalReceivedAmt);
+                document.getElementById('total-underpaid').textContent = formatCurrency(totalUnderpaidAmt);
+            }
+        }
+
+        // ── Empty state ────────────────────────────────────────────────
+        function showEmptyState() {
+            tbody.innerHTML = `
+                <tr>
+                    <td class="px-6 py-24" colspan="6">
+                        <div class="flex flex-col items-center justify-center text-center opacity-60">
+                            <div class="mb-4">
+                                <span class="material-symbols-outlined text-[64px] text-outline" aria-hidden="true">content_paste_off</span>
+                            </div>
+                            <p class="font-title-md text-title-md text-on-surface-variant mb-1">No data yet</p>
+                            <p class="font-body-sm text-body-sm text-outline">Upload a carrier statement above to start the reconciliation process.</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+                <tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+                <tr class="border-b border-outline-variant/10"><td class="py-4" colspan="6"></td></tr>
+            `;
+            const summaryBanner = document.getElementById('summary-banner');
+            if (summaryBanner) {
+                summaryBanner.classList.add('hidden');
+            }
+        }
+
+        // ── Process uploaded file ──────────────────────────────────────
+        function processFile(file) {
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const rows = parseCSV(text);
+
+                if (rows.length < 2) {
+                    alert('The file appears to be empty or has no data rows.');
+                    return;
+                }
+
+                const headers = rows[0];
+                const dataRows = rows.slice(1);
+                const mapping = mapHeaders(headers);
+
+                const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
+                if (mappedCount === 0) {
+                    alert('Could not map any CSV columns to the table. Expected columns like: policy, carrier, expected, received, variance, status.');
+                    return;
+                }
+
+                renderTable(dataRows, mapping);
+
+                // Update last audit badge
+                const badge = document.querySelector('.font-label-caps.text-label-caps');
+                if (badge) {
+                    const now = new Date();
+                    const formatted = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    badge.textContent = 'Last audit: ' + formatted;
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // ── Event wiring ───────────────────────────────────────────────
+
+        selectBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        dropzone.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInput.click();
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                processFile(fileInput.files[0]);
+                fileInput.value = '';
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('bg-primary/5');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('bg-primary/5');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                processFile(files[0]);
+            }
+        });
+
+        // ── Export functionality ───────────────────────────────────────
+        exportBtn.addEventListener('click', () => {
+            if (exportBtn.classList.contains('cursor-not-allowed')) return;
+
+            const headers = TABLE_COLUMNS.map(col => `"${col.label}"`);
+
+            const rows = [];
+            const trs = tbody.querySelectorAll('tr');
+            trs.forEach(tr => {
+                // Skip empty-state and skeleton rows (they use colspan)
+                if (tr.querySelector('td[colspan]')) return;
+
+                const tds = tr.querySelectorAll('td');
+                if (tds.length !== TABLE_COLUMNS.length) return;
+
+                const row = [];
+                tds.forEach(td => {
+                    let text = td.textContent.trim();
+                    text = text.replace(/"/g, '""'); // escape inner quotes
+                    row.push(`"${text}"`);
+                });
+                rows.push(row.join(','));
+            });
+
+            if (rows.length === 0) {
+                showToast('No data to export yet.', 'error');
+                return;
+            }
+
+            const csvContent = headers.join(',') + '\n' + rows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `drecon_reconciliation_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Report exported successfully!', 'success');
+        });
+
+        // ══════════════════════════════════════════════════════════════
+        // ── Toast notification system ─────────────────────────────────
+        // showToast(message: string, type: 'info' | 'success' | 'error')
+        // ══════════════════════════════════════════════════════════════
+        let _activeToast = null;
+        let _activeToastTimer = null;
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            // Immediately remove any existing toast
+            if (_activeToast) {
+                clearTimeout(_activeToastTimer);
+                _activeToast.remove();
+                _activeToast = null;
+            }
+
+            const icons = { info: 'info', success: 'check_circle', error: 'error' };
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML =
+                `<span class="material-symbols-outlined" style="font-size:18px;" aria-hidden="true">${icons[type] || 'info'}</span>` +
+                `<span>${message}</span>`;
+
+            container.appendChild(toast);
+            _activeToast = toast;
+
+            // Begin fade-out at 2.6 s, remove at 3 s
+            _activeToastTimer = setTimeout(() => {
+                toast.classList.add('toast-hiding');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                    if (_activeToast === toast) _activeToast = null;
+                }, 400);
+            }, 2600);
+        }
+
+        // ── Navigation wiring ─────────────────────────────────────────
+
+        // Dashboard → scroll to top
+        document.getElementById('nav-dashboard').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.getElementById('mob-nav-dashboard').addEventListener('click', () => {
+            closeMobileMenu();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Reports → toast
+        document.getElementById('nav-reports').addEventListener('click', () => {
+            showToast('Reports coming soon', 'info');
+        });
+        document.getElementById('mob-nav-reports').addEventListener('click', () => {
+            closeMobileMenu();
+            showToast('Reports coming soon', 'info');
+        });
+
+        // Settings → toast
+        document.getElementById('nav-settings').addEventListener('click', () => {
+            showToast('Settings coming soon', 'info');
+        });
+        document.getElementById('mob-nav-settings').addEventListener('click', () => {
+            closeMobileMenu();
+            showToast('Settings coming soon', 'info');
+        });
+
+        // ── Mobile hamburger menu ─────────────────────────────────────
+        const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
+        const mobileMenu     = document.getElementById('mobile-menu');
+        const mobileMenuIcon = mobileMenuBtn.querySelector('.material-symbols-outlined');
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            mobileMenuIcon.textContent = 'menu';
+        }
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                mobileMenu.classList.remove('hidden');
+                mobileMenuBtn.setAttribute('aria-expanded', 'true');
+                mobileMenuIcon.textContent = 'close';
+            }
+        });
+
+        // ── Footer link wiring ────────────────────────────────────────
+        document.getElementById('footer-privacy').addEventListener('click', () => {
+            showToast('Privacy Policy coming soon', 'info');
+        });
+        document.getElementById('footer-terms').addEventListener('click', () => {
+            showToast('Terms coming soon', 'info');
+        });
+        document.getElementById('footer-security').addEventListener('click', () => {
+            showToast('Security page coming soon', 'info');
+        });
+
+        // ── Page-load fade-in animation ───────────────────────────────
+        // Script runs after DOM is parsed (placed at </body>), so we
+        // can safely query elements immediately — no DOMContentLoaded needed.
+        (function initFadeIn() {
+            const elements = document.querySelectorAll('.animate-fade-in');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease-out';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        })();
+    </script>
+</body></html>

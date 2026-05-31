@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DRecon — Stop Losing Money to Commission Leakage</title>
+  <meta name="description" content="Independent insurance agencies lose $2,000–$8,000 every month to carrier underpayments. DRecon audits your commission statements and shows you exactly what you're owed — in minutes." />
+  <meta name="keywords" content="insurance commission reconciliation, carrier underpayment, independent insurance agency, commission audit, DRecon" />
+  <meta property="og:title" content="DRecon — Stop Losing Money to Commission Leakage" />
+  <meta property="og:description" content="DRecon audits your carrier commission statements and flags underpayments in minutes. Built for independent agencies." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="index.html" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#081327',
+            'navy-mid': '#0d1d38',
+            'navy-card': '#111e36',
+            'navy-border': '#1e2f4a',
+            teal: '#57f1db',
+            'teal-dim': '#3cddc7',
+            'teal-dark': '#00574d',
+            muted: '#8fa3bf',
+            soft: '#d8e2fe',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #081327; font-family: 'Inter', sans-serif; color: #d8e2fe; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    /* Glow animation */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(87,241,219,0.15); }
+      50% { box-shadow: 0 0 40px rgba(87,241,219,0.35); }
+    }
+    .teal-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+    /* Fade-in-up */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeInUp 0.7s ease-out forwards; }
+    .fade-up-d1 { animation: fadeInUp 0.7s ease-out 0.15s forwards; opacity: 0; }
+    .fade-up-d2 { animation: fadeInUp 0.7s ease-out 0.30s forwards; opacity: 0; }
+    .fade-up-d3 { animation: fadeInUp 0.7s ease-out 0.45s forwards; opacity: 0; }
+
+    /* Hero gradient bg */
+    .hero-bg {
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(87,241,219,0.12) 0%, transparent 70%),
+                  linear-gradient(180deg, #0d1d38 0%, #081327 100%);
+    }
+
+    /* Card hover */
+    .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(87,241,219,0.08); }
+
+    /* Pricing highlight */
+    .pricing-popular {
+      background: linear-gradient(135deg, #0d1d38 0%, #0f2340 100%);
+      border-color: #57f1db;
+      box-shadow: 0 0 0 1px rgba(87,241,219,0.3), 0 8px 48px rgba(87,241,219,0.08);
+    }
+
+    /* Accordion */
+    .faq-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s ease; }
+    .faq-body.open { max-height: 300px; }
+    .faq-icon { transition: transform 0.3s ease; }
+    .faq-icon.rotated { transform: rotate(45deg); }
+
+    /* Teal text gradient */
+    .teal-gradient-text {
+      background: linear-gradient(90deg, #57f1db, #3cddc7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Step number */
+    .step-num {
+      width: 48px; height: 48px; min-width: 48px;
+      background: linear-gradient(135deg, rgba(87,241,219,0.15), rgba(87,241,219,0.05));
+      border: 1px solid rgba(87,241,219,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #57f1db;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #081327; }
+    ::-webkit-scrollbar-thumb { background: #1e2f4a; border-radius: 3px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER / NAV
+  ═══════════════════════════════════════════════════ -->
+  <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-300" style="background: rgba(8,19,39,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(30,47,74,0.8);">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group" aria-label="DRecon Home">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-xl font-bold text-white tracking-tight">DRecon</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#how-it-works" class="text-sm font-medium text-muted hover:text-teal transition-colors duration-200">How It Works</a>
+        <a href="#pricing" class="text-sm font-medium text-muted hover:text-teal transition-colors duration-200">Pricing</a>
+        <a href="#faq" class="text-sm font-medium text-muted hover:text-teal transition-colors duration-200">FAQ</a>
+        <a href="dashboard.html" id="cta-nav" class="bg-teal hover:bg-teal-dim text-navy-mid text-sm font-bold px-5 py-2 rounded-full transition-all duration-200 active:scale-95 shadow-[0_0_16px_rgba(87,241,219,0.3)]">
+          Run a Free Audit
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden text-muted hover:text-white p-2" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-navy-border" style="background: rgba(8,19,39,0.98);">
+      <nav class="px-6 py-4 flex flex-col gap-4" aria-label="Mobile navigation">
+        <a href="#how-it-works" class="text-sm font-medium text-muted hover:text-teal transition-colors mobile-nav-link">How It Works</a>
+        <a href="#pricing" class="text-sm font-medium text-muted hover:text-teal transition-colors mobile-nav-link">Pricing</a>
+        <a href="#faq" class="text-sm font-medium text-muted hover:text-teal transition-colors mobile-nav-link">FAQ</a>
+        <a href="dashboard.html" class="bg-teal text-navy text-sm font-bold px-5 py-2.5 rounded-full text-center transition-all">Run a Free Audit</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ═══════════════════════════════════════════════════
+         HERO
+    ═══════════════════════════════════════════════════ -->
+    <section id="hero" class="hero-bg min-h-screen flex items-center pt-16">
+      <div class="max-w-6xl mx-auto px-6 py-24 text-center w-full">
+
+        <!-- Label pill -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-teal/20 bg-teal/5 text-teal text-xs font-semibold tracking-widest uppercase mb-8 fade-up">
+          <span class="w-1.5 h-1.5 rounded-full bg-teal animate-pulse"></span>
+          Commission Auditing for Independent Agencies
+        </div>
+
+        <!-- H1 -->
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6 fade-up-d1">
+          Your Carriers Are<br/>
+          <span class="teal-gradient-text">Shorting You.</span><br/>
+          DRecon Proves It.
+        </h1>
+
+        <!-- Subheadline -->
+        <p class="max-w-2xl mx-auto text-lg md:text-xl text-muted leading-relaxed mb-10 fade-up-d2">
+          Independent agencies lose <strong class="text-soft">$2,000–$8,000 every month</strong> to carrier underpayments. DRecon audits your commission statements and shows you exactly what you're owed — in minutes.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-up-d3">
+          <a href="dashboard.html" id="cta-hero-primary" class="bg-teal hover:bg-teal-dim text-navy font-bold text-base px-8 py-4 rounded-full transition-all duration-200 active:scale-95 teal-glow w-full sm:w-auto text-center">
+            Run a Free Audit →
+          </a>
+          <a href="#how-it-works" id="cta-hero-secondary" class="border border-navy-border hover:border-teal/40 text-soft text-base font-medium px-8 py-4 rounded-full transition-all duration-200 w-full sm:w-auto text-center hover:bg-teal/5">
+            See How It Works
+          </a>
+        </div>
+
+        <!-- Trust bar -->
+        <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 text-muted text-sm fade-up-d3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-teal text-base">check_circle</span>
+            No credit card required
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-teal text-base">check_circle</span>
+            No AMS migration
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-teal text-base">check_circle</span>
+            Works with any carrier CSV
+          </div>
+        </div>
+
+        <!-- Teal accent divider -->
+        <div class="mt-20 mx-auto w-24 h-px bg-gradient-to-r from-transparent via-teal/40 to-transparent"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         PAIN POINTS
+    ═══════════════════════════════════════════════════ -->
+    <section id="pain-points" class="py-24" style="background: #081327;">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-14">
+          <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">The Problem</p>
+          <h2 class="text-3xl md:text-4xl font-black text-white leading-tight">
+            The Status Quo Is Costing You Money
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <!-- Card 1 -->
+          <article class="rounded-xl p-7 border border-navy-border card-hover" style="background: #111e36;">
+            <div class="w-12 h-12 rounded-xl bg-teal/10 border border-teal/20 flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-teal text-2xl">schedule</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3 leading-snug">2 Days of Manual Reconciliation. Every Month.</h3>
+            <p class="text-muted text-sm leading-relaxed">Your admin cross-checks thousands of policy lines across 10 carriers. Manually. In Excel. Every single month.</p>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="rounded-xl p-7 border border-navy-border card-hover" style="background: #111e36;">
+            <div class="w-12 h-12 rounded-xl bg-teal/10 border border-teal/20 flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-teal text-2xl">money_off</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3 leading-snug">Carriers Underpay and Nobody Catches It.</h3>
+            <p class="text-muted text-sm leading-relaxed">Applied Epic stores your data but doesn't audit it. Commission leakage compounds silently every month you don't check. Most agencies lose 3–5% of total revenue this way.</p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="rounded-xl p-7 border border-navy-border card-hover" style="background: #111e36;">
+            <div class="w-12 h-12 rounded-xl bg-teal/10 border border-teal/20 flex items-center justify-center mb-5">
+              <span class="material-symbols-outlined text-teal text-2xl">enterprise</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3 leading-snug">Enterprise Tools Cost $30,000/Year.</h3>
+            <p class="text-muted text-sm leading-relaxed">AgencyBloc and Applied Epic are built for $10M agencies. You're paying enterprise prices for features a 5-person agency will never use.</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         HOW IT WORKS
+    ═══════════════════════════════════════════════════ -->
+    <section id="how-it-works" class="py-24" style="background: #0d1d38;">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-14">
+          <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">The Fix</p>
+          <h2 class="text-3xl md:text-4xl font-black text-white leading-tight">
+            From Upload to Dispute in Minutes
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
+          <!-- Connector lines (desktop) -->
+          <div class="hidden md:block absolute top-6 left-1/3 right-1/3 h-px" style="background: linear-gradient(90deg, transparent, rgba(87,241,219,0.3), transparent);"></div>
+
+          <!-- Step 1 -->
+          <div class="flex flex-col items-center text-center gap-4">
+            <div class="step-num">1</div>
+            <div class="w-14 h-14 rounded-2xl bg-teal/10 border border-teal/20 flex items-center justify-center">
+              <span class="material-symbols-outlined text-teal text-3xl">upload_file</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Upload Your Carrier CSV</h3>
+            <p class="text-muted text-sm leading-relaxed">Drop your carrier commission statement CSV into DRecon. Works with Progressive, Travelers, Safeco, Liberty Mutual, and all standard formats.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col items-center text-center gap-4">
+            <div class="step-num">2</div>
+            <div class="w-14 h-14 rounded-2xl bg-teal/10 border border-teal/20 flex items-center justify-center">
+              <span class="material-symbols-outlined text-teal text-3xl">auto_fix_high</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Automatic Column Mapping</h3>
+            <p class="text-muted text-sm leading-relaxed">DRecon maps columns intelligently and calculates expected vs. received commissions for every policy line — no manual setup required.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col items-center text-center gap-4">
+            <div class="step-num">3</div>
+            <div class="w-14 h-14 rounded-2xl bg-teal/10 border border-teal/20 flex items-center justify-center">
+              <span class="material-symbols-outlined text-teal text-3xl">flag</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Flagged Underpayments. Instantly.</h3>
+            <p class="text-muted text-sm leading-relaxed">Every underpayment is flagged with the exact dollar amount. Export a dispute-ready report and send it straight to your carrier rep.</p>
+          </div>
+        </div>
+
+        <div class="text-center mt-14">
+          <a href="dashboard.html" id="cta-how-it-works" class="inline-flex items-center gap-2 bg-teal hover:bg-teal-dim text-navy font-bold text-sm px-7 py-3.5 rounded-full transition-all duration-200 active:scale-95">
+            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+            Try It Now — Free
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SOCIAL PROOF
+    ═══════════════════════════════════════════════════ -->
+    <section id="social-proof" class="py-24" style="background: #081327;">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        <p class="text-teal text-xs font-bold tracking-widest uppercase mb-12">Results</p>
+
+        <article class="relative rounded-2xl p-10 border card-hover" style="background: #111e36; border-color: rgba(87,241,219,0.15);">
+          <!-- Giant quote mark -->
+          <div class="absolute top-6 left-8 text-8xl font-black leading-none" style="color: rgba(87,241,219,0.1);">"</div>
+
+          <blockquote class="relative z-10">
+            <p class="text-xl md:text-2xl text-white font-semibold leading-relaxed mb-8">
+              "We recovered <span class="text-teal">$3,200 in underpayments</span> in the first month. DRecon paid for itself 9x."
+            </p>
+            <footer>
+              <div class="flex items-center justify-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-teal/20 border border-teal/30 flex items-center justify-center text-teal font-bold text-sm">AP</div>
+                <div class="text-left">
+                  <p class="text-white text-sm font-semibold">Agency Principal</p>
+                  <p class="text-muted text-xs">Independent Agency, Ohio</p>
+                </div>
+              </div>
+            </footer>
+          </blockquote>
+        </article>
+
+        <!-- Stats row -->
+        <div class="mt-14 grid grid-cols-3 gap-6">
+          <div>
+            <p class="text-3xl font-black teal-gradient-text">$3,200</p>
+            <p class="text-muted text-xs mt-1">Avg. recovered, month 1</p>
+          </div>
+          <div>
+            <p class="text-3xl font-black teal-gradient-text">9x</p>
+            <p class="text-muted text-xs mt-1">ROI in first month</p>
+          </div>
+          <div>
+            <p class="text-3xl font-black teal-gradient-text">&lt;5 min</p>
+            <p class="text-muted text-xs mt-1">To first audit result</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         PRICING
+    ═══════════════════════════════════════════════════ -->
+    <section id="pricing" class="py-24" style="background: #0d1d38;">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-14">
+          <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">Pricing</p>
+          <h2 class="text-3xl md:text-4xl font-black text-white leading-tight">Simple, Transparent Pricing</h2>
+          <p class="text-muted mt-3 text-base">No setup fees. Cancel any time. Pays for itself after the first underpayment recovery.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+
+          <!-- Starter -->
+          <article class="rounded-2xl p-8 border border-navy-border flex flex-col" style="background: #111e36;">
+            <div class="mb-6">
+              <p class="text-muted text-xs font-bold tracking-widest uppercase mb-2">Starter</p>
+              <div class="flex items-end gap-1 mb-1">
+                <span class="text-4xl font-black text-white">$149</span>
+                <span class="text-muted text-sm mb-1.5">/month</span>
+              </div>
+              <p class="text-muted text-sm">For agencies just getting started with reconciliation.</p>
+            </div>
+
+            <ul class="space-y-3 mb-8 flex-1" role="list">
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Up to 500 policies/month
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Single carrier CSV upload
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Underpayment flagging
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Email support
+              </li>
+            </ul>
+
+            <a href="dashboard.html" id="cta-starter" class="block text-center border border-teal/40 text-teal font-bold text-sm py-3 rounded-full hover:bg-teal/10 transition-all duration-200">
+              Get Started
+            </a>
+          </article>
+
+          <!-- Professional (highlighted) -->
+          <article class="rounded-2xl p-8 pricing-popular flex flex-col relative" aria-label="Most popular plan">
+            <!-- Badge -->
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <span class="bg-teal text-navy text-xs font-black px-4 py-1.5 rounded-full tracking-wide uppercase shadow-[0_0_12px_rgba(87,241,219,0.4)]">Most Popular</span>
+            </div>
+
+            <div class="mb-6 mt-2">
+              <p class="text-teal text-xs font-bold tracking-widest uppercase mb-2">Professional</p>
+              <div class="flex items-end gap-1 mb-1">
+                <span class="text-4xl font-black text-white">$349</span>
+                <span class="text-muted text-sm mb-1.5">/month</span>
+              </div>
+              <p class="text-muted text-sm">For agencies serious about recovering every dollar.</p>
+            </div>
+
+            <ul class="space-y-3 mb-8 flex-1" role="list">
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                <strong>Unlimited</strong> policies
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Multi-carrier batch upload
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Producer split calculator
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Renewal spike alerts <span class="ml-1 text-xs text-teal bg-teal/10 px-1.5 py-0.5 rounded">(60-day advance)</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-soft">
+                <span class="material-symbols-outlined text-teal text-base mt-0.5 shrink-0">check</span>
+                Priority support
+              </li>
+            </ul>
+
+            <a href="dashboard.html" id="cta-professional" class="block text-center bg-teal hover:bg-teal-dim text-navy font-bold text-sm py-3 rounded-full transition-all duration-200 active:scale-95 shadow-[0_0_16px_rgba(87,241,219,0.25)]">
+              Start Free Audit →
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         FAQ
+    ═══════════════════════════════════════════════════ -->
+    <section id="faq" class="py-24" style="background: #081327;">
+      <div class="max-w-2xl mx-auto px-6">
+        <div class="text-center mb-14">
+          <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">FAQ</p>
+          <h2 class="text-3xl md:text-4xl font-black text-white leading-tight">Common Questions</h2>
+        </div>
+
+        <div class="space-y-3" role="list">
+
+          <!-- FAQ Item 1 -->
+          <div class="rounded-xl border border-navy-border overflow-hidden" style="background: #111e36;" role="listitem">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-teal/5 transition-colors duration-150" aria-expanded="false" id="faq-btn-1" aria-controls="faq-body-1">
+              <span class="text-sm font-semibold text-white">Does DRecon replace my AMS?</span>
+              <span class="material-symbols-outlined text-teal text-xl shrink-0 faq-icon" aria-hidden="true">add</span>
+            </button>
+            <div class="faq-body px-6" id="faq-body-1" role="region" aria-labelledby="faq-btn-1">
+              <p class="text-muted text-sm leading-relaxed pb-5">No. DRecon sits on top of Applied Epic, Hawksoft, or whatever AMS you use. No migration, no disruption. You keep your existing workflows — DRecon just adds an audit layer on top.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="rounded-xl border border-navy-border overflow-hidden" style="background: #111e36;" role="listitem">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-teal/5 transition-colors duration-150" aria-expanded="false" id="faq-btn-2" aria-controls="faq-body-2">
+              <span class="text-sm font-semibold text-white">Is my commission data safe?</span>
+              <span class="material-symbols-outlined text-teal text-xl shrink-0 faq-icon" aria-hidden="true">add</span>
+            </button>
+            <div class="faq-body px-6" id="faq-body-2" role="region" aria-labelledby="faq-btn-2">
+              <p class="text-muted text-sm leading-relaxed pb-5">We process commission figures only — no policyholder PII ever touches our servers. Data is encrypted in transit and deleted after processing. DRecon is built with a privacy-first architecture.</p>
+            </div>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="rounded-xl border border-navy-border overflow-hidden" style="background: #111e36;" role="listitem">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-teal/5 transition-colors duration-150" aria-expanded="false" id="faq-btn-3" aria-controls="faq-body-3">
+              <span class="text-sm font-semibold text-white">Which carriers do you support?</span>
+              <span class="material-symbols-outlined text-teal text-xl shrink-0 faq-icon" aria-hidden="true">add</span>
+            </button>
+            <div class="faq-body px-6" id="faq-body-3" role="region" aria-labelledby="faq-btn-3">
+              <p class="text-muted text-sm leading-relaxed pb-5">Progressive, Travelers, Safeco, Liberty Mutual, and all standard CSV formats out of the box. Custom formats on the Pro plan — our team maps them within 24 hours of your first upload.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         FINAL CTA BAND
+    ═══════════════════════════════════════════════════ -->
+    <section id="final-cta" class="py-20" style="background: linear-gradient(135deg, #0d1d38 0%, #0a1830 100%); border-top: 1px solid rgba(87,241,219,0.1); border-bottom: 1px solid rgba(87,241,219,0.1);">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+          Stop Leaving Money on the Table
+        </h2>
+        <p class="text-muted text-lg mb-10">Upload your first carrier statement now. It's free — and the first underpayment you catch pays for everything.</p>
+        <a href="dashboard.html" id="cta-final" class="inline-flex items-center gap-2 bg-teal hover:bg-teal-dim text-navy font-black text-base px-10 py-4 rounded-full transition-all duration-200 active:scale-95 teal-glow">
+          Run My Free Audit
+          <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+        </a>
+        <p class="mt-4 text-muted text-xs">No signup required. No credit card. Just upload and go.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════ -->
+  <footer class="py-10 border-t border-navy-border" style="background: #081327;">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <!-- Brand -->
+      <div class="flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-sm font-bold text-white">DRecon</span>
+        <span class="text-muted text-xs ml-2">| Built for independent agencies.</span>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex items-center gap-6" aria-label="Footer navigation">
+        <a href="#" class="text-muted text-xs hover:text-teal transition-colors">Privacy Policy</a>
+        <a href="#" class="text-muted text-xs hover:text-teal transition-colors">Terms of Service</a>
+        <a href="#" class="text-muted text-xs hover:text-teal transition-colors">Security</a>
+        <a href="dashboard.html" class="text-muted text-xs hover:text-teal transition-colors">Dashboard</a>
+      </nav>
+
+      <!-- Copyright -->
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Mobile menu toggle ─────────────────────────────────
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden', isOpen);
+      mobileBtn.setAttribute('aria-expanded', String(!isOpen));
+      mobileBtn.querySelector('.material-symbols-outlined').textContent = isOpen ? 'menu' : 'close';
+    });
+
+    // Close on nav link click
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        mobileBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
+      });
+    });
+
+    // ── FAQ accordion ──────────────────────────────────────
+    document.querySelectorAll('.faq-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const body = document.getElementById(btn.getAttribute('aria-controls'));
+        const icon = btn.querySelector('.faq-icon');
+        const isOpen = body.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.faq-toggle').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          b.querySelector('.faq-icon').classList.remove('rotated');
+        });
+
+        // Open clicked (if it wasn't already open)
+        if (!isOpen) {
+          body.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          icon.classList.add('rotated');
+        }
+      });
+    });
+
+    // ── Header scroll effect ──────────────────────────────
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.style.background = 'rgba(8,19,39,0.97)';
+      } else {
+        header.style.background = 'rgba(8,19,39,0.85)';
+      }
+    }, { passive: true });
+  </script>
+
+</body>
+</html>
