@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DRecon | Security</title>
+  <meta name="description" content="Security at DRecon — how your commission data is protected. Your CSV files never leave your browser." />
+  <link rel="canonical" href="security.html" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy:         '#081327',
+            'navy-mid':   '#0d1d38',
+            'navy-card':  '#111e36',
+            'navy-border':'#1e2f4a',
+            teal:         '#57f1db',
+            'teal-dim':   '#3cddc7',
+            muted:        '#8fa3bf',
+            soft:         '#d8e2fe',
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #081327; font-family: 'Inter', sans-serif; color: #d8e2fe; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    /* ── Prose ── */
+    .prose h2 {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #57f1db;
+      text-transform: uppercase;
+      margin-top: 2.75rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(87,241,219,0.15);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prose p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      margin-bottom: 1rem;
+    }
+    .prose ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    .prose ul li {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.25rem;
+    }
+    .prose ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(87,241,219,0.5);
+      font-weight: 600;
+    }
+    .prose strong  { color: #d8e2fe; font-weight: 600; }
+    .prose a       { color: #57f1db; text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #3cddc7; }
+
+    /* Feature card */
+    .sec-card {
+      background: #111e36;
+      border: 1px solid rgba(87,241,219,0.12);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .sec-card-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(87,241,219,0.08);
+      border: 1px solid rgba(87,241,219,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #57f1db;
+    }
+    .sec-card-body p {
+      margin-bottom: 0;
+      font-size: 14px;
+      color: #8fa3bf;
+    }
+    .sec-card-body strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #d8e2fe;
+      margin-bottom: 4px;
+    }
+
+    /* Two-col table */
+    .sec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+    .sec-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      color: #57f1db;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      background: rgba(87,241,219,0.05);
+      border-bottom: 1px solid rgba(87,241,219,0.15);
+    }
+    .sec-table td {
+      padding: 10px 14px;
+      color: #8fa3bf;
+      border-bottom: 1px solid rgba(30,47,74,0.6);
+      vertical-align: top;
+    }
+    .sec-table tr:last-child td { border-bottom: none; }
+    .sec-table .tag-stored    { color: #ffb4ab; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; }
+    .sec-table .tag-processed { color: #57f1db; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; }
+
+    /* Contact card */
+    .contact-card {
+      background: #111e36;
+      border: 1px solid rgba(87,241,219,0.18);
+      border-left: 3px solid #57f1db;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 1rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #081327; }
+    ::-webkit-scrollbar-thumb { background: #1e2f4a; border-radius: 3px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════ -->
+  <header class="fixed top-0 w-full z-50 transition-all duration-300"
+          style="background: rgba(8,19,39,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(30,47,74,0.8);">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group" aria-label="DRecon Home">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-lg font-bold text-white tracking-tight">DRecon</span>
+      </a>
+
+      <!-- Back link -->
+      <a href="index.html"
+         class="flex items-center gap-1.5 text-sm font-medium text-muted hover:text-teal transition-colors duration-200">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
+        Back to Home
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════ -->
+  <main id="main-content" class="flex-1 pt-16">
+    <div class="max-w-[800px] mx-auto px-6 py-16">
+
+      <!-- Hero block -->
+      <div class="mb-12">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-teal/20 bg-teal/5 text-teal text-xs font-semibold tracking-widest uppercase mb-6">
+          <span class="material-symbols-outlined text-[14px]" aria-hidden="true">shield</span>
+          Security
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4">Security at DRecon</h1>
+        <p class="text-muted text-base leading-relaxed max-w-xl">Security is built into everything we do. Here is how we protect your commission data.</p>
+      </div>
+
+      <!-- Divider -->
+      <div class="w-full h-px mb-12" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+
+      <div class="prose">
+
+        <!-- ── Section 1: Browser-only ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">devices</span>
+          Your Data Never Leaves Your Browser
+        </h2>
+
+        <p>The most important security feature of DRecon is also the simplest: your commission data is processed <strong>entirely within your browser</strong>. When you upload a carrier CSV statement, the file is read and analyzed locally on your device. No raw commission data is ever transmitted to or stored on our servers.</p>
+
+        <!-- Hero callout card -->
+        <div style="background:rgba(87,241,219,0.04);border:1px solid rgba(87,241,219,0.2);border-radius:10px;padding:20px 24px;margin-bottom:1.5rem;">
+          <p style="margin:0;font-size:15px;color:#d8e2fe;font-weight:600;display:flex;align-items:center;gap:8px;">
+            <span class="material-symbols-outlined" style="color:#57f1db;font-size:20px;" aria-hidden="true">lock</span>
+            Your CSV files are never uploaded to any server.
+          </p>
+        </div>
+
+        <p>This means:</p>
+        <ul>
+          <li>Your carrier statements stay on your computer</li>
+          <li>No policyholder data ever touches our infrastructure</li>
+          <li>Even if our servers were compromised, your commission data would not be at risk</li>
+        </ul>
+
+        <!-- ── Section 2: Infrastructure ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">cloud_done</span>
+          Secure Infrastructure
+        </h2>
+
+        <p>DRecon is hosted on <strong>Vercel</strong>, an enterprise-grade hosting platform trusted by thousands of companies worldwide. This provides:</p>
+
+        <div class="sec-card">
+          <div class="sec-card-icon"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">https</span></div>
+          <div class="sec-card-body"><strong>Automatic HTTPS encryption</strong><p>All connections are encrypted with TLS. Plain-text HTTP is never used.</p></div>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">security</span></div>
+          <div class="sec-card-body"><strong>DDoS protection</strong><p>Enterprise-level distributed denial-of-service mitigation on every request.</p></div>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">verified</span></div>
+          <div class="sec-card-body"><strong>99.99% uptime SLA</strong><p>Vercel's global edge network ensures DRecon is always available when you need it.</p></div>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon"><span class="material-symbols-outlined text-[20px]" aria-hidden="true">system_update</span></div>
+          <div class="sec-card-body"><strong>Automatic security patches</strong><p>Infrastructure is patched and updated automatically — no manual maintenance required.</p></div>
+        </div>
+
+        <!-- ── Section 3: Registration data ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person_outline</span>
+          Registration Data
+        </h2>
+
+        <p>When you register for a free audit, we collect only:</p>
+        <ul>
+          <li>Your name</li>
+          <li>Agency name</li>
+          <li>Work email</li>
+          <li>Phone number (optional)</li>
+        </ul>
+
+        <p>This information is transmitted securely via encrypted HTTPS connections and stored with <strong>Formspree</strong>, which maintains SOC 2 compliance.</p>
+
+        <p>We <strong>never</strong> collect:</p>
+        <ul>
+          <li>Policyholder names or personal information</li>
+          <li>Social Security Numbers</li>
+          <li>Credit card or banking information</li>
+          <li>Policy details beyond what you choose to upload</li>
+        </ul>
+
+        <!-- ── Section 4: Stored vs processed ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">table_chart</span>
+          What We Store vs What We Process
+        </h2>
+
+        <table class="sec-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Name, agency, email, phone</td>
+              <td><span class="tag-stored">STORED</span></td>
+            </tr>
+            <tr>
+              <td>Carrier CSV files</td>
+              <td><span class="tag-processed">PROCESSED — NEVER STORED</span></td>
+            </tr>
+            <tr>
+              <td>Commission amounts &amp; policy numbers</td>
+              <td><span class="tag-processed">PROCESSED — NEVER STORED</span></td>
+            </tr>
+            <tr>
+              <td>Reconciliation results</td>
+              <td><span class="tag-processed">PROCESSED — NEVER STORED</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Everything processed in your browser session disappears when you close the tab.</p>
+
+        <!-- ── Section 5: PDF reports ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">picture_as_pdf</span>
+          PDF Reports
+        </h2>
+
+        <p>When you export a PDF dispute report, it is generated entirely within your browser using client-side JavaScript. The PDF is <strong>never uploaded to or processed by our servers</strong>. The file downloads directly to your device.</p>
+
+        <!-- ── Section 6: Your responsibilities ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">manage_accounts</span>
+          Your Responsibilities
+        </h2>
+
+        <p>To keep your account secure:</p>
+        <ul>
+          <li>Do not share your registered email with others</li>
+          <li>Use DRecon on trusted devices only</li>
+          <li>Contact us immediately if you suspect unauthorized use of your account</li>
+        </ul>
+
+        <!-- ── Section 7: Contact ── -->
+        <h2>
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">mail</span>
+          Contact Our Security Team
+        </h2>
+
+        <p>If you discover a security vulnerability or have concerns about data security, please contact us immediately. We take all security reports seriously and will respond within <strong>24 hours</strong>.</p>
+
+        <div class="contact-card">
+          <p style="margin:0 0 6px;color:#d8e2fe;font-weight:700;font-size:15px;">Report a security issue</p>
+          <a href="mailto:drecon.outreach@gmail.com" style="font-size:15px;">drecon.outreach@gmail.com</a>
+        </div>
+
+      </div><!-- /prose -->
+
+      <!-- Bottom divider -->
+      <div class="w-full h-px mt-16 mb-8" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved. &nbsp;·&nbsp; <a href="index.html" class="hover:text-teal transition-colors">← Back to Home</a></p>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════ -->
+  <footer class="py-10 border-t border-navy-border" style="background: #081327;">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+      <!-- Brand -->
+      <div class="flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-sm font-bold text-white">DRecon</span>
+        <span class="text-muted text-xs ml-2">| Built for independent agencies.</span>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex items-center gap-6" aria-label="Footer navigation">
+        <a href="privacy.html"   class="text-muted text-xs hover:text-teal transition-colors">Privacy Policy</a>
+        <a href="terms.html"     class="text-muted text-xs hover:text-teal transition-colors">Terms of Service</a>
+        <a href="security.html"  class="text-teal text-xs font-semibold">Security</a>
+        <a href="dashboard.html" class="text-muted text-xs hover:text-teal transition-colors">Dashboard</a>
+      </nav>
+
+      <!-- Copyright -->
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
