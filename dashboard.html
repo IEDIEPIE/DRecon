@@ -196,9 +196,148 @@
             to   { opacity: 1; transform: translateY(0); }
         }
         .carrier-card { animation: cardSlideIn 0.3s ease-out both; }
+
+        /* ── Email gate modal ── */
+        #gate-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(4, 10, 22, 0.96);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        #gate-overlay.gate-hidden {
+            animation: gateFadeOut 0.35s ease forwards;
+            pointer-events: none;
+        }
+        @keyframes gateFadeOut {
+            to { opacity: 0; }
+        }
+        #gate-card {
+            background: #111e36;
+            border: 1px solid rgba(87,241,219,0.18);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 460px;
+            padding: 40px 36px 32px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,241,219,0.06);
+            animation: gateSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        @keyframes gateSlideIn {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .gate-input {
+            width: 100%;
+            background: #0d1a2e;
+            border: 1px solid rgba(60,74,100,0.7);
+            border-radius: 6px;
+            color: #d8e2fe;
+            font-size: 14px;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .gate-input::placeholder { color: #4a5a78; }
+        .gate-input:focus {
+            border-color: rgba(87,241,219,0.5);
+            box-shadow: 0 0 0 3px rgba(87,241,219,0.08);
+        }
+        .gate-input.gate-input-error {
+            border-color: rgba(255,180,171,0.6);
+            box-shadow: 0 0 0 3px rgba(255,180,171,0.07);
+        }
+        .gate-error-msg {
+            color: #ffb4ab;
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+        }
+        .gate-error-msg.visible { display: block; }
+        #gate-submit {
+            width: 100%;
+            background: #57f1db;
+            color: #003731;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+            box-shadow: 0 0 20px rgba(87,241,219,0.25);
+            font-family: 'Inter', sans-serif;
+        }
+        #gate-submit:hover { background: #3cddc7; box-shadow: 0 0 28px rgba(87,241,219,0.35); }
+        #gate-submit:active { transform: scale(0.98); }
+        #gate-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     </style>
 </head>
 <body class="bg-background min-h-screen flex flex-col">
+
+<!-- ════════════════════════════════════════════
+     EMAIL GATE MODAL
+════════════════════════════════════════════ -->
+<div id="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-heading">
+  <div id="gate-card">
+
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+        <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+        <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+      </svg>
+      <span style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">DRecon</span>
+    </div>
+
+    <!-- Heading -->
+    <h1 id="gate-heading" style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;margin-bottom:8px;">Start Your Free Commission Audit</h1>
+    <p style="font-size:13px;color:#859490;margin-bottom:28px;line-height:1.5;">Enter your details to unlock your one free carrier statement audit</p>
+
+    <!-- Form -->
+    <form id="gate-form" novalidate autocomplete="on">
+
+      <!-- Full Name -->
+      <div style="margin-bottom:16px;">
+        <label for="gate-name" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">FULL NAME <span style="color:#ffb4ab;">*</span></label>
+        <input id="gate-name" class="gate-input" type="text" name="name" placeholder="Jane Smith" required autocomplete="name" />
+        <p class="gate-error-msg" id="gate-name-err">Please enter your full name.</p>
+      </div>
+
+      <!-- Agency Name -->
+      <div style="margin-bottom:16px;">
+        <label for="gate-agency" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">AGENCY NAME <span style="color:#ffb4ab;">*</span></label>
+        <input id="gate-agency" class="gate-input" type="text" name="agency" placeholder="Smith Insurance Group" required autocomplete="organization" />
+        <p class="gate-error-msg" id="gate-agency-err">Please enter your agency name.</p>
+      </div>
+
+      <!-- Work Email -->
+      <div style="margin-bottom:16px;">
+        <label for="gate-email" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">WORK EMAIL <span style="color:#ffb4ab;">*</span></label>
+        <input id="gate-email" class="gate-input" type="email" name="email" placeholder="jane@smithinsurance.com" required autocomplete="email" />
+        <p class="gate-error-msg" id="gate-email-err">Please enter a valid work email address.</p>
+      </div>
+
+      <!-- Phone (optional) -->
+      <div style="margin-bottom:28px;">
+        <label for="gate-phone" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">PHONE NUMBER <span style="color:#4a5a78;font-weight:400;">(optional)</span></label>
+        <input id="gate-phone" class="gate-input" type="tel" name="phone" placeholder="(555) 000-0000" autocomplete="tel" />
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" id="gate-submit">Unlock Free Audit</button>
+
+      <!-- Fine print -->
+      <p style="text-align:center;font-size:11px;color:#4a5a78;margin-top:14px;">One free audit per agency. No credit card required.</p>
+
+    </form>
+  </div>
+</div>
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 bg-surface-container shadow-sm border-b border-white/5 h-16">
 <div class="flex justify-between items-center px-gutter h-full w-full max-w-[1440px] mx-auto">
@@ -229,7 +368,7 @@
       <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
       <span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
     </button>
-    <div class="w-10 h-10 rounded-full bg-secondary-container hidden md:flex items-center justify-center text-on-secondary-container font-bold cursor-pointer hover:bg-surface-variant transition-all border border-outline-variant/30" aria-label="User menu" role="button" tabindex="0">
+    <div id="user-avatar" class="w-10 h-10 rounded-full bg-secondary-container hidden md:flex items-center justify-center text-on-secondary-container font-bold cursor-pointer hover:bg-surface-variant transition-all border border-outline-variant/30" aria-label="User account" role="button" tabindex="0" title="">
       DA
     </div>
     <!-- Hamburger (mobile only) -->
@@ -405,6 +544,152 @@
 </div>
 </footer>
 <script>
+        // ════════════════════════──────────────────────────
+        // ══ EMAIL GATE ════════──────────────────────────
+        // Runs immediately (script at </body>, DOM ready)
+        // ════════════════════════──────────────────────────
+        (function initGate() {
+            const STORAGE_KEY = 'drecon_user';
+            const overlay     = document.getElementById('gate-overlay');
+            const form        = document.getElementById('gate-form');
+            const submitBtn   = document.getElementById('gate-submit');
+
+            // ── Helpers ────────────────────────────────────────────
+            function showError(inputId, errId, show) {
+                const inp = document.getElementById(inputId);
+                const err = document.getElementById(errId);
+                if (!inp || !err) return;
+                inp.classList.toggle('gate-input-error', show);
+                err.classList.toggle('visible', show);
+                inp.setAttribute('aria-invalid', show ? 'true' : 'false');
+            }
+
+            function clearError(inputId, errId) {
+                showError(inputId, errId, false);
+            }
+
+            function isValidEmail(v) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+            }
+
+            // ── Apply registered user to UI ────────────────────────────
+            function applyUserToUI(user) {
+                const avatar = document.getElementById('user-avatar');
+                if (!avatar) return;
+
+                // First 2 letters of agency name (uppercase), fallback to name initials
+                const agencyInitials = (user.agency || user.name || 'U')
+                    .trim()
+                    .split(/\s+/)
+                    .map(w => w[0] || '')
+                    .join('')
+                    .substring(0, 2)
+                    .toUpperCase();
+
+                avatar.textContent = agencyInitials || 'AU';
+                avatar.title = `${user.name}\n${user.agency}`;
+                avatar.setAttribute('aria-label', `${user.name} — ${user.agency}`);
+            }
+
+            // ── Dismiss gate (with fade-out animation) ──────────────────
+            function dismissGate() {
+                overlay.classList.add('gate-hidden');
+                overlay.addEventListener('animationend', () => {
+                    overlay.remove();
+                }, { once: true });
+                // Re-enable body scroll (it was locked while gate was open)
+                document.body.style.overflow = '';
+            }
+
+            // ── Check localStorage on load ──────────────────────────────
+            let storedUser = null;
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) storedUser = JSON.parse(raw);
+            } catch (_) { /* malformed JSON — treat as not found */ }
+
+            if (storedUser && storedUser.email) {
+                // Already registered — skip gate immediately
+                overlay.remove();
+                applyUserToUI(storedUser);
+                return; // done — rest of gate JS not needed
+            }
+
+            // Gate is showing — lock body scroll and focus first input
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                const first = document.getElementById('gate-name');
+                if (first) first.focus();
+            }, 80);
+
+            // ── Clear errors on input ─────────────────────────────────
+            [['gate-name','gate-name-err'],['gate-agency','gate-agency-err'],['gate-email','gate-email-err']]
+                .forEach(([inp, err]) => {
+                    document.getElementById(inp).addEventListener('input', () => clearError(inp, err));
+                });
+
+            // ── Trap focus inside modal ───────────────────────────────
+            const card = document.getElementById('gate-card');
+            overlay.addEventListener('keydown', function(e) {
+                if (e.key !== 'Tab') return;
+                const focusable = Array.from(card.querySelectorAll(
+                    'input, button, [tabindex]:not([tabindex="-1"])'
+                )).filter(el => !el.disabled);
+                if (!focusable.length) return;
+                const first = focusable[0], last = focusable[focusable.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+                } else {
+                    if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+                }
+            });
+
+            // ── Form submission ────────────────────────────────────────
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const name   = document.getElementById('gate-name').value.trim();
+                const agency = document.getElementById('gate-agency').value.trim();
+                const email  = document.getElementById('gate-email').value.trim();
+                const phone  = document.getElementById('gate-phone').value.trim();
+
+                // Validate
+                let valid = true;
+                if (!name)              { showError('gate-name',   'gate-name-err',   true); valid = false; }
+                if (!agency)            { showError('gate-agency', 'gate-agency-err', true); valid = false; }
+                if (!isValidEmail(email)) { showError('gate-email', 'gate-email-err', true); valid = false; }
+
+                if (!valid) {
+                    // Focus first errored field
+                    const first = form.querySelector('.gate-input-error');
+                    if (first) first.focus();
+                    return;
+                }
+
+                // Persist
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Unlocking…';
+
+                const user = { name, agency, email, phone, timestamp: Date.now() };
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(user)); } catch (_) {}
+
+                // Apply to UI
+                applyUserToUI(user);
+
+                // Short delay for perceived feedback, then dismiss
+                setTimeout(() => {
+                    dismissGate();
+                    // Welcome toast — slight delay so modal is gone first
+                    setTimeout(() => {
+                        if (typeof showToast === 'function') {
+                            const first = name.split(' ')[0];
+                            showToast(`Welcome ${first}! Your free audit is ready.`, 'success');
+                        }
+                    }, 380);
+                }, 300);
+            });
+        })();
+
         // ── Hidden file input ──────────────────────────────────────────
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
