@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DRecon | Privacy Policy</title>
+  <meta name="description" content="DRecon Privacy Policy — how we collect, use, and protect your personal information." />
+  <link rel="canonical" href="privacy.html" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy:        '#081327',
+            'navy-mid':  '#0d1d38',
+            'navy-card': '#111e36',
+            'navy-border':'#1e2f4a',
+            teal:        '#57f1db',
+            'teal-dim':  '#3cddc7',
+            muted:       '#8fa3bf',
+            soft:        '#d8e2fe',
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #081327; font-family: 'Inter', sans-serif; color: #d8e2fe; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    /* ── Prose styles ── */
+    .prose h2 {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #57f1db;
+      text-transform: uppercase;
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(87,241,219,0.15);
+    }
+    .prose h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #d8e2fe;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .prose p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      margin-bottom: 1rem;
+    }
+    .prose ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    .prose ul li {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.25rem;
+    }
+    .prose ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(87,241,219,0.5);
+      font-weight: 600;
+    }
+    .prose strong { color: #d8e2fe; font-weight: 600; }
+    .prose a { color: #57f1db; text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #3cddc7; }
+
+    .toc-list { counter-reset: toc; }
+    .toc-list li {
+      font-size: 14px;
+      color: #8fa3bf;
+      padding: 4px 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .toc-list li::before {
+      content: counter(toc) '.';
+      counter-increment: toc;
+      position: absolute;
+      left: 0;
+      color: rgba(87,241,219,0.5);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .toc-list li a { color: #8fa3bf; text-decoration: none; transition: color 0.2s; }
+    .toc-list li a:hover { color: #57f1db; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #081327; }
+    ::-webkit-scrollbar-thumb { background: #1e2f4a; border-radius: 3px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════ -->
+  <header class="fixed top-0 w-full z-50 transition-all duration-300"
+          style="background: rgba(8,19,39,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(30,47,74,0.8);">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group" aria-label="DRecon Home">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-lg font-bold text-white tracking-tight">DRecon</span>
+      </a>
+
+      <!-- Back link -->
+      <a href="index.html"
+         class="flex items-center gap-1.5 text-sm font-medium text-muted hover:text-teal transition-colors duration-200">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
+        Back to Home
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════ -->
+  <main id="main-content" class="flex-1 pt-16">
+    <div class="max-w-[800px] mx-auto px-6 py-16">
+
+      <!-- Page title block -->
+      <div class="mb-12">
+        <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">Legal</p>
+        <h1 class="text-3xl md:text-4xl font-black text-white leading-tight mb-3">Privacy Policy</h1>
+        <p class="text-muted text-sm">Last updated <strong class="text-soft">June 06, 2026</strong></p>
+      </div>
+
+      <!-- Divider -->
+      <div class="w-full h-px mb-12" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+
+      <div class="prose">
+
+        <!-- Intro -->
+        <p>This Privacy Notice for <strong>DRecon</strong> ("we," "us," or "our"), describes how and why we might access, collect, store, use, and/or share ("process") your personal information when you use our services ("Services"), including when you visit our website at <a href="https://drecon-orpin.vercel.app" target="_blank" rel="noopener">drecon-orpin.vercel.app</a>.</p>
+        <p><strong>Questions or concerns?</strong> Reading this Privacy Notice will help you understand your privacy rights and choices. If you do not agree with our policies and practices, please do not use our Services.</p>
+
+        <!-- Summary -->
+        <h2>Summary of Key Points</h2>
+
+        <h3>What personal information do we process?</h3>
+        <p>When you visit, use, or navigate our Services, we may process personal information depending on how you interact with us and the Services, the choices you make, and the products and features you use.</p>
+
+        <h3>Do we process any sensitive personal information?</h3>
+        <p>We do not process sensitive personal information.</p>
+
+        <h3>Do we collect any information from third parties?</h3>
+        <p>We do not collect information from third parties.</p>
+
+        <h3>How do we process your information?</h3>
+        <p>We process your information to provide, improve, and administer our Services, communicate with you, for security and fraud prevention, and to comply with law.</p>
+
+        <h3>In what situations and with which parties do we share your personal information?</h3>
+        <p>We may share information in specific situations and with specific third parties as described in this notice.</p>
+
+        <h3>What are your rights?</h3>
+        <p>Depending on where you are located geographically, the applicable privacy law may mean you have certain rights regarding your personal information.</p>
+
+        <h3>How do you exercise your rights?</h3>
+        <p>The easiest way to exercise your rights is by contacting us at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>.</p>
+
+        <!-- TOC -->
+        <h2>Table of Contents</h2>
+        <ol class="toc-list" role="list">
+          <li><a href="#section-1">What Information Do We Collect?</a></li>
+          <li><a href="#section-2">How Do We Process Your Information?</a></li>
+          <li><a href="#section-3">When and With Whom Do We Share Your Personal Information?</a></li>
+          <li><a href="#section-4">Do We Use Cookies and Other Tracking Technologies?</a></li>
+          <li><a href="#section-5">How Long Do We Keep Your Information?</a></li>
+          <li><a href="#section-6">Do We Collect Information From Minors?</a></li>
+          <li><a href="#section-7">What Are Your Privacy Rights?</a></li>
+          <li><a href="#section-8">Controls for Do-Not-Track Features</a></li>
+          <li><a href="#section-9">Do We Make Updates to This Notice?</a></li>
+          <li><a href="#section-10">How Can You Contact Us About This Notice?</a></li>
+          <li><a href="#section-11">How Can You Review, Update, or Delete the Data We Collect From You?</a></li>
+        </ol>
+
+        <!-- Section 1 -->
+        <h2 id="section-1">1. What Information Do We Collect?</h2>
+        <h3>Personal information you disclose to us</h3>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We collect personal information that you provide to us.</p>
+        <p>We collect personal information that you voluntarily provide to us when you register on the Services, express an interest in obtaining information about us or our products and Services, or otherwise when you contact us.</p>
+        <p><strong>Personal Information Provided by You.</strong> The personal information we collect may include the following:</p>
+        <ul>
+          <li>Names</li>
+          <li>Phone numbers</li>
+          <li>Email addresses</li>
+          <li>Job titles</li>
+        </ul>
+        <p><strong>Sensitive Information.</strong> We do not process sensitive information.</p>
+        <p>All personal information that you provide to us must be true, complete, and accurate, and you must notify us of any changes to such personal information.</p>
+
+        <!-- Section 2 -->
+        <h2 id="section-2">2. How Do We Process Your Information?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We process your information to provide, improve, and administer our Services, communicate with you, for security and fraud prevention, and to comply with law.</p>
+        <p>We process your personal information for a variety of reasons, depending on how you interact with our Services, including:</p>
+        <ul>
+          <li>To deliver and facilitate delivery of services to the user</li>
+          <li>To respond to user inquiries and offer support to users</li>
+          <li>To send administrative information to you</li>
+          <li>To evaluate and improve our Services, products, marketing, and your experience</li>
+          <li>To comply with our legal obligations</li>
+        </ul>
+
+        <!-- Section 3 -->
+        <h2 id="section-3">3. When and With Whom Do We Share Your Personal Information?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We may share information in specific situations described in this section.</p>
+        <p>We may need to share your personal information in the following situations:</p>
+        <p><strong>Business Transfers.</strong> We may share or transfer your information in connection with, or during negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.</p>
+
+        <!-- Section 4 -->
+        <h2 id="section-4">4. Do We Use Cookies and Other Tracking Technologies?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We do not currently use cookies or tracking technologies.</p>
+        <p>We do not use cookies, web beacons, or other tracking technologies at this time.</p>
+
+        <!-- Section 5 -->
+        <h2 id="section-5">5. How Long Do We Keep Your Information?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We keep your information for as long as you maintain an account with us.</p>
+        <p>We will only keep your personal information for as long as you maintain an account with us, unless a longer retention period is required or permitted by law.</p>
+
+        <!-- Section 6 -->
+        <h2 id="section-6">6. Do We Collect Information From Minors?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> We do not knowingly collect data from or market to children under 18 years of age.</p>
+        <p>We do not knowingly collect, solicit data from, or market to children under 18 years of age. By using the Services, you represent that you are at least 18 years of age. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data. If you become aware of any data we may have collected from children under age 18, please contact us at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>.</p>
+
+        <!-- Section 7 -->
+        <h2 id="section-7">7. What Are Your Privacy Rights?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> You may review, change, or terminate your account at any time.</p>
+        <p>If you wish to review or change the information in your account or terminate your account, please contact us at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>. Upon your request to terminate your account, we will deactivate or delete your account and information from our active databases.</p>
+
+        <!-- Section 8 -->
+        <h2 id="section-8">8. Controls for Do-Not-Track Features</h2>
+        <p>Most web browsers include a Do-Not-Track ("DNT") feature. We do not currently respond to DNT browser signals as no uniform technology standard has been finalized.</p>
+
+        <!-- Section 9 -->
+        <h2 id="section-9">9. Do We Make Updates to This Notice?</h2>
+        <p><em style="color:#57f1db;font-style:normal;font-weight:600;">In Short:</em> Yes, we will update this notice as necessary to stay compliant with relevant laws.</p>
+        <p>We may update this Privacy Notice from time to time. The updated version will be indicated by an updated "Last updated" date at the top of this Privacy Notice.</p>
+
+        <!-- Section 10 -->
+        <h2 id="section-10">10. How Can You Contact Us About This Notice?</h2>
+        <p>If you have questions or comments about this notice, you may contact us at:</p>
+        <div style="background:#111e36;border:1px solid rgba(87,241,219,0.12);border-radius:8px;padding:20px 24px;margin-bottom:1rem;">
+          <p style="margin:0 0 4px;color:#d8e2fe;font-weight:600;">DRecon</p>
+          <p style="margin:0 0 4px;color:#8fa3bf;">Mumbai, Maharashtra, India</p>
+          <a href="mailto:drecon.outreach@gmail.com" style="color:#57f1db;">drecon.outreach@gmail.com</a>
+        </div>
+
+        <!-- Section 11 -->
+        <h2 id="section-11">11. How Can You Review, Update, or Delete the Data We Collect From You?</h2>
+        <p>Based on the applicable laws of your country, you may have the right to request access to the personal information we collect from you, details about how we have processed it, correct inaccuracies, or delete your personal information. To request to review, update, or delete your personal information, please contact us at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>.</p>
+
+      </div><!-- /prose -->
+
+      <!-- Bottom divider -->
+      <div class="w-full h-px mt-16 mb-8" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved. &nbsp;·&nbsp; <a href="index.html" class="hover:text-teal transition-colors">← Back to Home</a></p>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════ -->
+  <footer class="py-10 border-t border-navy-border" style="background: #081327;">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+      <!-- Brand -->
+      <div class="flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-sm font-bold text-white">DRecon</span>
+        <span class="text-muted text-xs ml-2">| Built for independent agencies.</span>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex items-center gap-6" aria-label="Footer navigation">
+        <a href="privacy.html" class="text-teal text-xs font-semibold">Privacy Policy</a>
+        <a href="terms.html"   class="text-muted text-xs hover:text-teal transition-colors">Terms of Service</a>
+        <a href="#"            class="text-muted text-xs hover:text-teal transition-colors">Security</a>
+        <a href="dashboard.html" class="text-muted text-xs hover:text-teal transition-colors">Dashboard</a>
+      </nav>
+
+      <!-- Copyright -->
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
