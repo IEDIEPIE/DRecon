@@ -538,7 +538,7 @@
 <nav class="flex gap-6" aria-label="Footer links">
 <a id="footer-privacy" href="privacy.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</a>
 <a id="footer-terms" href="terms.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Terms of Service</a>
-<a id="footer-security" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Security</a>
+<a id="footer-security" href="security.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Security</a>
 <a href="index.html"   class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">← Home</a>
 </nav>
 </div>
@@ -1695,9 +1695,7 @@
         // ── Footer link wiring ────────────────────────────────────────
         // Privacy Policy now links directly to privacy.html (no toast needed)
         // Terms of Service now links directly to terms.html (no toast needed)
-        document.getElementById('footer-security').addEventListener('click', () => {
-            showToast('Security page coming soon', 'info');
-        });
+        // Security now links directly to security.html (no toast needed)
 
         // ── Page-load fade-in animation ───────────────────────────────
         // Script runs after DOM is parsed (placed at </body>), so we
