@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <!-- jsPDF for PDF export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- SheetJS for Excel (.xlsx / .xls) support -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -707,7 +709,7 @@
         // ── Hidden file input ──────────────────────────────────────────
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = '.csv';
+        fileInput.accept = '.csv,.xlsx,.xls';
         fileInput.style.display = 'none';
         document.body.appendChild(fileInput);
 
@@ -1186,48 +1188,79 @@
         function processFile(file) {
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const rows = parseCSV(text);
+            const name = file.name.toLowerCase();
+            const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls');
 
-                if (rows.length < 2) {
-                    showToast('The file appears to be empty or has no data rows.', 'error');
+            if (isExcel) {
+                // ── Excel path: SheetJS → CSV string → existing parser ──
+                if (typeof XLSX === 'undefined') {
+                    showToast('Excel library not loaded. Please refresh and try again.', 'error');
                     return;
                 }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data     = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        // Use the first sheet
+                        const sheetName = workbook.SheetNames[0];
+                        const sheet     = workbook.Sheets[sheetName];
+                        // Convert to CSV — SheetJS handles merged cells, dates, numbers
+                        const csvText = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+                        ingestCSV(csvText, file.name);
+                    } catch (err) {
+                        showToast('Could not read Excel file: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                // ── CSV path: existing behaviour ──
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    ingestCSV(e.target.result, file.name);
+                };
+                reader.readAsText(file);
+            }
+        }
 
-                const headers = rows[0];
-                const dataRows = rows.slice(1);
-                const mapping = mapHeaders(headers);
+        // ── Shared ingestion: CSV text → parse → append → render ───────
+        function ingestCSV(text, fileName) {
+            const rows = parseCSV(text);
 
-                const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
-                if (mappedCount === 0) {
-                    showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
-                    return;
-                }
+            if (rows.length < 2) {
+                showToast('The file appears to be empty or has no data rows.', 'error');
+                return;
+            }
 
-                // Resolve each row into a canonical object and APPEND to store
-                const newRows = dataRows.map(r => resolveRow(r, mapping));
-                const prevCount = allRows.length;
-                allRows = allRows.concat(newRows);
+            const headers = rows[0];
+            const dataRows = rows.slice(1);
+            const mapping = mapHeaders(headers);
 
-                // Re-render everything from the full accumulated store
-                renderAll();
+            const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
+            if (mappedCount === 0) {
+                showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
+                return;
+            }
 
-                // Update last-audit badge
-                const auditBadge = document.querySelector('#last-audit-badge');
-                if (auditBadge) {
-                    const now = new Date();
-                    auditBadge.textContent = 'Last audit: ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                }
+            // Resolve each row into a canonical object and APPEND to store
+            const newRows = dataRows.map(r => resolveRow(r, mapping));
+            const prevCount = allRows.length;
+            allRows = allRows.concat(newRows);
 
-                const msg = prevCount === 0
-                    ? `Loaded ${newRows.length} rows from ${file.name}`
-                    : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
-                showToast(msg, 'success');
-            };
+            // Re-render everything from the full accumulated store
+            renderAll();
 
-            reader.readAsText(file);
+            // Update last-audit badge
+            const auditBadge = document.querySelector('#last-audit-badge');
+            if (auditBadge) {
+                const now = new Date();
+                auditBadge.textContent = 'Last audit: ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+
+            const msg = prevCount === 0
+                ? `Loaded ${newRows.length} rows from ${fileName}`
+                : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
+            showToast(msg, 'success');
         }
 
         // ── Clear all data ─────────────────────────────────────────────
