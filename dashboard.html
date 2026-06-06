@@ -536,8 +536,8 @@
                 © 2026 DRecon. Built for independent agencies.
             </p>
 <nav class="flex gap-6" aria-label="Footer links">
-<a id="footer-privacy" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy Policy</a>
-<a id="footer-terms"   class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms of Service</a>
+<a id="footer-privacy" href="privacy.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</a>
+<a id="footer-terms" href="terms.html" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Terms of Service</a>
 <a id="footer-security" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Security</a>
 <a href="index.html"   class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">← Home</a>
 </nav>
@@ -672,6 +672,20 @@
 
                 const user = { name, agency, email, phone, timestamp: Date.now() };
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(user)); } catch (_) {}
+
+                // ── Formspree webhook (fire-and-forget) ────────────────
+                // Dashboard unlocks regardless of success or failure.
+                fetch('https://formspree.io/f/mgobonrz', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        name:      user.name,
+                        agency:    user.agency,
+                        email:     user.email,
+                        phone:     user.phone || '(not provided)',
+                        timestamp: new Date(user.timestamp).toISOString(),
+                    }),
+                }).catch(() => { /* webhook errors never block the user */ });
 
                 // Apply to UI
                 applyUserToUI(user);
@@ -1679,12 +1693,8 @@
         });
 
         // ── Footer link wiring ────────────────────────────────────────
-        document.getElementById('footer-privacy').addEventListener('click', () => {
-            showToast('Privacy Policy coming soon', 'info');
-        });
-        document.getElementById('footer-terms').addEventListener('click', () => {
-            showToast('Terms coming soon', 'info');
-        });
+        // Privacy Policy now links directly to privacy.html (no toast needed)
+        // Terms of Service now links directly to terms.html (no toast needed)
         document.getElementById('footer-security').addEventListener('click', () => {
             showToast('Security page coming soon', 'info');
         });
