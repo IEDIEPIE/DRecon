@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DRecon | Terms of Service</title>
+  <meta name="description" content="DRecon Terms of Service — the legal agreement governing your use of DRecon's commission reconciliation services." />
+  <link rel="canonical" href="terms.html" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy:         '#081327',
+            'navy-mid':   '#0d1d38',
+            'navy-card':  '#111e36',
+            'navy-border':'#1e2f4a',
+            teal:         '#57f1db',
+            'teal-dim':   '#3cddc7',
+            muted:        '#8fa3bf',
+            soft:         '#d8e2fe',
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #081327; font-family: 'Inter', sans-serif; color: #d8e2fe; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+    /* ── Prose styles ── */
+    .prose h2 {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #57f1db;
+      text-transform: uppercase;
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(87,241,219,0.15);
+    }
+    .prose h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #d8e2fe;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .prose p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      margin-bottom: 1rem;
+    }
+    .prose ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    .prose ul li {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #8fa3bf;
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.25rem;
+    }
+    .prose ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(87,241,219,0.5);
+      font-weight: 600;
+    }
+    .prose strong { color: #d8e2fe; font-weight: 600; }
+    .prose a { color: #57f1db; text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #3cddc7; }
+    .prose .caps-warning {
+      font-size: 13px;
+      color: #8fa3bf;
+      font-weight: 600;
+      line-height: 1.7;
+    }
+
+    .toc-list { counter-reset: toc; }
+    .toc-list li {
+      font-size: 14px;
+      color: #8fa3bf;
+      padding: 4px 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .toc-list li::before {
+      content: counter(toc) '.';
+      counter-increment: toc;
+      position: absolute;
+      left: 0;
+      color: rgba(87,241,219,0.5);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .toc-list li a { color: #8fa3bf; text-decoration: none; transition: color 0.2s; }
+    .toc-list li a:hover { color: #57f1db; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #081327; }
+    ::-webkit-scrollbar-thumb { background: #1e2f4a; border-radius: 3px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════ -->
+  <header class="fixed top-0 w-full z-50 transition-all duration-300"
+          style="background: rgba(8,19,39,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(30,47,74,0.8);">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group" aria-label="DRecon Home">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-lg font-bold text-white tracking-tight">DRecon</span>
+      </a>
+
+      <!-- Back link -->
+      <a href="index.html"
+         class="flex items-center gap-1.5 text-sm font-medium text-muted hover:text-teal transition-colors duration-200">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
+        Back to Home
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════ -->
+  <main id="main-content" class="flex-1 pt-16">
+    <div class="max-w-[800px] mx-auto px-6 py-16">
+
+      <!-- Page title block -->
+      <div class="mb-12">
+        <p class="text-teal text-xs font-bold tracking-widest uppercase mb-3">Legal</p>
+        <h1 class="text-3xl md:text-4xl font-black text-white leading-tight mb-3">Terms of Service</h1>
+        <p class="text-muted text-sm">Last updated <strong class="text-soft">June 06, 2026</strong></p>
+      </div>
+
+      <!-- Divider -->
+      <div class="w-full h-px mb-12" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+
+      <div class="prose">
+
+        <!-- Intro -->
+        <h2>Agreement to Our Legal Terms</h2>
+        <p>We are <strong>DRecon</strong> ("Company," "we," "us," "our"), located in Mumbai, Maharashtra, India.</p>
+        <p>We operate the website <a href="https://drecon-orpin.vercel.app" target="_blank" rel="noopener">drecon-orpin.vercel.app</a> (the "Site") and the DRecon commission reconciliation service (collectively, the "Services").</p>
+        <p>You can contact us by email at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>.</p>
+        <p>These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you"), and DRecon, concerning your access to and use of the Services. By accessing the Services, you agree that you have read, understood, and agreed to be bound by all of these Legal Terms.</p>
+        <p class="caps-warning">IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.</p>
+
+        <!-- TOC -->
+        <h2>Table of Contents</h2>
+        <ol class="toc-list" role="list">
+          <li><a href="#section-1">Our Services</a></li>
+          <li><a href="#section-2">Intellectual Property Rights</a></li>
+          <li><a href="#section-3">User Representations</a></li>
+          <li><a href="#section-4">Account Registration</a></li>
+          <li><a href="#section-5">Free Trial and Subscriptions</a></li>
+          <li><a href="#section-6">Prohibited Activities</a></li>
+          <li><a href="#section-7">User Generated Contributions</a></li>
+          <li><a href="#section-8">Services Management</a></li>
+          <li><a href="#section-9">Term and Termination</a></li>
+          <li><a href="#section-10">Disclaimer of Warranties</a></li>
+          <li><a href="#section-11">Limitations of Liability</a></li>
+          <li><a href="#section-12">Indemnification</a></li>
+          <li><a href="#section-13">Governing Law</a></li>
+          <li><a href="#section-14">Contact Us</a></li>
+        </ol>
+
+        <!-- Section 1 -->
+        <h2 id="section-1">1. Our Services</h2>
+        <p>The information provided when using the Services is not intended for distribution to or use by any person or entity in any jurisdiction or country where such distribution or use would be contrary to law or regulation.</p>
+        <p>DRecon provides commission reconciliation software for independent insurance agencies. Our Services allow users to upload carrier commission statements in CSV format and automatically identify underpayments and discrepancies.</p>
+
+        <!-- Section 2 -->
+        <h2 id="section-2">2. Intellectual Property Rights</h2>
+        <h3>Our Intellectual Property</h3>
+        <p>We are the owner of all intellectual property rights in our Services, including all source code, databases, functionality, software, website designs, audio, video, text, photographs, and graphics in the Services (collectively, the "Content").</p>
+        <p>The Content and the marks are provided in or through the Services "AS IS" for your personal, non-commercial use or internal business purpose only.</p>
+        <h3>Your Use of Our Services</h3>
+        <p>Subject to your compliance with these Legal Terms, we grant you a non-exclusive, non-transferable, revocable license to access the Services solely for your own internal business purposes.</p>
+        <p>Except as set out in this section, no part of the Services and no Content may be copied, reproduced, aggregated, republished, uploaded, posted, publicly displayed, encoded, translated, transmitted, distributed, sold, licensed, or otherwise exploited for any commercial purpose whatsoever, without our express prior written permission.</p>
+
+        <!-- Section 3 -->
+        <h2 id="section-3">3. User Representations</h2>
+        <p>By using the Services, you represent and warrant that:</p>
+        <ul>
+          <li>You have the legal capacity and you agree to comply with these Legal Terms</li>
+          <li>You are not a minor in the jurisdiction in which you reside</li>
+          <li>You will not access the Services through automated or non-human means</li>
+          <li>You will not use the Services for any illegal or unauthorized purpose</li>
+          <li>Your use of the Services will not violate any applicable law or regulation</li>
+          <li>All information you submit is truthful, accurate, and complete</li>
+        </ul>
+
+        <!-- Section 4 -->
+        <h2 id="section-4">4. Account Registration</h2>
+        <p>You may be required to register with the Services. You agree to keep your registration information accurate and to notify us of any changes. You are responsible for maintaining the confidentiality of your account credentials.</p>
+
+        <!-- Section 5 -->
+        <h2 id="section-5">5. Free Trial and Subscriptions</h2>
+        <h3>Free Audit</h3>
+        <p>DRecon offers one free commission audit per agency. This free audit allows you to upload one carrier CSV statement and view the reconciliation results at no cost.</p>
+        <h3>Paid Subscriptions</h3>
+        <p>Following your free audit, continued use of the Services requires a paid subscription. Subscription plans and pricing are available on our website. Subscriptions automatically renew monthly until cancelled.</p>
+        <h3>Cancellation</h3>
+        <p>You may cancel your subscription at any time by contacting us at <a href="mailto:drecon.outreach@gmail.com">drecon.outreach@gmail.com</a>. Cancellation takes effect at the end of the current billing period.</p>
+
+        <!-- Section 6 -->
+        <h2 id="section-6">6. Prohibited Activities</h2>
+        <p>You may not access or use the Services for any purpose other than that for which we make the Services available. As a user of the Services, you agree not to:</p>
+        <ul>
+          <li>Systematically retrieve data or other content from the Services to create or compile a collection, compilation, database, or directory</li>
+          <li>Circumvent, disable, or otherwise interfere with security-related features of the Services</li>
+          <li>Use the Services to advertise or offer to sell goods and services</li>
+          <li>Use any information obtained from the Services to harass, abuse, or harm another person</li>
+          <li>Upload or transmit viruses or any other material that interferes with any party's uninterrupted use of the Services</li>
+          <li>Attempt to bypass any measures of the Services designed to prevent or restrict access</li>
+          <li>Use the free audit more than once per agency by creating multiple accounts</li>
+        </ul>
+
+        <!-- Section 7 -->
+        <h2 id="section-7">7. User Generated Contributions</h2>
+        <p>The Services may allow you to upload CSV files and commission data. You represent and warrant that your uploaded data does not violate the rights of any third party and that you have the right to upload such data.</p>
+        <p>DRecon does not store your uploaded CSV data after processing. All commission data is processed client-side in your browser and is not retained on our servers.</p>
+
+        <!-- Section 8 -->
+        <h2 id="section-8">8. Services Management</h2>
+        <p>We reserve the right, but not the obligation, to:</p>
+        <ul>
+          <li>Monitor the Services for violations of these Legal Terms</li>
+          <li>Take appropriate legal action against anyone who violates the law or these Legal Terms</li>
+          <li>Refuse, restrict access to, limit the availability of, or disable any of your contributions</li>
+          <li>Terminate or suspend your access to the Services at our sole discretion</li>
+        </ul>
+
+        <!-- Section 9 -->
+        <h2 id="section-9">9. Term and Termination</h2>
+        <p>These Legal Terms shall remain in full force and effect while you use the Services. We reserve the right to deny access to and use of the Services to any person for any reason at our sole discretion.</p>
+        <p>If we terminate or suspend your account, you are prohibited from registering and creating a new account under your name, a fake or borrowed name, or the name of any third party.</p>
+
+        <!-- Section 10 -->
+        <h2 id="section-10">10. Disclaimer of Warranties</h2>
+        <p class="caps-warning">THE SERVICES ARE PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU AGREE THAT YOUR USE OF THE SERVICES WILL BE AT YOUR SOLE RISK. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, IN CONNECTION WITH THE SERVICES AND YOUR USE THEREOF.</p>
+        <p class="caps-warning">WE MAKE NO WARRANTIES OR REPRESENTATIONS ABOUT THE ACCURACY OR COMPLETENESS OF THE SERVICES' CONTENT AND WE WILL ASSUME NO LIABILITY FOR ANY ERRORS OR INACCURACIES IN CONTENT.</p>
+
+        <!-- Section 11 -->
+        <h2 id="section-11">11. Limitations of Liability</h2>
+        <p class="caps-warning">IN NO EVENT WILL WE OR OUR DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY DIRECT, INDIRECT, CONSEQUENTIAL, EXEMPLARY, INCIDENTAL, SPECIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE SERVICES.</p>
+
+        <!-- Section 12 -->
+        <h2 id="section-12">12. Indemnification</h2>
+        <p>You agree to defend, indemnify, and hold us harmless, including our subsidiaries, affiliates, and all of our respective officers, agents, partners, and employees, from and against any loss, damage, liability, claim, or demand made by any third party due to or arising out of your use of the Services.</p>
+
+        <!-- Section 13 -->
+        <h2 id="section-13">13. Governing Law</h2>
+        <p>These Legal Terms shall be governed by and defined following the laws of India. DRecon and yourself irrevocably consent that the courts of India shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these Legal Terms.</p>
+
+        <!-- Section 14 -->
+        <h2 id="section-14">14. Contact Us</h2>
+        <p>In order to resolve a complaint regarding the Services or to receive further information regarding use of the Services, please contact us at:</p>
+        <div style="background:#111e36;border:1px solid rgba(87,241,219,0.12);border-radius:8px;padding:20px 24px;margin-bottom:1rem;">
+          <p style="margin:0 0 4px;color:#d8e2fe;font-weight:600;">DRecon</p>
+          <p style="margin:0 0 4px;color:#8fa3bf;">Mumbai, Maharashtra, India</p>
+          <p style="margin:0 0 4px;"><a href="mailto:drecon.outreach@gmail.com" style="color:#57f1db;">drecon.outreach@gmail.com</a></p>
+          <a href="https://drecon-orpin.vercel.app" target="_blank" rel="noopener" style="color:#57f1db;">drecon-orpin.vercel.app</a>
+        </div>
+
+      </div><!-- /prose -->
+
+      <!-- Bottom divider -->
+      <div class="w-full h-px mt-16 mb-8" style="background: linear-gradient(90deg, rgba(87,241,219,0.3), transparent);"></div>
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved. &nbsp;·&nbsp; <a href="index.html" class="hover:text-teal transition-colors">← Back to Home</a></p>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════ -->
+  <footer class="py-10 border-t border-navy-border" style="background: #081327;">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+      <!-- Brand -->
+      <div class="flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
+          <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
+          <circle cx="24" cy="16" r="5" fill="#57f1db"/>
+        </svg>
+        <span class="text-sm font-bold text-white">DRecon</span>
+        <span class="text-muted text-xs ml-2">| Built for independent agencies.</span>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex items-center gap-6" aria-label="Footer navigation">
+        <a href="privacy.html"   class="text-muted text-xs hover:text-teal transition-colors">Privacy Policy</a>
+        <a href="terms.html"     class="text-teal text-xs font-semibold">Terms of Service</a>
+        <a href="#"              class="text-muted text-xs hover:text-teal transition-colors">Security</a>
+        <a href="dashboard.html" class="text-muted text-xs hover:text-teal transition-colors">Dashboard</a>
+      </nav>
+
+      <!-- Copyright -->
+      <p class="text-muted text-xs">© 2026 DRecon. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
