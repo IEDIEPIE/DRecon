@@ -724,6 +724,9 @@
         // Each entry: { policy, carrier, expected, received, variance, status }
         // (all pre-resolved strings, ready to render)
         let allRows = [];
+        // Track uploaded filenames to prevent duplicate uploads within the same session.
+        // Reset when the user clicks "Clear All".
+        let uploadedFiles = new Set();
 
         // ── Table column definitions (in display order) ────────────────
         const TABLE_COLUMNS = [
@@ -943,12 +946,22 @@
             const varNum = recVal - expVal;
             const varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
 
-            // Status: prefer explicit status column, otherwise derive from variance
+            // Status: prefer explicit status column, otherwise derive from variance.
+            // Special case: negative received value = clawback (carrier recouping funds).
+            // Must be detected BEFORE the variance check so clawbacks aren't counted
+            // as underpaid — the agency owes money, not the carrier.
             let status = get('status');
             if (!status || status.toLowerCase() === 'status') {
-                if (Math.abs(varNum) < 0.01) status = 'Match';
-                else if (varNum < 0)         status = 'Underpaid';
-                else                         status = 'Overpaid';
+                if (recVal < 0) {
+                    // Negative payment = carrier clawing back previously paid commission
+                    status = 'Clawback';
+                } else if (Math.abs(varNum) < 0.01) {
+                    status = 'Match';
+                } else if (varNum < 0) {
+                    status = 'Underpaid';
+                } else {
+                    status = 'Overpaid';
+                }
             }
 
             return {
@@ -987,8 +1000,13 @@
             //    known header word (case-insensitive, trimmed)
             const polIdx = mapping['policy'];
             if (polIdx !== -1) {
-                const polCell = String(rawRow[polIdx] || '').trim().toLowerCase();
-                if (HEADER_WORDS.has(polCell)) return false;
+                const polCell = String(rawRow[polIdx] || '').trim();
+                const polLower = polCell.toLowerCase();
+                // Reject header echoes
+                if (HEADER_WORDS.has(polLower)) return false;
+                // Reject blank / dash / em-dash cells (subtotal rows have no policy number)
+                if (polCell === '' || polCell === '-' || polCell === '--' ||
+                    polCell === '—' || polCell === '–') return false;
             }
 
             // 3. Carrier cell is a known header word
@@ -1078,8 +1096,11 @@
                     badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
                 } else if (statusLc === 'underpaid' || statusLc === 'short' || statusLc === 'missing') {
                     badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
-                } else if (statusLc === 'overpaid' || statusLc === 'over') {
+                } else if (statusLc === 'clawback') {
+                    // Amber badge — carrier recouped funds, distinct from underpaid
                     badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
+                } else if (statusLc === 'overpaid' || statusLc === 'over') {
+                    badge.classList.add('bg-secondary/10', 'text-secondary', 'border-secondary/30');
                 } else {
                     badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
                 }
@@ -1095,7 +1116,11 @@
             for (const r of allRows) {
                 totalExp += r.expNum;
                 totalRec += r.recNum;
-                if (r.varNum < 0) totalUnderpaid += Math.abs(r.varNum);
+                // Only count genuine underpaid rows (not clawbacks) in Total Underpaid.
+                // A clawback has recNum < 0 and its own 'Clawback' status.
+                if (r.status === 'Underpaid' && r.recNum >= 0) {
+                    totalUnderpaid += Math.abs(r.varNum);
+                }
             }
             const summaryBanner = document.getElementById('summary-banner');
             summaryBanner.classList.remove('hidden');
@@ -1320,6 +1345,14 @@
         function processFile(file) {
             if (!file) return;
 
+            // Bug 2 fix: duplicate-file protection.
+            // Warn and abort if this filename has already been loaded in this session.
+            if (uploadedFiles.has(file.name)) {
+                showToast('This file has already been uploaded. Clear all data first to re-upload.', 'error');
+                return;
+            }
+            uploadedFiles.add(file.name);
+
             const name = file.name.toLowerCase();
             const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls');
 
@@ -1451,6 +1484,7 @@
         function clearAllData() {
             if (clearBtn.classList.contains('cursor-not-allowed')) return;
             allRows = [];
+            uploadedFiles = new Set(); // reset duplicate-file tracking
             showEmptyState();
             showToast('All data cleared', 'info');
         }
@@ -1627,7 +1661,8 @@
             for (const r of allRows) {
                 totalExp += r.expNum;
                 totalRec += r.recNum;
-                if (r.varNum < -0.01) {
+                // Only count genuine underpaid rows (not clawbacks) in Total Underpaid.
+                if (r.status === 'Underpaid' && r.recNum >= 0) {
                     totalUnderpaid += Math.abs(r.varNum);
                     underpaidPolicies++;
                 }
