@@ -737,16 +737,70 @@
 
         // ── Fuzzy column-name mapping ──────────────────────────────────
         const COLUMN_ALIASES = {
-            policy:   ['policy', 'policy_number', 'policy_num', 'policy_no', 'policynumber', 'policyno', 'pol_num', 'pol_no', 'pol', 'policy #', 'policy#'],
+            policy:   ['policy', 'policy_number', 'policy_num', 'policy_no', 'policynumber', 'policyno', 'pol_num', 'pol_no', 'pol', 'policy #', 'policy#', 'policy id'],
             carrier:  ['carrier', 'carrier_name', 'carriername', 'insurance_carrier', 'insurer', 'company', 'company_name'],
-            expected: ['expected', 'expected_commission', 'expected_amount', 'exp', 'exp_commission', 'expected_comm', 'expectedcommission'],
-            received: ['received', 'received_commission', 'received_amount', 'rec', 'rec_commission', 'actual', 'actual_commission', 'paid', 'paid_amount', 'receivedcommission'],
-            variance: ['variance', 'var', 'difference', 'diff', 'delta', 'discrepancy', 'gap'],
+            expected: ['expected', 'expected_commission', 'expected_amount', 'exp_commission', 'expected_comm', 'expectedcommission',
+                       'amt_due', 'amt due', 'commission_earned', 'commission earned', 'agency_commission', 'agency commission',
+                       'expected_fee', 'expected fee', 'comm_due', 'net_commission', 'net commission',
+                       'fee_due', 'fee due', 'commission_due',
+                       'comm', 'agency_comm', 'net_comm'],
+            received: ['received', 'received_commission', 'received_amount', 'rec', 'rec_commission', 'actual', 'actual_commission',
+                       'paid', 'paid_amount', 'receivedcommission',
+                       'paid_commission', 'paid commission', 'amt_paid', 'amt paid', 'commission_remitted', 'commission remitted',
+                       'comm_paid', 'comm paid', 'paid_comm', 'paid comm', 'amount_paid', 'amount paid',
+                       'fee_remitted', 'fee remitted', 'comm_remitted', 'agency_fee', 'agency fee',
+                       'amount_remitted', 'amount remitted'],
+            variance: ['variance', 'var', 'difference', 'diff', 'delta', 'discrepancy', 'gap', 'net_variance', 'net variance'],
             status:   ['status', 'state', 'result', 'flag', 'audit_status', 'match_status'],
         };
 
         function normalise(str) {
             return str.toLowerCase().replace(/[^a-z0-9#]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+        }
+
+        // ── Find the real header row within the first 5 rows ─────────────────
+        // Scores each row by counting cells that match known column keywords.
+        // Returns the index (within the rows array) of the best candidate.
+        // Falls back to row 0 if nothing scores above 1.
+        const HEADER_SCORE_WORDS = new Set([
+            'policy','policy number','policy #','policy no','policy id',
+            'insured','insured name','named insured',
+            'expected','expected commission','amt due','commission earned',
+            'agency commission','agency fee','expected fee','net commission',
+            'received','paid commission','amt paid','commission remitted',
+            'fee remitted','comm paid','paid comm','amount paid',
+            'written premium','net premium',
+            'carrier','premium','commission','comm','variance','difference',
+            'status','paid','policy type','line of business','lob',
+        ]);
+
+        function findHeaderRow(rows) {
+            const limit = Math.min(5, rows.length);
+            let bestIdx = 0;
+            let bestScore = -1;
+            for (let i = 0; i < limit; i++) {
+                const row = rows[i];
+                // Bug 4 fix: skip rows where >50% of cells are empty/null.
+                // These are merged title rows (e.g. Hartford's grouped headers)
+                // and can never be a real column-header row.
+                const nonEmptyCells = row.filter(cell => String(cell).trim() !== '').length;
+                if (row.length > 0 && nonEmptyCells / row.length <= 0.5) continue;
+
+                let score = 0;
+                for (const cell of row) {
+                    const norm = String(cell).trim().toLowerCase();
+                    if (HEADER_SCORE_WORDS.has(norm)) score++;
+                    // Partial match: cell contains a keyword token
+                    if (score === 0) {
+                        for (const w of ['policy','commission','premium','expected',
+                                         'received','paid','amt','variance','carrier']) {
+                            if (norm.includes(w)) { score += 0.5; break; }
+                        }
+                    }
+                }
+                if (score > bestScore) { bestScore = score; bestIdx = i; }
+            }
+            return bestIdx;
         }
 
         function mapHeaders(csvHeaders) {
@@ -763,10 +817,16 @@
                 }
 
                 if (foundIdx === -1) {
+                    // Fuzzy pass: substring containment in either direction.
+                    // Guard: never map a plain premium/prem cell to expected commission.
+                    const FUZZY_PREMIUM_BLOCK = new Set(['prem','premium','written_prem','written_premium','net_prem','net_premium']);
                     for (let i = 0; i < normalisedHeaders.length; i++) {
+                        const nh = normalisedHeaders[i];
+                        // Block premium cells from matching expected commission
+                        if (col.key === 'expected' && FUZZY_PREMIUM_BLOCK.has(nh)) continue;
                         for (const alias of aliases) {
                             const na = normalise(alias);
-                            if (normalisedHeaders[i].includes(na) || na.includes(normalisedHeaders[i])) {
+                            if (nh.includes(na) || na.includes(nh)) {
                                 foundIdx = i; break;
                             }
                         }
@@ -861,35 +921,107 @@
 
             const expRaw = get('expected');
             const recRaw = get('received');
-            const expNum = parseFloat(String(expRaw).replace(/[^0-9.\-]/g, '')) || 0;
-            const recNum = parseFloat(String(recRaw).replace(/[^0-9.\-]/g, '')) || 0;
-
-            let varRaw = get('variance');
-            let varNum;
-            if (varRaw !== '') {
-                varNum = parseFloat(String(varRaw).replace(/[^0-9.\-]/g, '')) || 0;
-            } else {
-                varNum = recNum - expNum;
-                varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
+            // Fix: strip currency symbols but preserve a leading minus sign.
+            // Pattern: move any leading minus outside the $, then strip non-numeric.
+            function toNum(s) {
+                const str = String(s).trim()
+                    .replace(/^\((.+)\)$/, '-$1')   // (123.45) → -123.45
+                    .replace(/^-\s*\$/, '-')         // -$95.00  → -95.00
+                    .replace(/\$/, '')               // $95.00   → 95.00
+                    .replace(/,/g, '')               // 1,234    → 1234
+                    .replace(/[^0-9.\-]/g, '');      // strip remaining non-numeric
+                return parseFloat(str);
             }
+            const expNum = toNum(expRaw);
+            const recNum = toNum(recRaw);
+            // If we couldn't parse valid numbers treat as 0 for downstream use
+            const expVal = isNaN(expNum) ? 0 : expNum;
+            const recVal = isNaN(recNum) ? 0 : recNum;
 
+            // Variance: always recalculate from expVal/recVal so we never trust
+            // a mis-serialised Excel formula string (fixes the $0 variance bug).
+            const varNum = recVal - expVal;
+            const varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
+
+            // Status: prefer explicit status column, otherwise derive from variance
             let status = get('status');
-            if (!status) {
+            if (!status || status.toLowerCase() === 'status') {
                 if (Math.abs(varNum) < 0.01) status = 'Match';
-                else if (varNum < 0) status = 'Underpaid';
-                else status = 'Overpaid';
+                else if (varNum < 0)         status = 'Underpaid';
+                else                         status = 'Overpaid';
             }
 
             return {
-                policy:   get('policy')   || '—',
-                carrier:  get('carrier')  || 'Unknown',
-                expNum,
-                recNum,
+                policy:  get('policy')  || '—',
+                carrier: get('carrier') || 'Unknown',
+                expNum:  expVal,
+                recNum:  recVal,
                 varNum,
                 varRaw,
                 status,
             };
         }
+
+        // ── Filter: decide if a row is real policy data ────────────────
+        // Rejects header echoes, blank rows, subtotal rows, and rows
+        // where both expected and received are zero or unparseable.
+        const HEADER_WORDS = new Set([
+            'policy','policy number','policy #','policy no','policy id',
+            'insured','insured name','named insured','insured party',
+            'expected','expected commission','amt due','commission earned',
+            'agency commission','agency fee','written premium',
+            'received','paid commission','amt paid','commission remitted',
+            'fee remitted','comm paid','paid comm',
+            'carrier','status','variance','difference','net variance',
+            'premium','written prem','net premium',
+            'notes','remarks','check no','chk #','pay ref','check number',
+            'subtotal','sub-total','total','grand total','section',
+            'line','lob','type','comm','comm %','comm rate','commission rate',
+        ]);
+
+        function isDataRow(rawRow, mapping) {
+            // 1. Completely empty row
+            if (rawRow.every(cell => String(cell).trim() === '')) return false;
+
+            // 2. Row looks like a repeated header — policy cell contains a
+            //    known header word (case-insensitive, trimmed)
+            const polIdx = mapping['policy'];
+            if (polIdx !== -1) {
+                const polCell = String(rawRow[polIdx] || '').trim().toLowerCase();
+                if (HEADER_WORDS.has(polCell)) return false;
+            }
+
+            // 3. Carrier cell is a known header word
+            const carIdx = mapping['carrier'];
+            if (carIdx !== -1) {
+                const carCell = String(rawRow[carIdx] || '').trim().toLowerCase();
+                if (HEADER_WORDS.has(carCell)) return false;
+            }
+
+            // 4. Both monetary cells are absent or zero/non-numeric
+            function looksNumeric(s) {
+                const stripped = String(s).replace(/[$,()\s]/g, '');
+                return stripped !== '' && !isNaN(parseFloat(stripped));
+            }
+            const expIdx = mapping['expected'];
+            const recIdx = mapping['received'];
+            const expVal = expIdx !== -1 ? rawRow[expIdx] : '';
+            const recVal = recIdx !== -1 ? rawRow[recIdx] : '';
+
+            // Bug 3 fix: skip rows where expected or received is a formula string.
+            // SheetJS sometimes serialises cross-sheet references like "=Progressive!I3"
+            // instead of the computed value. These are not real data.
+            const expStr = String(expVal).trim();
+            const recStr = String(recVal).trim();
+            if (expStr.startsWith('=') || recStr.startsWith('=')) return false;
+
+            const expOk  = looksNumeric(expVal) && parseFloat(String(expVal).replace(/[$,]/g,'')) !== 0;
+            const recOk  = looksNumeric(recVal); // received CAN be 0 (missing payment)
+            if (!expOk && !recOk) return false;
+
+            return true;
+        }
+
 
         // ── Render the full table from allRows ─────────────────────────
         function renderAll() {
@@ -1192,7 +1324,7 @@
             const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls');
 
             if (isExcel) {
-                // ── Excel path: SheetJS → CSV string → existing parser ──
+                // ── Excel path: SheetJS → all data sheets → existing parser ──
                 if (typeof XLSX === 'undefined') {
                     showToast('Excel library not loaded. Please refresh and try again.', 'error');
                     return;
@@ -1202,12 +1334,39 @@
                     try {
                         const data     = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
-                        // Use the first sheet
-                        const sheetName = workbook.SheetNames[0];
-                        const sheet     = workbook.Sheets[sheetName];
-                        // Convert to CSV — SheetJS handles merged cells, dates, numbers
-                        const csvText = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
-                        ingestCSV(csvText, file.name);
+
+                        // Sheet names to skip — summary/admin/confidential sheets with no policy rows
+                        const SKIP_PATTERN = /overview|summary|master|reconcil|recon|split|producer|confidential/i;
+
+                        const dataSheets = workbook.SheetNames.filter(
+                            sn => !SKIP_PATTERN.test(sn)
+                        );
+
+                        if (dataSheets.length === 0) {
+                            // Fallback: no data sheets found — try every sheet
+                            workbook.SheetNames.forEach(sn => {
+                                const csvText = XLSX.utils.sheet_to_csv(
+                                    workbook.Sheets[sn], { blankrows: false }
+                                );
+                                ingestCSV(csvText, sn, { silent: true, carrierName: sn });
+                            });
+                        } else {
+                            dataSheets.forEach(sn => {
+                                const csvText = XLSX.utils.sheet_to_csv(
+                                    workbook.Sheets[sn], { blankrows: false }
+                                );
+                                ingestCSV(csvText, sn, { silent: true, carrierName: sn });
+                            });
+                        }
+
+                        // One combined toast for the whole file
+                        const sheetCount = dataSheets.length || workbook.SheetNames.length;
+                        renderAll();
+                        updateAuditBadge();
+                        showToast(
+                            `Loaded ${allRows.length} rows from ${sheetCount} sheet${sheetCount !== 1 ? 's' : ''} in ${file.name}`,
+                            'success'
+                        );
                     } catch (err) {
                         showToast('Could not read Excel file: ' + err.message, 'error');
                     }
@@ -1223,44 +1382,69 @@
             }
         }
 
-        // ── Shared ingestion: CSV text → parse → append → render ───────
-        function ingestCSV(text, fileName) {
+        // ── Shared ingestion: CSV text → parse → append (no render) ───────
+        // opts.silent     = true        → skip toast + renderAll (multi-sheet Excel loop)
+        // opts.carrierName = 'SheetName' → override carrier field for all rows
+        function ingestCSV(text, fileName, opts) {
+            const silent      = opts && opts.silent;
+            const carrierName = (opts && opts.carrierName) ? String(opts.carrierName).trim() : null;
             const rows = parseCSV(text);
 
             if (rows.length < 2) {
-                showToast('The file appears to be empty or has no data rows.', 'error');
+                if (!silent) showToast('The file appears to be empty or has no data rows.', 'error');
                 return;
             }
 
-            const headers = rows[0];
-            const dataRows = rows.slice(1);
-            const mapping = mapHeaders(headers);
+            // ── Find the real header row (handles title rows on rows 1-2) ──
+            const headerRowIdx = findHeaderRow(rows);
+            const headers  = rows[headerRowIdx];
+            const dataRows = rows.slice(headerRowIdx + 1);
+            const mapping  = mapHeaders(headers);
 
             const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
             if (mappedCount === 0) {
-                showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
+                // Silent sheets just get skipped; single-file CSV still errors
+                if (!silent) showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
                 return;
             }
 
-            // Resolve each row into a canonical object and APPEND to store
-            const newRows = dataRows.map(r => resolveRow(r, mapping));
+            // Filter out header echoes, blank rows, subtotal rows, and
+            // rows where neither expected nor received is a usable number.
+            const validRows = dataRows.filter(r => isDataRow(r, mapping));
+            const skipped   = dataRows.length - validRows.length;
+
+            // Resolve each surviving row into a canonical object and APPEND
+            let newRows = validRows.map(r => resolveRow(r, mapping));
+
+            // Override carrier with sheet name when supplied (Excel sheets have no carrier column)
+            if (carrierName) {
+                newRows = newRows.map(r => Object.assign({}, r, { carrier: carrierName }));
+            }
+
             const prevCount = allRows.length;
             allRows = allRows.concat(newRows);
 
-            // Re-render everything from the full accumulated store
-            renderAll();
+            if (silent) return; // caller handles render + toast
 
-            // Update last-audit badge
-            const auditBadge = document.querySelector('#last-audit-badge');
-            if (auditBadge) {
-                const now = new Date();
-                auditBadge.textContent = 'Last audit: ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            }
+            // Single-file (CSV) path: render and toast immediately
+            renderAll();
+            updateAuditBadge();
 
             const msg = prevCount === 0
                 ? `Loaded ${newRows.length} rows from ${fileName}`
                 : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
             showToast(msg, 'success');
+        }
+
+        // ── Update the last-audit badge ────────────────────────────────────
+        function updateAuditBadge() {
+            const auditBadge = document.querySelector('#last-audit-badge');
+            if (auditBadge) {
+                const now = new Date();
+                auditBadge.textContent = 'Last audit: ' + now.toLocaleDateString(
+                    'en-US', { month: 'short', day: 'numeric', year: 'numeric' }
+                );
+            }
         }
 
         // ── Clear all data ─────────────────────────────────────────────
