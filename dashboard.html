@@ -277,6 +277,32 @@
         #gate-submit:hover { background: #3cddc7; box-shadow: 0 0 28px rgba(87,241,219,0.35); }
         #gate-submit:active { transform: scale(0.98); }
         #gate-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* ── Column mapping confirmation modal ── */
+        #mapping-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(4, 10, 22, 0.96);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        #mapping-modal-overlay.hidden {
+            display: none !important;
+        }
+        #mapping-modal-card {
+            background: #111e36;
+            border: 1px solid rgba(87,241,219,0.18);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 580px;
+            padding: 36px 36px 30px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,241,219,0.06);
+            animation: gateSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+        }
     </style>
 </head>
 <body class="bg-background min-h-screen flex flex-col">
@@ -340,6 +366,77 @@
     </form>
   </div>
 </div>
+
+<!-- ════════════════════════════════════════════
+     COLUMN MAPPING CONFIRMATION MODAL
+     ════════════════════════════════════════════ -->
+<div id="mapping-modal-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="mapping-modal-heading">
+  <div id="mapping-modal-card">
+    <h1 id="mapping-modal-heading" style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;margin-bottom:8px;">Confirm Column Mapping</h1>
+    <p style="font-size:13px;color:#859490;margin-bottom:24px;line-height:1.5;">We detected the following column mapping:</p>
+
+    <!-- Mapping Table Container -->
+    <div style="margin-bottom:20px; overflow-x:auto; border: 1px solid rgba(87,241,219,0.18); border-radius: 8px; background: #0d1a2e;">
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px; color:#d8e2fe;">
+        <thead>
+          <tr style="border-bottom: 1px solid rgba(87,241,219,0.18); background: rgba(87,241,219,0.05); font-weight:700;">
+            <th style="padding:12px 14px; color:#859490; font-size:11px; letter-spacing:0.06em; font-family:'Inter', sans-serif;">OUR FIELD</th>
+            <th style="padding:12px 14px; color:#859490; font-size:11px; letter-spacing:0.06em; font-family:'Inter', sans-serif;">YOUR COLUMN</th>
+            <th style="padding:12px 14px; color:#859490; font-size:11px; letter-spacing:0.06em; font-family:'Inter', sans-serif;">CONFIDENCE</th>
+          </tr>
+        </thead>
+        <tbody id="mapping-modal-tbody">
+          <!-- Populated dynamically via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Warning Banner -->
+    <div id="mapping-warning-banner" class="hidden" style="margin-bottom:24px; padding:14px; border-radius:6px; background: rgba(255,180,171,0.1); border: 1px solid #ffb4ab; color: #ffb4ab; font-size:13px; line-height:1.4; font-family:'Inter', sans-serif; display: flex; align-items: flex-start; gap: 8px;">
+      <span class="material-symbols-outlined text-[18px] shrink-0" style="margin-top: 1px;" aria-hidden="true">warning</span>
+      <span id="mapping-warning-text">Expected Commission may be mapped incorrectly. Please verify before proceeding.</span>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+      <!-- Cancel Button -->
+      <button id="mapping-modal-cancel" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; background:transparent; cursor:pointer;">
+        Cancel
+      </button>
+      <!-- Confirm Button -->
+      <button id="mapping-modal-confirm" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 shadow-[0_0_12px_rgba(45,212,191,0.3)] text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; border:none; cursor:pointer; color:#003731;">
+        Looks correct — Run Audit
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DATA INTEGRITY BLOCKING ERROR OVERLAY
+     ════════════════════════════════════════════ -->
+<div id="blocking-error-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="blocking-error-heading" style="position: fixed; inset: 0; z-index: 10000; background: rgba(4, 10, 22, 0.96); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px;">
+  <div style="background: #111e36; border: 2px solid #ffb4ab; border-radius: 12px; padding: 28px; max-width: 500px; width: 100%; box-shadow: 0 0 24px rgba(255,180,171,0.2); font-family: 'Inter', sans-serif;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; color: #ffb4ab;">
+      <span class="material-symbols-outlined" style="font-size: 32px;" aria-hidden="true">error</span>
+      <h2 id="blocking-error-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: #ffffff;">Data Integrity Violation</h2>
+    </div>
+    <p style="font-size: 14px; color: #d8e2fe; line-height: 1.5; margin-bottom: 20px;">
+      The system detected critical discrepancies during import. Processing has been stopped to prevent silent financial data corruption.
+    </p>
+    <div id="blocking-error-list" style="max-height: 150px; overflow-y: auto; background: rgba(255,180,171,0.05); border: 1px solid rgba(255,180,171,0.2); border-radius: 6px; padding: 12px; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #ffb4ab; line-height: 1.4; text-align: left;">
+      <!-- Errors listed here -->
+    </div>
+    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+      <button id="blocking-error-clear" class="bg-error hover:bg-error-fixed-dim text-on-error px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 text-[13px] tracking-wide" style="border: none; cursor: pointer; background: #ffb4ab; color: #601410;">
+        Clear All Data
+      </button>
+      <button id="blocking-error-dismiss" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="background: transparent; cursor: pointer; color: #ffffff; border: 1px solid #859490;">
+        Dismiss
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 bg-surface-container shadow-sm border-b border-white/5 h-16">
 <div class="flex justify-between items-center px-gutter h-full w-full max-w-[1440px] mx-auto">
@@ -706,6 +803,364 @@
             });
         })();
 
+        // ── COLUMN MAPPING CONFIRMATION GATE ───────────────────
+        let activeMappingConfirmCallback = null;
+        let activeMappingCancelCallback = null;
+        let activeSelectElements = {};
+        let activeConfElements = {};
+        let modalHasLowConfidence = false;
+
+        function isPremiumColumnName(columnName) {
+            if (!columnName || columnName === 'Not mapped') return false;
+            const norm = String(columnName).trim().toLowerCase();
+            const hasCommission = norm.includes('commission');
+            const hasPremium = norm.includes('premium') || norm.includes('prem');
+
+            if (hasCommission && hasPremium) return true;
+            if (hasCommission) return false;
+
+            const premiumWords = [
+                'premium', 'prem', 'written', 'gross',
+                'total premium', 'written premium', 'net premium'
+            ];
+            return premiumWords.some(word => norm.includes(word));
+        }
+
+        function getMappingValidationMessage(mappingSelections) {
+            const requiredKeys = ['policy', 'expected', 'received'];
+            const missingRequired = requiredKeys.some(
+                key => !mappingSelections[key] || mappingSelections[key] === 'Not mapped'
+            );
+            if (missingRequired) {
+                return 'Policy Number, Expected Commission, and Received Commission must all be mapped before running the audit.';
+            }
+
+            const requiredColumns = requiredKeys.map(key => mappingSelections[key]);
+            if (new Set(requiredColumns).size !== requiredColumns.length) {
+                return 'Policy Number, Expected Commission, and Received Commission must each use a different source column.';
+            }
+
+            if (isPremiumColumnName(mappingSelections.expected)) {
+                return 'Expected Commission cannot use a premium column. Select a commission amount column before running the audit.';
+            }
+
+            return '';
+        }
+
+        function computeFieldConfidence(fieldKey, selectedValue, headers) {
+            if (!selectedValue || selectedValue === 'Not mapped') {
+                return { score: 0, text: '0% (Low)', color: '#ffb4ab', low: true };
+            }
+            if (selectedValue.startsWith('Sheet Name (')) {
+                return { score: 100, text: '100%', color: '#57f1db', low: false };
+            }
+
+            const normHeader = normalise(selectedValue);
+            const aliases = COLUMN_ALIASES[fieldKey] || [];
+
+            // Check if exact match
+            let isExact = false;
+            for (const alias of aliases) {
+                if (normalise(alias) === normHeader) {
+                    isExact = true;
+                    break;
+                }
+            }
+
+            if (isExact) {
+                return { score: 100, text: '100%', color: '#57f1db', low: false };
+            }
+
+            let bestRatio = 0;
+            for (const alias of aliases) {
+                const na = normalise(alias);
+                if (na.length >= 4 && normHeader.includes(na)) {
+                    const ratio = na.length / normHeader.length;
+                    if (ratio > bestRatio) bestRatio = ratio;
+                }
+            }
+            const score = Math.round(60 + bestRatio * 35);
+            const low = score < 85;
+            const text = low ? `${score}% (Low)` : `${score}%`;
+            const color = low ? '#ffb4ab' : '#57f1db';
+            return { score, text, color, low };
+        }
+
+        function showMappingConfirmationModal(previewData) {
+            const overlay = document.getElementById('mapping-modal-overlay');
+            const tbody = document.getElementById('mapping-modal-tbody');
+            const warningBanner = document.getElementById('mapping-warning-banner');
+            const warningText = document.getElementById('mapping-warning-text');
+            const confirmBtn = document.getElementById('mapping-modal-confirm');
+
+            tbody.innerHTML = '';
+            warningBanner.classList.add('hidden');
+            activeSelectElements = {};
+            activeConfElements = {};
+
+            const fields = [
+                { key: 'policy', label: 'Policy Number' },
+                { key: 'expected', label: 'Expected Commission' },
+                { key: 'received', label: 'Received Commission' },
+                { key: 'carrier', label: 'Carrier' }
+            ];
+
+            function updateWarningState() {
+                const selections = {};
+                fields.forEach(field => {
+                    const selectEl = activeSelectElements[field.key];
+                    selections[field.key] = selectEl ? selectEl.value : 'Not mapped';
+                });
+                const blockingMessage = getMappingValidationMessage(selections);
+
+                modalHasLowConfidence = false;
+                fields.forEach(field => {
+                    const selectEl = activeSelectElements[field.key];
+                    const tdConf = activeConfElements[field.key];
+                    if (selectEl && tdConf) {
+                        const result = computeFieldConfidence(field.key, selectEl.value, previewData.headers);
+                        tdConf.textContent = result.text;
+                        tdConf.style.color = result.color;
+                        selectEl.style.border = result.low ? '1px solid #ffb4ab' : '1px solid rgba(87,241,219,0.3)';
+                        if (result.low) {
+                            modalHasLowConfidence = true;
+                        }
+                    }
+                });
+
+                confirmBtn.disabled = Boolean(blockingMessage);
+                confirmBtn.style.opacity = blockingMessage ? '0.5' : '1';
+                confirmBtn.style.cursor = blockingMessage ? 'not-allowed' : 'pointer';
+
+                if (blockingMessage) {
+                    warningText.textContent = blockingMessage;
+                    warningBanner.classList.remove('hidden');
+                } else if (modalHasLowConfidence) {
+                    warningText.textContent = 'Some columns could not be mapped with high confidence. Please verify before proceeding.';
+                    warningBanner.classList.remove('hidden');
+                } else if (previewData.mapping && previewData.mapping._deduplicated && previewData.mapping._deduplicated.length > 0) {
+                    warningText.textContent = '⚠ Warning: Some columns were automatically deduplicated to prevent duplicate mapping.';
+                    warningBanner.classList.remove('hidden');
+                } else {
+                    warningBanner.classList.add('hidden');
+                }
+            }
+
+            fields.forEach(field => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid rgba(87,241,219,0.08)';
+
+                // Our Field
+                const tdOur = document.createElement('td');
+                tdOur.style.padding = '12px 14px';
+                tdOur.style.fontWeight = '500';
+                tdOur.textContent = field.label;
+                tr.appendChild(tdOur);
+
+                // Your Column (dropdown select)
+                const tdYour = document.createElement('td');
+                tdYour.style.padding = '12px 14px';
+
+                const select = document.createElement('select');
+                select.id = 'select-mapping-' + field.key;
+                select.style.background = '#1b2a47';
+                select.style.border = '1px solid rgba(87,241,219,0.3)';
+                select.style.borderRadius = '6px';
+                select.style.color = '#ffffff';
+                select.style.padding = '6px 10px';
+                select.style.fontSize = '13px';
+                select.style.outline = 'none';
+                select.style.width = '100%';
+                select.style.maxWidth = '220px';
+                select.style.fontFamily = "'Inter', sans-serif";
+                
+                activeSelectElements[field.key] = select;
+
+                // Option 1: Not mapped
+                const optNotMapped = document.createElement('option');
+                optNotMapped.value = 'Not mapped';
+                optNotMapped.textContent = 'Not mapped';
+                optNotMapped.style.background = '#111e36';
+                select.appendChild(optNotMapped);
+
+                // Special Excel Carrier Option if applicable
+                let specialExcelCarrierVal = '';
+                if (field.key === 'carrier' && previewData.isExcel && previewData.carrierOverride) {
+                    specialExcelCarrierVal = 'Sheet Name (' + previewData.carrierOverride + ')';
+                    const optSpecial = document.createElement('option');
+                    optSpecial.value = specialExcelCarrierVal;
+                    optSpecial.textContent = specialExcelCarrierVal;
+                    optSpecial.style.background = '#111e36';
+                    select.appendChild(optSpecial);
+                }
+
+                // Add header options
+                if (previewData.headers) {
+                    previewData.headers.forEach(h => {
+                        const opt = document.createElement('option');
+                        opt.value = h;
+                        opt.textContent = h;
+                        opt.style.background = '#111e36';
+                        select.appendChild(opt);
+                    });
+                }
+
+                tdYour.appendChild(select);
+                tr.appendChild(tdYour);
+
+                // Confidence
+                const tdConf = document.createElement('td');
+                tdConf.style.padding = '12px 14px';
+                tdConf.style.fontWeight = '600';
+                activeConfElements[field.key] = tdConf;
+
+                // Original calculation
+                const origMapIdx = previewData.mapping[field.key];
+                let origCol = 'Not mapped';
+
+                if (field.key === 'carrier' && previewData.isExcel && previewData.carrierOverride) {
+                    origCol = specialExcelCarrierVal;
+                } else if (origMapIdx !== undefined && origMapIdx !== -1 && previewData.headers && previewData.headers[origMapIdx]) {
+                    origCol = previewData.headers[origMapIdx];
+                }
+
+                // Pre-select the original value
+                if (specialExcelCarrierVal) {
+                    select.value = specialExcelCarrierVal;
+                } else if (previewData.headers && origCol !== 'Not mapped' && previewData.headers.includes(origCol)) {
+                    select.value = origCol;
+                } else {
+                    select.value = 'Not mapped';
+                }
+
+                // Event listener on change
+                select.addEventListener('change', () => {
+                    updateWarningState();
+                });
+
+                tr.appendChild(tdConf);
+                tbody.appendChild(tr);
+            });
+
+            // Initial warning state evaluation
+            updateWarningState();
+
+            activeMappingConfirmCallback = (finalMapping) => {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+                if (previewData.onConfirm) previewData.onConfirm(finalMapping);
+            };
+
+            activeMappingCancelCallback = () => {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+                if (previewData.onCancel) previewData.onCancel();
+            };
+
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                const confirmBtn = document.getElementById('mapping-modal-confirm');
+                if (confirmBtn) confirmBtn.focus();
+            }, 80);
+        }
+
+        (function initMappingGate() {
+            const overlay = document.getElementById('mapping-modal-overlay');
+            const confirmBtn = document.getElementById('mapping-modal-confirm');
+            const cancelBtn = document.getElementById('mapping-modal-cancel');
+            const card = document.getElementById('mapping-modal-card');
+
+            confirmBtn.addEventListener('click', () => {
+                if (activeMappingConfirmCallback) {
+                    const policySelect = activeSelectElements['policy'];
+                    const expectedSelect = activeSelectElements['expected'];
+                    const receivedSelect = activeSelectElements['received'];
+                    const carrierSelect = activeSelectElements['carrier'];
+
+                    const finalMapping = {
+                        policy: policySelect ? policySelect.value : 'Not mapped',
+                        expected: expectedSelect ? expectedSelect.value : 'Not mapped',
+                        received: receivedSelect ? receivedSelect.value : 'Not mapped',
+                        carrier: carrierSelect ? carrierSelect.value : 'Not mapped',
+                        policyNumber: policySelect ? policySelect.value : 'Not mapped',
+                        expectedCommission: expectedSelect ? expectedSelect.value : 'Not mapped',
+                        receivedCommission: receivedSelect ? receivedSelect.value : 'Not mapped'
+                    };
+                    const validationMessage = getMappingValidationMessage(finalMapping);
+                    if (validationMessage) {
+                        const warningBanner = document.getElementById('mapping-warning-banner');
+                        const warningText = document.getElementById('mapping-warning-text');
+                        warningText.textContent = validationMessage;
+                        warningBanner.classList.remove('hidden');
+                        return;
+                    }
+                    if (modalHasLowConfidence) {
+                        const userApproved = confirm('Warning: Some columns have low mapping confidence. Do you want to proceed anyway?');
+                        if (!userApproved) {
+                            return;
+                        }
+                    }
+                    activeMappingConfirmCallback(finalMapping);
+                }
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                if (activeMappingCancelCallback) activeMappingCancelCallback();
+            });
+
+            overlay.addEventListener('keydown', function(e) {
+                if (overlay.classList.contains('hidden')) return;
+                if (e.key !== 'Tab') return;
+                const focusable = Array.from(card.querySelectorAll(
+                    'button, [tabindex]:not([tabindex="-1"])'
+                )).filter(el => !el.disabled);
+                if (!focusable.length) return;
+                const first = focusable[0], last = focusable[focusable.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+                } else {
+                    if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+                }
+            });
+        })();
+
+        function showBlockingError(errors) {
+            const overlay = document.getElementById('blocking-error-overlay');
+            const listEl = document.getElementById('blocking-error-list');
+            if (!overlay || !listEl) return;
+            
+            listEl.innerHTML = '';
+            errors.forEach(err => {
+                const li = document.createElement('div');
+                li.style.marginBottom = '6px';
+                li.textContent = '• ' + err;
+                listEl.appendChild(li);
+            });
+            
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        (function initBlockingErrorGate() {
+            const overlay = document.getElementById('blocking-error-overlay');
+            const clearBtn = document.getElementById('blocking-error-clear');
+            const dismissBtn = document.getElementById('blocking-error-dismiss');
+            
+            clearBtn.addEventListener('click', () => {
+                clearAllData();
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+            
+            dismissBtn.addEventListener('click', () => {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+                renderAll(); // Restore previous valid UI state
+            });
+        })();
+
         // ── Hidden file input ──────────────────────────────────────────
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -728,6 +1183,123 @@
         // Reset when the user clicks "Clear All".
         let uploadedFiles = new Set();
 
+        // EC-52: Audit trail — records every ingestion event for diagnostics.
+        // Each entry: { timestamp, fileName, sheetName, headerRow, mapping, rowsAccepted, rowsRejected, warnings, userConfirmed }
+        let auditTrail = [];
+        let currentIngestAmbiguousWarnings = [];
+
+        function logAuditEvent(event) {
+            auditTrail.push(Object.assign({
+                timestamp: new Date().toISOString()
+            }, event));
+            console.log('[AUDIT]', event);
+        }
+
+        // EC-35: Duplicate detection — flags (policy, carrier) duplicates.
+        // Returns array of duplicate keys found. Does NOT remove rows.
+        function detectDuplicates(rows) {
+            const seen = new Map(); // key → count
+            const duplicateKeys = [];
+            for (const r of rows) {
+                const key = (r.policy + '||' + r.carrier).toLowerCase();
+                const count = (seen.get(key) || 0) + 1;
+                seen.set(key, count);
+                if (count === 2) { // only flag on first duplicate
+                    duplicateKeys.push({ policy: r.policy, carrier: r.carrier });
+                }
+            }
+            return duplicateKeys;
+        }
+
+        // EC-53: Reconciliation integrity validation.
+        // Verifies that computed totals are finite and consistent.
+        // Returns { valid: boolean, errors: string[] }
+        function validateReconciliationIntegrity(rows) {
+            const errors = [];
+            let totalExp = 0, totalRec = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const r = rows[i];
+                if (!Number.isFinite(r.expNum)) {
+                    errors.push(`Row ${i + 1} (${r.policy}): expected is ${r.expNum} (not a finite number)`);
+                }
+                if (!Number.isFinite(r.recNum)) {
+                    errors.push(`Row ${i + 1} (${r.policy}): received is ${r.recNum} (not a finite number)`);
+                }
+                if (!Number.isFinite(r.varNum)) {
+                    errors.push(`Row ${i + 1} (${r.policy}): variance is ${r.varNum} (not a finite number)`);
+                }
+                totalExp += r.expNum;
+                totalRec += r.recNum;
+            }
+
+            if (!Number.isFinite(totalExp)) {
+                errors.push(`Total Expected is ${totalExp} (corrupted)`);
+            }
+            if (!Number.isFinite(totalRec)) {
+                errors.push(`Total Received is ${totalRec} (corrupted)`);
+            }
+
+            // Cross-check: sum of variances should equal totalRec - totalExp
+            const sumVar = rows.reduce((acc, r) => acc + r.varNum, 0);
+            const expectedVar = totalRec - totalExp;
+            if (Number.isFinite(sumVar) && Number.isFinite(expectedVar) &&
+                Math.abs(sumVar - expectedVar) > 0.01) {
+                errors.push(`Variance sum mismatch: Σvariance=${sumVar.toFixed(2)}, totalRec-totalExp=${expectedVar.toFixed(2)}`);
+            }
+
+            return { valid: errors.length === 0, errors };
+        }
+
+        // EC-54: Mapping confidence engine.
+        // Scores each mapped field based on how the match was found.
+        // Returns { field: { confidence: 0-100, matchType: 'exact'|'fuzzy'|'unmapped' } }
+        function computeMappingConfidence(csvHeaders, mapping) {
+            const normalisedHeaders = csvHeaders.map(normalise);
+            const confidence = {};
+
+            for (const col of TABLE_COLUMNS) {
+                const key = col.key;
+                const idx = mapping[key];
+
+                if (idx === -1) {
+                    confidence[key] = { confidence: 0, matchType: 'unmapped', header: null };
+                    continue;
+                }
+
+                const actualHeader = csvHeaders[idx] || '';
+                const normHeader = normalisedHeaders[idx];
+                const aliases = COLUMN_ALIASES[key] || [];
+
+                // Check if it was an exact match
+                let isExact = false;
+                for (const alias of aliases) {
+                    if (normalise(alias) === normHeader) {
+                        isExact = true;
+                        break;
+                    }
+                }
+
+                if (isExact) {
+                    confidence[key] = { confidence: 100, matchType: 'exact', header: actualHeader };
+                } else {
+                    // Fuzzy match — confidence based on alias length vs header length
+                    let bestRatio = 0;
+                    for (const alias of aliases) {
+                        const na = normalise(alias);
+                        if (na.length >= 4 && normHeader.includes(na)) {
+                            const ratio = na.length / normHeader.length;
+                            if (ratio > bestRatio) bestRatio = ratio;
+                        }
+                    }
+                    const conf = Math.round(60 + bestRatio * 35); // 60-95 range for fuzzy
+                    confidence[key] = { confidence: conf, matchType: 'fuzzy', header: actualHeader };
+                }
+            }
+
+            return confidence;
+        }
+
         // ── Table column definitions (in display order) ────────────────
         const TABLE_COLUMNS = [
             { key: 'policy',   label: 'POLICY NUMBER' },
@@ -739,21 +1311,24 @@
         ];
 
         // ── Fuzzy column-name mapping ──────────────────────────────────
+        // EC-06 FIX: Removed bare 'comm' from expected (ambiguous — could be received).
+        // EC-06 FIX: Removed bare 'rec' from received (too short, matches 'record_id' etc.).
+        // All remaining aliases are specific enough to avoid cross-field contamination.
         const COLUMN_ALIASES = {
-            policy:   ['policy', 'policy_number', 'policy_num', 'policy_no', 'policynumber', 'policyno', 'pol_num', 'pol_no', 'pol', 'policy #', 'policy#', 'policy id'],
+            policy:   ['policy', 'policy_number', 'policy_num', 'policy_no', 'policynumber', 'policyno', 'pol_num', 'pol_no', 'policy #', 'policy#', 'policy id'],
             carrier:  ['carrier', 'carrier_name', 'carriername', 'insurance_carrier', 'insurer', 'company', 'company_name'],
-            expected: ['expected', 'expected_commission', 'expected_amount', 'exp_commission', 'expected_comm', 'expectedcommission',
+            expected: ['expected', 'expected_commission', 'expected_amount', 'exp_commission', 'expected_comm', 'expectedcommission', 'exp_comm', 'exp comm',
                        'amt_due', 'amt due', 'commission_earned', 'commission earned', 'agency_commission', 'agency commission',
                        'expected_fee', 'expected fee', 'comm_due', 'net_commission', 'net commission',
                        'fee_due', 'fee due', 'commission_due',
-                       'comm', 'agency_comm', 'net_comm'],
-            received: ['received', 'received_commission', 'received_amount', 'rec', 'rec_commission', 'actual', 'actual_commission',
+                       'agency_comm', 'net_comm'],
+            received: ['received', 'received_commission', 'received_amount', 'rec_commission', 'actual', 'actual_commission',
                        'paid', 'paid_amount', 'receivedcommission',
                        'paid_commission', 'paid commission', 'amt_paid', 'amt paid', 'commission_remitted', 'commission remitted',
                        'comm_paid', 'comm paid', 'paid_comm', 'paid comm', 'amount_paid', 'amount paid',
                        'fee_remitted', 'fee remitted', 'comm_remitted', 'agency_fee', 'agency fee',
                        'amount_remitted', 'amount remitted'],
-            variance: ['variance', 'var', 'difference', 'diff', 'delta', 'discrepancy', 'gap', 'net_variance', 'net variance'],
+            variance: ['variance', 'variance_amount', 'difference', 'diff', 'delta', 'discrepancy', 'net_variance', 'net variance'],
             status:   ['status', 'state', 'result', 'flag', 'audit_status', 'match_status'],
         };
 
@@ -778,7 +1353,9 @@
         ]);
 
         function findHeaderRow(rows) {
-            const limit = Math.min(5, rows.length);
+            // EC-02 FIX: Scan up to 10 rows (was 5). Hartford/Travelers files
+            // can have 5-8 title rows before headers.
+            const limit = Math.min(10, rows.length);
             let bestIdx = 0;
             let bestScore = -1;
             for (let i = 0; i < limit; i++) {
@@ -792,12 +1369,14 @@
                 let score = 0;
                 for (const cell of row) {
                     const norm = String(cell).trim().toLowerCase();
-                    if (HEADER_SCORE_WORDS.has(norm)) score++;
-                    // Partial match: cell contains a keyword token
-                    if (score === 0) {
+                    if (HEADER_SCORE_WORDS.has(norm)) {
+                        score++;
+                    } else {
+                        // EC-01 FIX: Partial match contributes independently (was gated by score === 0).
+                        // Uses 0.3 weight to avoid dominating exact matches.
                         for (const w of ['policy','commission','premium','expected',
                                          'received','paid','amt','variance','carrier']) {
-                            if (norm.includes(w)) { score += 0.5; break; }
+                            if (norm.includes(w)) { score += 0.3; break; }
                         }
                     }
                 }
@@ -811,40 +1390,109 @@
             const normalisedHeaders = csvHeaders.map(normalise);
 
             for (const col of TABLE_COLUMNS) {
-                const aliases = COLUMN_ALIASES[col.key];
-                let foundIdx = -1;
+            const aliases = COLUMN_ALIASES[col.key].filter(alias => normalise(alias).length >= 4);
+            let foundIdx = -1;
 
+                // Pass 1: Exact alias match (normalised)
                 for (const alias of aliases) {
                     const idx = normalisedHeaders.indexOf(normalise(alias));
                     if (idx !== -1) { foundIdx = idx; break; }
                 }
 
+                // Pass 2: Forward-only fuzzy match with specificity scoring
+                // EC-05 FIX: Only forward direction — header must contain alias.
+                // EC-05 FIX: Skip aliases shorter than 4 normalised chars.
+                // EC-05 FIX: Prefer the longest matching alias (most specific).
                 if (foundIdx === -1) {
-                    // Fuzzy pass: substring containment in either direction.
-                    // Guard: never map a plain premium/prem cell to expected commission.
                     const FUZZY_PREMIUM_BLOCK = new Set(['prem','premium','written_prem','written_premium','net_prem','net_premium']);
+                    let bestFuzzyIdx = -1;
+                    let bestFuzzyLen = 0;
                     for (let i = 0; i < normalisedHeaders.length; i++) {
                         const nh = normalisedHeaders[i];
-                        // Block premium cells from matching expected commission
                         if (col.key === 'expected' && FUZZY_PREMIUM_BLOCK.has(nh)) continue;
                         for (const alias of aliases) {
                             const na = normalise(alias);
-                            if (nh.includes(na) || na.includes(nh)) {
-                                foundIdx = i; break;
+                            // EC-05: Skip short aliases — too ambiguous for fuzzy
+                            if (na.length < 4) continue;
+                            // EC-05: Forward-only — header contains alias, NOT reverse
+                            if (nh.includes(na) && na.length > bestFuzzyLen) {
+                                bestFuzzyIdx = i;
+                                bestFuzzyLen = na.length;
                             }
                         }
-                        if (foundIdx !== -1) break;
                     }
+                    foundIdx = bestFuzzyIdx;
                 }
 
                 mapping[col.key] = foundIdx;
             }
 
+            // EC-08 FIX: Prevent duplicate field mapping.
+            // If two fields share the same column index, the higher-priority field keeps it.
+            // Priority order: policy > expected > received > carrier > variance > status
+            const FIELD_PRIORITY = { policy: 6, expected: 5, received: 4, carrier: 3, variance: 2, status: 1 };
+            const usedIndices = new Map(); // index → field key that claimed it
+            const priorityOrder = Object.keys(mapping).sort((a, b) => (FIELD_PRIORITY[b] || 0) - (FIELD_PRIORITY[a] || 0));
+            mapping._deduplicated = [];
+            for (const key of priorityOrder) {
+                const idx = mapping[key];
+                if (idx === -1) continue;
+                if (usedIndices.has(idx)) {
+                    // Column already claimed by a higher-priority field
+                    console.warn(`EC-08: Column index ${idx} already claimed by '${usedIndices.get(idx)}', resetting '${key}' to unmapped.`);
+                    mapping[key] = -1;
+                    mapping._deduplicated.push(key);
+                } else {
+                    usedIndices.set(idx, key);
+                }
+            }
+
             return mapping;
         }
 
-        // ── CSV parser (handles quoted fields with commas) ─────────────
-        function parseCSV(text) {
+        // EC-11 FIX: Auto-detect delimiter from file content.
+        // Supports comma, tab, and pipe. Samples first 5 non-empty lines.
+        function detectDelimiter(text) {
+            const candidates = [',', '\t', '|'];
+            const sampleLines = text.split(/\r?\n/).filter(l => l.trim().length > 0).slice(0, 5);
+            if (sampleLines.length === 0) return ',';
+
+            let bestDelim = ',';
+            let bestScore = -1;
+
+            for (const delim of candidates) {
+                const counts = sampleLines.map(line => {
+                    // Count delimiters outside quotes
+                    let count = 0;
+                    let inQ = false;
+                    for (const ch of line) {
+                        if (ch === '"') inQ = !inQ;
+                        else if (ch === delim && !inQ) count++;
+                    }
+                    return count;
+                });
+
+                // Score: consistency (low variance) × count (more fields = more likely)
+                const nonZero = counts.filter(c => c > 0);
+                if (nonZero.length === 0) continue;
+
+                const avg = nonZero.reduce((a, b) => a + b, 0) / nonZero.length;
+                const variance = nonZero.reduce((a, c) => a + Math.pow(c - avg, 2), 0) / nonZero.length;
+                // Score rewards high average count and low variance
+                const score = avg * nonZero.length / (1 + variance);
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestDelim = delim;
+                }
+            }
+            return bestDelim;
+        }
+
+        // ── CSV/TSV/DSV parser (handles quoted fields) ─────────────────
+        // EC-11: Auto-detects delimiter if not provided.
+        function parseCSV(text, explicitDelimiter) {
+            const delim = explicitDelimiter || detectDelimiter(text);
             const rows = [];
             let current = '';
             let inQuotes = false;
@@ -874,7 +1522,7 @@
                     if (ch === '"') {
                         if (q && line[i + 1] === '"') { field += '"'; i++; }
                         else q = !q;
-                    } else if (ch === ',' && !q) {
+                    } else if (ch === delim && !q) {
                         fields.push(field.trim());
                         field = '';
                     } else {
@@ -919,24 +1567,129 @@
         // Returns { policy, carrier, expected, received, variance, status }
         // All numeric values stored as plain Numbers; display formatting
         // happens only in the render functions.
-        function resolveRow(rawRow, mapping) {
+        function resolveRow(rawRow, mapping, headers) {
             const get = (key) => mapping[key] !== -1 ? (rawRow[mapping[key]] || '') : '';
 
             const expRaw = get('expected');
             const recRaw = get('received');
-            // Fix: strip currency symbols but preserve a leading minus sign.
-            // Pattern: move any leading minus outside the $, then strip non-numeric.
-            function toNum(s) {
-                const str = String(s).trim()
-                    .replace(/^\((.+)\)$/, '-$1')   // (123.45) → -123.45
-                    .replace(/^-\s*\$/, '-')         // -$95.00  → -95.00
-                    .replace(/\$/, '')               // $95.00   → 95.00
-                    .replace(/,/g, '')               // 1,234    → 1234
-                    .replace(/[^0-9.\-]/g, '');      // strip remaining non-numeric
-                return parseFloat(str);
+
+            const expColIdx = mapping['expected'];
+            const expColHeader = (headers && expColIdx !== -1) ? headers[expColIdx] : '';
+            const recColIdx = mapping['received'];
+            const recColHeader = (headers && recColIdx !== -1) ? headers[recColIdx] : '';
+
+            function isLikelyPercentage(s, colHeader) {
+                if (s == null || s === '') return false;
+                const str = String(s).trim();
+                if (str.includes('%')) return true;
+                if (colHeader) {
+                    const normHeader = String(colHeader).toLowerCase();
+                    const rateWords = ['rate', 'commission rate', 'pct', '%', 'percentage'];
+                    if (rateWords.some(w => normHeader.includes(w))) {
+                        let cleanStr = str.replace(/[^0-9.,\-]/g, '');
+                        if (cleanStr.includes('.') && cleanStr.includes(',')) {
+                            if (cleanStr.indexOf('.') < cleanStr.indexOf(',')) {
+                                cleanStr = cleanStr.replace(/\./g, '').replace(/,/g, '.');
+                            } else {
+                                cleanStr = cleanStr.replace(/,/g, '');
+                            }
+                        } else if (cleanStr.includes(',')) {
+                            if (/,\d{2}$/.test(cleanStr)) {
+                                cleanStr = cleanStr.replace(/,/g, '.');
+                            } else {
+                                cleanStr = cleanStr.replace(/,/g, '');
+                            }
+                        }
+                        const val = parseFloat(cleanStr);
+                        if (!isNaN(val) && val >= 0 && val <= 1) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
-            const expNum = toNum(expRaw);
-            const recNum = toNum(recRaw);
+
+            function toNum(s, colHeader) {
+                if (s == null) return 0;
+                if (typeof s === 'number') {
+                    return isNaN(s) || !isFinite(s) ? 0 : s;
+                }
+                let str = String(s).trim();
+
+                if (str === '' || str === 'N/A' || str === '—' || str === '-') {
+                    return 0;
+                }
+
+                if (isLikelyPercentage(s, colHeader)) {
+                    console.warn('Suspicious percentage/rate detected in amount column:', s);
+                    return 0;
+                }
+
+                // EC-24 FIX: Detect scientific notation BEFORE stripping letters.
+                // Values like 1.2E+4, 1e6, 2.5e-3 must be parsed directly.
+                const sciNotationPattern = /^\s*[+-]?\d+\.?\d*[eE][+-]?\d+\s*$/;
+                if (sciNotationPattern.test(str)) {
+                    const sciVal = parseFloat(str.trim());
+                    return Number.isFinite(sciVal) ? sciVal : 0;
+                }
+
+                // European Ambiguity Check
+                const cleanStr = str.replace(/[^0-9.,() \-\s]/g, '').trim();
+                if (/^[+-]?\d+[.,]\d{3}$/.test(cleanStr)) {
+                    const warnMsg = `Ambiguous number format "${s}" in column "${colHeader || ''}" (interpreted as standard decimal).`;
+                    console.warn(warnMsg);
+                    if (typeof currentIngestAmbiguousWarnings !== 'undefined') {
+                        currentIngestAmbiguousWarnings.push(warnMsg);
+                    }
+                }
+
+                // Strip currency codes (case-insensitive) and currency symbols
+                str = str.replace(/[A-Za-z]/g, '');
+                str = str.replace(/[^0-9.,()\-\s]/g, '');
+                str = str.trim();
+
+                // Accounting negative parens
+                if (/^\((.+)\)$/.test(str)) {
+                    str = '-' + str.substring(1, str.length - 1);
+                }
+
+                // Collapse spaces
+                str = str.replace(/\s+/g, '');
+
+                // European decimal format vs standard
+                if (str.includes('.') && str.includes(',')) {
+                    if (str.indexOf('.') < str.indexOf(',')) {
+                        str = str.replace(/\./g, '').replace(/,/g, '.');
+                    } else {
+                        str = str.replace(/,/g, '');
+                    }
+                } else if (str.includes(',')) {
+                    if (/,\d{2}$/.test(str)) {
+                        str = str.replace(/,/g, '.');
+                    } else {
+                        str = str.replace(/,/g, '');
+                    }
+                }
+
+                let isNegative = str.startsWith('-');
+                let digits = str.replace(/[^0-9.]/g, '');
+                let parts = digits.split('.');
+                let cleanVal = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+
+                if (isNegative) {
+                    cleanVal = '-' + cleanVal;
+                }
+
+                const val = parseFloat(cleanVal);
+                if (isNaN(val) || !isFinite(val)) {
+                    if (str !== '') console.warn('Could not parse numeric value:', s);
+                    return 0;
+                }
+                return val;
+            }
+
+            const expNum = toNum(expRaw, expColHeader);
+            const recNum = toNum(recRaw, recColHeader);
             // If we couldn't parse valid numbers treat as 0 for downstream use
             const expVal = isNaN(expNum) ? 0 : expNum;
             const recVal = isNaN(recNum) ? 0 : recNum;
@@ -946,27 +1699,25 @@
             const varNum = recVal - expVal;
             const varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
 
-            // Status: prefer explicit status column, otherwise derive from variance.
+            // Status: Always compute status based on variance and received value to ensure financial audit accuracy.
+            // Do not trust statement status columns since carrier statements might contain incorrect status labels.
             // Special case: negative received value = clawback (carrier recouping funds).
             // Must be detected BEFORE the variance check so clawbacks aren't counted
             // as underpaid — the agency owes money, not the carrier.
-            let status = get('status');
-            if (!status || status.toLowerCase() === 'status') {
-                if (recVal < 0) {
-                    // Negative payment = carrier clawing back previously paid commission
-                    status = 'Clawback';
-                } else if (Math.abs(varNum) < 0.01) {
-                    status = 'Match';
-                } else if (varNum < 0) {
-                    status = 'Underpaid';
-                } else {
-                    status = 'Overpaid';
-                }
+            let status;
+            if (recNum < 0) {
+                status = 'Clawback';
+            } else if (Math.abs(varNum) < 0.01) {
+                status = 'Match';
+            } else if (varNum < 0) {
+                status = 'Underpaid';
+            } else {
+                status = 'Overpaid';
             }
 
             return {
-                policy:  get('policy')  || '—',
-                carrier: get('carrier') || 'Unknown',
+                policy:  (get('policy')  || '').trim() || '—',
+                carrier: (get('carrier') || '').trim() || 'Unknown',
                 expNum:  expVal,
                 recNum:  recVal,
                 varNum,
@@ -1016,10 +1767,55 @@
                 if (HEADER_WORDS.has(carCell)) return false;
             }
 
-            // 4. Both monetary cells are absent or zero/non-numeric
-            function looksNumeric(s) {
-                const stripped = String(s).replace(/[$,()\s]/g, '');
-                return stripped !== '' && !isNaN(parseFloat(stripped));
+            // 4. Both monetary cells must contain explicit, parseable amounts.
+            // Never let blanks, formulas, percentages, or arbitrary text become
+            // zero-dollar values in a financial audit.
+            function parseMoneyCell(s) {
+                if (typeof s === 'number') {
+                    return Number.isFinite(s) ? { valid: true, value: s } : { valid: false };
+                }
+
+                let str = String(s == null ? '' : s).trim();
+                if (
+                    str === '' || str === 'N/A' || str === 'n/a' ||
+                    str === 'â€”' || str === 'â€“' || str === '-' ||
+                    str.startsWith('=') || str.includes('%')
+                ) {
+                    return { valid: false };
+                }
+
+                // Permit common three-letter currency codes, but reject other text.
+                str = str.replace(/^(USD|EUR|GBP|CAD|AUD)\s*/i, '');
+                if (/[A-Za-z]/.test(str)) return { valid: false };
+
+                str = str.replace(/[^0-9.,()\-\s]/g, '').trim();
+                if (/^\((.+)\)$/.test(str)) {
+                    str = '-' + str.substring(1, str.length - 1);
+                }
+                str = str.replace(/\s+/g, '');
+
+                if (str.includes('.') && str.includes(',')) {
+                    if (str.indexOf('.') < str.indexOf(',')) {
+                        str = str.replace(/\./g, '').replace(/,/g, '.');
+                    } else {
+                        str = str.replace(/,/g, '');
+                    }
+                } else if (str.includes(',')) {
+                    str = /,\d{2}$/.test(str)
+                        ? str.replace(/,/g, '.')
+                        : str.replace(/,/g, '');
+                }
+
+                const isNegative = str.startsWith('-');
+                const digits = str.replace(/[^0-9.]/g, '');
+                const parts = digits.split('.');
+                let cleanValue = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+                if (isNegative) cleanValue = '-' + cleanValue;
+
+                const value = Number(cleanValue);
+                return Number.isFinite(value) && cleanValue !== ''
+                    ? { valid: true, value }
+                    : { valid: false };
             }
             const expIdx = mapping['expected'];
             const recIdx = mapping['received'];
@@ -1033,9 +1829,17 @@
             const recStr = String(recVal).trim();
             if (expStr.startsWith('=') || recStr.startsWith('=')) return false;
 
-            const expOk  = looksNumeric(expVal) && parseFloat(String(expVal).replace(/[$,]/g,'')) !== 0;
-            const recOk  = looksNumeric(recVal); // received CAN be 0 (missing payment)
-            if (!expOk && !recOk) return false;
+            const parsedExpected = parseMoneyCell(expVal);
+            const parsedReceived = parseMoneyCell(recVal);
+            // EC-34 FIX: Allow zero-expected rows. A policy with $0 expected and
+            // $500 received is a genuine overpayment that must be surfaced.
+            // Only reject rows where the value is unparseable, not zero.
+            const expOk = parsedExpected.valid;
+            const recOk = parsedReceived.valid; // received CAN be an explicit 0 (missing payment)
+            // Guard: reject rows where BOTH expected and received are zero
+            // (these are typically blank/padding rows, not real policy data).
+            if (!expOk || !recOk) return false;
+            if (parsedExpected.value === 0 && parsedReceived.value === 0) return false;
 
             return true;
         }
@@ -1048,16 +1852,44 @@
                 return;
             }
 
+            // Build set of duplicate policy+carrier combinations
+            const counts = new Map();
+            for (const r of allRows) {
+                const key = (r.policy + '||' + r.carrier).toLowerCase();
+                counts.set(key, (counts.get(key) || 0) + 1);
+            }
+            const duplicateKeysSet = new Set();
+            for (const [key, count] of counts.entries()) {
+                if (count > 1) {
+                    duplicateKeysSet.add(key);
+                }
+            }
+
             // ── 1. Main table ──
             tbody.innerHTML = '';
             for (const r of allRows) {
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
 
+                const key = (r.policy + '||' + r.carrier).toLowerCase();
+                const isDuplicate = duplicateKeysSet.has(key);
+                if (isDuplicate) {
+                    tr.style.backgroundColor = 'rgba(255, 213, 79, 0.05)';
+                }
+
                 // Policy
                 const tdPolicy = document.createElement('td');
                 tdPolicy.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
                 tdPolicy.textContent = r.policy;
+                if (isDuplicate) {
+                    const badgeSpan = document.createElement('span');
+                    badgeSpan.textContent = ' [DUPLICATE]';
+                    badgeSpan.style.color = '#ffd54f';
+                    badgeSpan.style.fontWeight = 'bold';
+                    badgeSpan.style.fontSize = '10px';
+                    badgeSpan.style.marginLeft = '6px';
+                    tdPolicy.appendChild(badgeSpan);
+                }
                 tr.appendChild(tdPolicy);
 
                 // Carrier
@@ -1111,7 +1943,14 @@
                 tbody.appendChild(tr);
             }
 
-            // ── 2. Global summary banner ──
+            // ── 2. EC-53: Reconciliation integrity validation ──
+            const integrity = validateReconciliationIntegrity(allRows);
+            if (!integrity.valid) {
+                console.error('[EC-53] Integrity validation failed:', integrity.errors);
+                showToast('⚠ Data integrity issue detected: ' + integrity.errors[0], 'error');
+            }
+
+            // ── 3. Global summary banner ──
             let totalExp = 0, totalRec = 0, totalUnderpaid = 0;
             for (const r of allRows) {
                 totalExp += r.expNum;
@@ -1128,13 +1967,23 @@
             document.getElementById('total-actual').textContent    = formatCurrency(totalRec);
             document.getElementById('total-underpaid').textContent = formatCurrency(totalUnderpaid);
 
-            // ── 3. Carrier summary table ──
+            // ── 4. EC-35: Duplicate detection (flag, don't remove) ──
+            const duplicates = detectDuplicates(allRows);
+            if (duplicates.length > 0) {
+                const dupeMsg = duplicates.length === 1
+                    ? `⚠ 1 duplicate (policy, carrier) pair detected: ${duplicates[0].policy}`
+                    : `⚠ ${duplicates.length} duplicate (policy, carrier) pairs detected. Review data for potential double-counting.`;
+                showToast(dupeMsg, 'info');
+                console.warn('[EC-35] Duplicate policies detected:', duplicates);
+            }
+
+            // ── 5. Carrier summary table ──
             renderCarrierSummary();
 
-            // ── 4. Carrier card strip ──
+            // ── 6. Carrier card strip ──
             renderCarrierCards();
 
-            // ── 4. Enable action buttons ──
+            // ── 7. Enable action buttons ──
             [exportBtn, clearBtn].forEach(btn => {
                 btn.classList.remove('opacity-40', 'cursor-not-allowed');
                 btn.classList.add('hover:bg-surface-variant/30', 'cursor-pointer');
@@ -1147,18 +1996,35 @@
             const carrierSection = document.getElementById('carrier-summary');
             const cTbody = document.getElementById('carrier-summary-tbody');
 
-            // Aggregate by carrier name (case-insensitive key)
-            const map = new Map(); // key → { name, exp, rec, var, underpaidCount }
+            // EC-44 FIX: Aggregate by carrier with separate underpaid/overpaid tracking.
+            // Net variance can hide individual discrepancies when overpayments offset underpayments.
+            const map = new Map();
             for (const r of allRows) {
                 const key = r.carrier.toLowerCase();
                 if (!map.has(key)) {
-                    map.set(key, { name: r.carrier, exp: 0, rec: 0, variance: 0, underpaidCount: 0 });
+                    map.set(key, {
+                        name: r.carrier, exp: 0, rec: 0, variance: 0,
+                        underpaidCount: 0, underpaidAmt: 0,
+                        overpaidCount: 0, overpaidAmt: 0,
+                        clawbackCount: 0, clawbackAmt: 0
+                    });
                 }
                 const c = map.get(key);
                 c.exp      += r.expNum;
                 c.rec      += r.recNum;
                 c.variance += r.varNum;
-                if (r.varNum < -0.01) c.underpaidCount++;
+                if (r.status === 'Underpaid' && r.recNum >= 0) {
+                    c.underpaidCount++;
+                    c.underpaidAmt += Math.abs(r.varNum);
+                }
+                if (r.status === 'Overpaid') {
+                    c.overpaidCount++;
+                    c.overpaidAmt += r.varNum;
+                }
+                if (r.status === 'Clawback') {
+                    c.clawbackCount++;
+                    c.clawbackAmt += Math.abs(r.recNum);
+                }
             }
 
             cTbody.innerHTML = '';
@@ -1194,13 +2060,13 @@
                 else if (c.variance > 0.01) tdVar.classList.add('text-primary');
                 tr.appendChild(tdVar);
 
-                // Underpaid count
+                // EC-44: Underpaid count/amount (separate from net variance)
                 const tdCount = document.createElement('td');
                 tdCount.className = 'px-6 py-3 font-body-sm text-body-sm';
                 if (c.underpaidCount > 0) {
                     tdCount.innerHTML = `<span class="inline-flex items-center gap-1 text-error">
                         <span class="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
-                        ${c.underpaidCount} ${c.underpaidCount === 1 ? 'policy' : 'policies'}
+                        ${c.underpaidCount} (${formatCurrency(c.underpaidAmt)})
                     </span>`;
                 } else {
                     tdCount.innerHTML = `<span class="text-primary">None</span>`;
@@ -1233,7 +2099,7 @@
                 }
                 const c = map.get(key);
                 c.totalPolicies++;
-                if (r.varNum < -0.01) {
+                if (r.status === 'Underpaid' && r.recNum >= 0) {
                     c.underpaidAmt  += Math.abs(r.varNum);
                     c.underpaidCount++;
                 }
@@ -1351,7 +2217,6 @@
                 showToast('This file has already been uploaded. Clear all data first to re-upload.', 'error');
                 return;
             }
-            uploadedFiles.add(file.name);
 
             const name = file.name.toLowerCase();
             const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls');
@@ -1375,41 +2240,291 @@
                             sn => !SKIP_PATTERN.test(sn)
                         );
 
-                        if (dataSheets.length === 0) {
-                            // Fallback: no data sheets found — try every sheet
-                            workbook.SheetNames.forEach(sn => {
-                                const csvText = XLSX.utils.sheet_to_csv(
-                                    workbook.Sheets[sn], { blankrows: false }
-                                );
-                                ingestCSV(csvText, sn, { silent: true, carrierName: sn });
-                            });
-                        } else {
-                            dataSheets.forEach(sn => {
-                                const csvText = XLSX.utils.sheet_to_csv(
-                                    workbook.Sheets[sn], { blankrows: false }
-                                );
-                                ingestCSV(csvText, sn, { silent: true, carrierName: sn });
-                            });
+                        const sheetsToProcess = dataSheets.length > 0 ? dataSheets : workbook.SheetNames;
+
+                        if (sheetsToProcess.length === 0) {
+                            showToast('No sheets found in Excel file.', 'error');
+                            return;
                         }
 
-                        // One combined toast for the whole file
-                        const sheetCount = dataSheets.length || workbook.SheetNames.length;
-                        renderAll();
-                        updateAuditBadge();
-                        showToast(
-                            `Loaded ${allRows.length} rows from ${sheetCount} sheet${sheetCount !== 1 ? 's' : ''} in ${file.name}`,
-                            'success'
+                        // EC-17 FIX: Use sheet_to_json with raw:true to preserve native
+                        // numeric values and prevent scientific notation corruption.
+                        function sheetToRows(sheet) {
+                            return XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: '' });
+                        }
+
+                        // Find the first sheet containing valid data rows
+                        let firstValidSheetName = null;
+                        let firstValidSheetHeaders = null;
+                        let firstValidSheetMapping = null;
+
+                        // EC-15 FIX: Pre-analyze each sheet's headers for per-sheet validation
+                        const sheetAnalysis = new Map(); // sn → { headers, mapping, rows, headerRowIdx }
+                        for (const sn of sheetsToProcess) {
+                            const sheet = workbook.Sheets[sn];
+                            const parsedRows = sheetToRows(sheet);
+                            if (parsedRows.length >= 2) {
+                                // Ensure all row values are strings for header detection
+                                const stringRows = parsedRows.map(r =>
+                                    (r || []).map(cell => cell == null ? '' : cell)
+                                );
+                                const headerRowIdx = findHeaderRow(stringRows.map(r => r.map(String)));
+                                const headers = stringRows[headerRowIdx].map(String);
+                                const mapping = mapHeaders(headers);
+                                const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
+                                sheetAnalysis.set(sn, {
+                                    headers,
+                                    mapping,
+                                    rows: stringRows,
+                                    headerRowIdx,
+                                    mappedCount,
+                                    hasData: false
+                                });
+                                if (mappedCount > 0) {
+                                    const dataRows = stringRows.slice(headerRowIdx + 1);
+                                    const validRows = dataRows.filter(r => isDataRow(r, mapping));
+                                    sheetAnalysis.get(sn).hasData = validRows.length > 0;
+                                    if (!firstValidSheetName && validRows.length > 0) {
+                                        firstValidSheetName = sn;
+                                        firstValidSheetHeaders = headers;
+                                        firstValidSheetMapping = mapping;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Fallback to the first sheet if no sheet has valid data rows
+                        if (!firstValidSheetName) {
+                            const firstSheetName = sheetsToProcess[0];
+                            const analysis = sheetAnalysis.get(firstSheetName);
+                            if (analysis) {
+                                firstValidSheetName = firstSheetName;
+                                firstValidSheetHeaders = analysis.headers;
+                                firstValidSheetMapping = analysis.mapping;
+                            } else {
+                                firstValidSheetName = firstSheetName;
+                                firstValidSheetHeaders = [];
+                                firstValidSheetMapping = { policy: -1, expected: -1, received: -1, carrier: -1 };
+                            }
+                        }
+
+                        // EC-14 FIX: Track skipped sheets for user visibility
+                        const skippedByPattern = workbook.SheetNames.filter(
+                            sn => SKIP_PATTERN.test(sn) && !sheetsToProcess.includes(sn)
                         );
+
+                        // Show confirmation modal
+                        showMappingConfirmationModal({
+                            fileName: file.name,
+                            isExcel: true,
+                            mapping: firstValidSheetMapping,
+                            headers: firstValidSheetHeaders,
+                            carrierOverride: firstValidSheetName,
+                            onConfirm: function(finalMapping) {
+                                currentIngestAmbiguousWarnings = [];
+                                // EC-15 FIX: Validate each sheet's headers independently.
+                                // Only process sheets whose headers are compatible with
+                                // the confirmed mapping. Incompatible sheets are skipped
+                                // with an explicit warning — never silent.
+                                const proposedNewRows = [];
+                                const incompatibleSheets = [];
+                                const zeroRowSheets = [];
+                                let processedSheetCount = 0;
+                                
+                                // Temporary collection of skip_sheet audit events to log if and only if
+                                // the whole validation succeeds.
+                                const tempAuditEvents = [];
+
+                                sheetsToProcess.forEach(sn => {
+                                    const analysis = sheetAnalysis.get(sn);
+                                    if (!analysis || analysis.mappedCount === 0) {
+                                        const skippedCount = analysis ? Math.max(0, analysis.rows.length - (analysis.headerRowIdx + 1)) : 0;
+                                        tempAuditEvents.push({
+                                            action: 'skip_sheet',
+                                            fileName: file.name,
+                                            sheetName: sn,
+                                            warnings: `Incompatible headers (no mapped columns). Ignored ${skippedCount} rows.`
+                                        });
+                                        incompatibleSheets.push(`${sn} (${skippedCount} rows ignored)`);
+                                        return;
+                                    }
+
+                                    // EC-15: Verify this sheet's headers are compatible
+                                    // with the confirmed mapping by checking that the
+                                    // chosen header names exist in this sheet's headers.
+                                    const thisHeaders = analysis.headers;
+                                    const thisMapping = {};
+                                    const findHeaderIndex = (hdrs, target) => {
+                                        if (!hdrs || !target || target === 'Not mapped' ||
+                                            target.startsWith('Sheet Name (')) return -1;
+                                        const norm = target.trim().toLowerCase();
+                                        return hdrs.findIndex(h => String(h).trim().toLowerCase() === norm);
+                                    };
+                                    thisMapping.policy = findHeaderIndex(thisHeaders, finalMapping.policy || finalMapping.policyNumber);
+                                    thisMapping.expected = findHeaderIndex(thisHeaders, finalMapping.expected || finalMapping.expectedCommission);
+                                    thisMapping.received = findHeaderIndex(thisHeaders, finalMapping.received || finalMapping.receivedCommission);
+                                    thisMapping.carrier = findHeaderIndex(thisHeaders, finalMapping.carrier);
+
+                                    // Verify required fields: policy, expected, received
+                                    if (thisMapping.policy === -1 || thisMapping.expected === -1 || thisMapping.received === -1) {
+                                        const skippedCount = Math.max(0, analysis.rows.length - (analysis.headerRowIdx + 1));
+                                        console.warn(`Skipping sheet "${sn}": incompatible headers. Ignored ${skippedCount} rows.`);
+                                        
+                                        tempAuditEvents.push({
+                                            action: 'skip_sheet',
+                                            fileName: file.name,
+                                            sheetName: sn,
+                                            warnings: `Incompatible headers (policy=${thisMapping.policy}, expected=${thisMapping.expected}, received=${thisMapping.received}). Ignored ${skippedCount} rows.`
+                                        });
+
+                                        incompatibleSheets.push(`${sn} (${skippedCount} rows ignored)`);
+                                        return;
+                                    }
+
+                                    // Process this sheet's data rows
+                                    const dataRows = analysis.rows.slice(analysis.headerRowIdx + 1);
+                                    const validRows = dataRows.filter(r => isDataRow(r, thisMapping));
+
+                                    if (validRows.length === 0) {
+                                        // EC-27 FIX: Track zero-row sheets
+                                        zeroRowSheets.push(sn);
+                                        return;
+                                    }
+
+                                    let sheetRows = validRows.map(r => resolveRow(r, thisMapping, thisHeaders));
+
+                                    // EC-20 FIX: Only override carrier with sheet name when
+                                    // the sheet has NO mapped carrier column. If the sheet
+                                    // has its own carrier column, preserve its values.
+                                    if (thisMapping.carrier === -1) {
+                                        sheetRows = sheetRows.map(r => Object.assign({}, r, { carrier: sn }));
+                                    }
+
+                                    proposedNewRows.push(...sheetRows);
+                                    processedSheetCount++;
+                                });
+
+                                // Proposed combined dataset
+                                const proposedAllRows = allRows.concat(proposedNewRows);
+                                
+                                // Atomic Integrity Validation Gate
+                                const integrity = validateReconciliationIntegrity(proposedAllRows);
+                                if (!integrity.valid) {
+                                    console.error('[Integrity Gate] Integrity check failed. Rejecting import.', integrity.errors);
+                                    showBlockingError(integrity.errors);
+                                    const exportBtn = document.getElementById('export-btn');
+                                    if (exportBtn) {
+                                        exportBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                                        exportBtn.setAttribute('aria-disabled', 'true');
+                                    }
+                                    return; // Reject import completely, do not mutate state
+                                }
+
+                                // Commit state atomically
+                                allRows = proposedAllRows;
+                                uploadedFiles.add(file.name);
+
+                                // Commit temporary skip audit logs to the audit trail
+                                tempAuditEvents.forEach(evt => logAuditEvent(evt));
+
+                                // Log successful ingestion event
+                                let finalWarnings = incompatibleSheets.length > 0 ? `Skipped sheets: ${incompatibleSheets.join(', ')}` : '';
+                                if (currentIngestAmbiguousWarnings.length > 0) {
+                                    if (finalWarnings) finalWarnings += '; ';
+                                    finalWarnings += `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
+                                }
+                                logAuditEvent({
+                                    action: 'ingest',
+                                    fileName: file.name,
+                                    rowsAccepted: proposedNewRows.length,
+                                    duplicateCount: detectDuplicates(proposedAllRows).length,
+                                    warnings: finalWarnings
+                                });
+
+                                renderAll();
+                                updateAuditBadge();
+
+                                // Build informative success/warning toast
+                                const totalNewRows = proposedNewRows.length;
+                                let toastMsg = `Loaded ${totalNewRows} rows from ${processedSheetCount} sheet${processedSheetCount !== 1 ? 's' : ''} in ${file.name}`;
+
+                                // EC-14/EC-27: Surface skipped/zero-row/incompatible sheets
+                                const warnings = [];
+                                if (skippedByPattern.length > 0) {
+                                    warnings.push(`${skippedByPattern.length} skipped (pattern): ${skippedByPattern.join(', ')}`);
+                                }
+                                if (incompatibleSheets.length > 0) {
+                                    warnings.push(`${incompatibleSheets.length} skipped (incompatible headers): ${incompatibleSheets.join(', ')}`);
+                                }
+                                if (zeroRowSheets.length > 0) {
+                                    warnings.push(`${zeroRowSheets.length} empty: ${zeroRowSheets.join(', ')}`);
+                                }
+                                if (currentIngestAmbiguousWarnings.length > 0) {
+                                    warnings.push(`${currentIngestAmbiguousWarnings.length} ambiguous number formats`);
+                                }
+
+                                if (warnings.length > 0) {
+                                    toastMsg += '. ⚠ ' + warnings.join('; ');
+                                }
+
+                                if (totalNewRows === 0) {
+                                    showToast('⚠ No data rows found in any sheet. Check column mapping.', 'error');
+                                } else if (warnings.length > 0) {
+                                    showToast(toastMsg, 'info');
+                                } else {
+                                    showToast(toastMsg, 'success');
+                                }
+                            },
+                            onCancel: function() {
+                                showToast('Upload cancelled. No data processed.', 'info');
+                            }
+                        });
                     } catch (err) {
                         showToast('Could not read Excel file: ' + err.message, 'error');
                     }
                 };
                 reader.readAsArrayBuffer(file);
             } else {
-                // ── CSV path: existing behaviour ──
+                // ── CSV path ──
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    ingestCSV(e.target.result, file.name);
+                    try {
+                        const csvText = e.target.result;
+                        const parsedRows = parseCSV(csvText);
+
+                        if (parsedRows.length < 2) {
+                            showToast('The file appears to be empty or has no data rows.', 'error');
+                            return;
+                        }
+
+                        const headerRowIdx = findHeaderRow(parsedRows);
+                        const headers = parsedRows[headerRowIdx];
+                        const mapping = mapHeaders(headers);
+
+                        const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
+                        if (mappedCount === 0) {
+                            showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
+                            return;
+                        }
+
+                        // Show confirmation modal
+                        showMappingConfirmationModal({
+                            fileName: file.name,
+                            isExcel: false,
+                            mapping: mapping,
+                            headers: headers,
+                            carrierOverride: null,
+                            onConfirm: function(finalMapping) {
+                                // Ingest data (filename added inside ingestCSV upon success)
+                                ingestCSV(csvText, file.name, { chosenHeaders: finalMapping });
+                            },
+                            onCancel: function() {
+                                showToast('Upload cancelled. No data processed.', 'info');
+                            }
+                        });
+                    } catch (err) {
+                        showToast('Could not read CSV file: ' + err.message, 'error');
+                    }
                 };
                 reader.readAsText(file);
             }
@@ -1419,6 +2534,7 @@
         // opts.silent     = true        → skip toast + renderAll (multi-sheet Excel loop)
         // opts.carrierName = 'SheetName' → override carrier field for all rows
         function ingestCSV(text, fileName, opts) {
+            currentIngestAmbiguousWarnings = [];
             const silent      = opts && opts.silent;
             const carrierName = (opts && opts.carrierName) ? String(opts.carrierName).trim() : null;
             const rows = parseCSV(text);
@@ -1432,7 +2548,23 @@
             const headerRowIdx = findHeaderRow(rows);
             const headers  = rows[headerRowIdx];
             const dataRows = rows.slice(headerRowIdx + 1);
-            const mapping  = mapHeaders(headers);
+            let mapping;
+            const chosenHeaders = opts && opts.chosenHeaders;
+            if (chosenHeaders) {
+                const findHeaderIndex = (hdrs, target) => {
+                    if (!hdrs || !target || target === 'Not mapped' || target.startsWith('Sheet Name (')) return -1;
+                    const norm = target.trim().toLowerCase();
+                    return hdrs.findIndex(h => String(h).trim().toLowerCase() === norm);
+                };
+                mapping = {
+                    policy: findHeaderIndex(headers, chosenHeaders.policy || chosenHeaders.policyNumber),
+                    expected: findHeaderIndex(headers, chosenHeaders.expected || chosenHeaders.expectedCommission),
+                    received: findHeaderIndex(headers, chosenHeaders.received || chosenHeaders.receivedCommission),
+                    carrier: findHeaderIndex(headers, chosenHeaders.carrier)
+                };
+            } else {
+                mapping = mapHeaders(headers);
+            }
 
             const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
             if (mappedCount === 0) {
@@ -1447,15 +2579,51 @@
             const skipped   = dataRows.length - validRows.length;
 
             // Resolve each surviving row into a canonical object and APPEND
-            let newRows = validRows.map(r => resolveRow(r, mapping));
+            let newRows = validRows.map(r => resolveRow(r, mapping, headers));
 
-            // Override carrier with sheet name when supplied (Excel sheets have no carrier column)
-            if (carrierName) {
+            // EC-20 FIX: Only override carrier with sheet/file name when
+            // the carrier column is NOT mapped. Preserve actual carrier data.
+            if (carrierName && mapping.carrier === -1) {
                 newRows = newRows.map(r => Object.assign({}, r, { carrier: carrierName }));
             }
 
             const prevCount = allRows.length;
-            allRows = allRows.concat(newRows);
+            const proposedAllRows = allRows.concat(newRows);
+            
+            // Atomic Integrity Validation Gate
+            const integrity = validateReconciliationIntegrity(proposedAllRows);
+            if (!integrity.valid) {
+                console.error('[Integrity Gate] Integrity check failed. Rejecting CSV import.', integrity.errors);
+                showBlockingError(integrity.errors);
+                const exportBtn = document.getElementById('export-btn');
+                if (exportBtn) {
+                    exportBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                    exportBtn.setAttribute('aria-disabled', 'true');
+                }
+                return; // Rollback: no state mutated, no audit logged
+            }
+
+            // Commit state atomically
+            allRows = proposedAllRows;
+            uploadedFiles.add(fileName);
+
+            // EC-52: Audit trail logging
+            let finalWarnings = '';
+            if (currentIngestAmbiguousWarnings.length > 0) {
+                finalWarnings = `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
+            }
+            logAuditEvent({
+                action: 'ingest',
+                fileName: fileName,
+                headerRow: headers.join(', '),
+                mapping: Object.assign({}, mapping),
+                rowsAccepted: newRows.length,
+                rowsRejected: skipped,
+                totalRowsAfter: allRows.length,
+                duplicateCount: detectDuplicates(proposedAllRows).length,
+                carrierOverride: (carrierName && mapping.carrier === -1) ? carrierName : null,
+                warnings: finalWarnings
+            });
 
             if (silent) return; // caller handles render + toast
 
@@ -1463,10 +2631,16 @@
             renderAll();
             updateAuditBadge();
 
-            const msg = prevCount === 0
+            let msg = prevCount === 0
                 ? `Loaded ${newRows.length} rows from ${fileName}`
                 : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
-            showToast(msg, 'success');
+
+            if (currentIngestAmbiguousWarnings.length > 0) {
+                msg += `. ⚠ ${currentIngestAmbiguousWarnings.length} ambiguous number formats`;
+                showToast(msg, 'info');
+            } else {
+                showToast(msg, 'success');
+            }
         }
 
         // ── Update the last-audit badge ────────────────────────────────────
@@ -1485,6 +2659,7 @@
             if (clearBtn.classList.contains('cursor-not-allowed')) return;
             allRows = [];
             uploadedFiles = new Set(); // reset duplicate-file tracking
+            auditTrail = []; // EC-52: reset audit trail
             showEmptyState();
             showToast('All data cleared', 'info');
         }
@@ -1583,9 +2758,12 @@
             }
 
             function fmt(n) {
-                return '$' + Number(n).toLocaleString('en-US', {
+                const num = Number(n);
+                if (!Number.isFinite(num)) return '$0.00';
+                const abs = Math.abs(num).toLocaleString('en-US', {
                     minimumFractionDigits: 2, maximumFractionDigits: 2
                 });
+                return (num < 0 ? '-$' : '$') + abs;
             }
 
             // Draws a filled rectangle
@@ -1598,7 +2776,7 @@
             let y = 0;   // current Y cursor (mm)
             let pageNum = 1;
 
-            function addFooterToPage() {
+            function addFooterToPage(pNum) {
                 const footerY = PAGE_H - 12;
                 doc.setDrawColor(...GREY_MID);
                 doc.setLineWidth(0.3);
@@ -1610,12 +2788,13 @@
                     { align: 'center', maxWidth: COL_W }
                 );
                 setFont('normal', 7.5, GREY_MID);
-                doc.text(`Page ${pageNum}`, PAGE_W - MARGIN, footerY, { align: 'right' });
+                doc.text(`Page ${pNum}`, PAGE_W - MARGIN, footerY, { align: 'right' });
             }
 
             function ensureSpace(needed) {
                 if (y + needed > PAGE_H - 22) {
-                    addFooterToPage();
+                    // Do NOT stamp footer here — the final loop stamps all pages
+                    // at the correct page number to avoid double-stamping.
                     doc.addPage();
                     pageNum++;
                     y = MARGIN + 6;
@@ -1739,10 +2918,12 @@
                     });
                 }
                 const c = carrierMap.get(key);
-                c.totalExp += r.expNum;
-                c.totalRec += r.recNum;
-                c.totalVar += r.varNum;
-                if (r.varNum < -0.01) c.policies.push(r);
+                if (r.status === 'Underpaid' && r.recNum >= 0) {
+                    c.policies.push(r);
+                    c.totalExp += r.expNum;
+                    c.totalRec += r.recNum;
+                    c.totalVar += r.varNum;
+                }
             }
 
             const carriersSorted = Array.from(carrierMap.values())
@@ -1772,7 +2953,10 @@
             function drawTableRow(r, yy, isAlt) {
                 if (isAlt) fillRect(MARGIN, yy, COL_W, TABLE_ROW_H, GREY_LT);
                 setFont('normal', 8, TEXT_DK);
-                doc.text(String(r.policy), TC[0].x + 2, yy + 5);
+                // Truncate long policy numbers to prevent overflow into adjacent columns
+                const polStr = String(r.policy);
+                const polDisplay = polStr.length > 22 ? polStr.substring(0, 20) + '…' : polStr;
+                doc.text(polDisplay,       TC[0].x + 2, yy + 5);
                 doc.text(fmt(r.expNum),    TC[1].x + 2, yy + 5);
                 doc.text(fmt(r.recNum),    TC[2].x + 2, yy + 5);
                 setFont('bold', 8, RED);
@@ -1783,7 +2967,9 @@
             function drawSubtotalRow(c, yy) {
                 fillRect(MARGIN, yy, COL_W, TABLE_ROW_H + 1, [220, 228, 240]);
                 setFont('bold', 8, TEXT_DK);
-                doc.text('CARRIER TOTAL', TC[0].x + 2, yy + 5.5);
+                // Labeled "UNDERPAID SUBTOTAL" — these figures reflect only the underpaid
+                // policies listed above, not the carrier's full statement totals.
+                doc.text('UNDERPAID SUBTOTAL', TC[0].x + 2, yy + 5.5);
                 doc.text(fmt(c.totalExp), TC[1].x + 2, yy + 5.5);
                 doc.text(fmt(c.totalRec), TC[2].x + 2, yy + 5.5);
                 setFont('bold', 8, c.totalVar < -0.01 ? RED : TEXT_DK);
@@ -1834,15 +3020,111 @@
             }
 
             // ══════════════════════════════════════════════════════════
-            // Stamp footer on every page
+            // EC-47 FIX: COMPLETE POLICY AUDIT TABLE
+            // Ensures PDF contains ALL rows, not just underpaid ones.
+            // ══════════════════════════════════════════════════════════
+
+            ensureSpace(25);
+            doc.setDrawColor(...GREY_MID);
+            doc.setLineWidth(0.3);
+            doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+            y += 8;
+
+            setFont('bold', 11, TEXT_DK);
+            doc.text('COMPLETE POLICY AUDIT', MARGIN, y);
+            doc.setDrawColor(...TEAL);
+            doc.setLineWidth(0.8);
+            doc.line(MARGIN, y + 2, MARGIN + 52, y + 2);
+            y += 4;
+
+            setFont('normal', 7.5, GREY_MID);
+            doc.text(`${allRows.length} total policies across ${new Set(allRows.map(r => r.carrier.toLowerCase())).size} carriers`, MARGIN, y + 3);
+            y += 8;
+
+            // Full table column layout: [Policy] [Carrier] [Expected] [Received] [Variance] [Status]
+            const FC = [
+                { label: 'Policy',   x: MARGIN,       w: 36 },
+                { label: 'Carrier',  x: MARGIN + 36,  w: 32 },
+                { label: 'Expected', x: MARGIN + 68,  w: 30 },
+                { label: 'Received', x: MARGIN + 98,  w: 30 },
+                { label: 'Variance', x: MARGIN + 128, w: 28 },
+                { label: 'Status',   x: MARGIN + 156, w: 22 },
+            ];
+
+            function drawFullHeader(yy) {
+                fillRect(MARGIN, yy, COL_W, TABLE_HDR_H, NAVY);
+                setFont('bold', 6.5, WHITE);
+                FC.forEach(col => {
+                    doc.text(col.label.toUpperCase(), col.x + 1.5, yy + 5.5);
+                });
+                return yy + TABLE_HDR_H;
+            }
+
+            function drawFullRow(r, yy, isAlt) {
+                if (isAlt) fillRect(MARGIN, yy, COL_W, TABLE_ROW_H, GREY_LT);
+                setFont('normal', 7, TEXT_DK);
+                const pol = String(r.policy);
+                doc.text(pol.length > 14 ? pol.substring(0, 12) + '…' : pol, FC[0].x + 1.5, yy + 5);
+                const car = String(r.carrier);
+                doc.text(car.length > 14 ? car.substring(0, 12) + '…' : car, FC[1].x + 1.5, yy + 5);
+                doc.text(fmt(r.expNum), FC[2].x + 1.5, yy + 5);
+                doc.text(fmt(r.recNum), FC[3].x + 1.5, yy + 5);
+                // Color variance by status
+                const varColor = r.status === 'Underpaid' ? RED
+                    : r.status === 'Clawback' ? [200, 140, 50]
+                    : r.status === 'Overpaid' ? [50, 140, 200]
+                    : TEXT_DK;
+                setFont('normal', 7, varColor);
+                doc.text(fmt(r.varNum), FC[4].x + 1.5, yy + 5);
+                // Status badge text
+                const statusColor = r.status === 'Match' ? TEAL
+                    : r.status === 'Underpaid' ? RED
+                    : r.status === 'Clawback' ? [200, 140, 50]
+                    : r.status === 'Overpaid' ? [50, 140, 200]
+                    : TEXT_DK;
+                setFont('bold', 6.5, statusColor);
+                doc.text(r.status, FC[5].x + 1.5, yy + 5);
+                return yy + TABLE_ROW_H;
+            }
+
+            // Sort: underpaid first, then clawback, then overpaid, then match
+            const statusOrder = { 'Underpaid': 0, 'Clawback': 1, 'Overpaid': 2, 'Match': 3 };
+            const sortedRows = [...allRows].sort((a, b) =>
+                (statusOrder[a.status] || 9) - (statusOrder[b.status] || 9)
+            );
+
+            // Draw full table header
+            ensureSpace(TABLE_HDR_H + TABLE_ROW_H);
+            y = drawFullHeader(y);
+
+            // Draw all rows
+            sortedRows.forEach((r, idx) => {
+                ensureSpace(TABLE_ROW_H + 2);
+                y = drawFullRow(r, y, idx % 2 === 1);
+                doc.setDrawColor(220, 228, 240);
+                doc.setLineWidth(0.15);
+                doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+            });
+
+            // Grand total row
+            ensureSpace(TABLE_ROW_H + 4);
+            fillRect(MARGIN, y, COL_W, TABLE_ROW_H + 1, [220, 228, 240]);
+            setFont('bold', 7, TEXT_DK);
+            doc.text('GRAND TOTAL', FC[0].x + 1.5, y + 5.5);
+            doc.text(`${allRows.length} policies`, FC[1].x + 1.5, y + 5.5);
+            doc.text(fmt(totalExp), FC[2].x + 1.5, y + 5.5);
+            doc.text(fmt(totalRec), FC[3].x + 1.5, y + 5.5);
+            setFont('bold', 7, totalRec - totalExp < -0.01 ? RED : TEXT_DK);
+            doc.text(fmt(totalRec - totalExp), FC[4].x + 1.5, y + 5.5);
+            y += TABLE_ROW_H + 4;
+
+            // ══════════════════════════════════════════════════════════
+            // Stamp footer on every page with the correct page number
             // ══════════════════════════════════════════════════════════
             const totalPages = doc.getNumberOfPages();
             for (let p = 1; p <= totalPages; p++) {
                 doc.setPage(p);
-                addFooterToPage();
-                // Update page number text (already drawn — overwrite with white then redraw)
-                // jsPDF doesn't support live page refs, so we patched addFooterToPage to
-                // use pageNum which is incremented correctly during generation.
+                addFooterToPage(p);
             }
 
             // ── Save ────────────────────────────────────────────────────
