@@ -223,10 +223,26 @@
             border: 1px solid rgba(87,241,219,0.18);
             border-radius: 12px;
             width: 100%;
-            max-width: 460px;
-            padding: 40px 36px 32px;
+            max-width: 580px;
+            padding: 36px 36px 30px;
             box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,241,219,0.06);
             animation: gateSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+        }
+
+        /* ── Data integrity blocking error overlay ── */
+        #blocking-error-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(4, 10, 22, 0.96);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        #blocking-error-overlay.is-visible {
+            display: flex;
         }
         @keyframes gateSlideIn {
             from { opacity: 0; transform: translateY(24px) scale(0.97); }
@@ -414,7 +430,7 @@
 <!-- ════════════════════════════════════════════
      DATA INTEGRITY BLOCKING ERROR OVERLAY
      ════════════════════════════════════════════ -->
-<div id="blocking-error-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="blocking-error-heading" style="position: fixed; inset: 0; z-index: 10000; background: rgba(4, 10, 22, 0.96); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px;">
+<div id="blocking-error-overlay" role="dialog" aria-modal="true" aria-labelledby="blocking-error-heading">
   <div style="background: #111e36; border: 2px solid #ffb4ab; border-radius: 12px; padding: 28px; max-width: 500px; width: 100%; box-shadow: 0 0 24px rgba(255,180,171,0.2); font-family: 'Inter', sans-serif;">
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; color: #ffb4ab;">
       <span class="material-symbols-outlined" style="font-size: 32px;" aria-hidden="true">error</span>
@@ -1127,9 +1143,17 @@
         })();
 
         function showBlockingError(errors) {
+            console.log('[Integrity Overlay] Show');
             const overlay = document.getElementById('blocking-error-overlay');
             const listEl = document.getElementById('blocking-error-list');
-            if (!overlay || !listEl) return;
+            if (!overlay) {
+                console.error('[Integrity Overlay] showBlockingError error: #blocking-error-overlay element is missing.');
+                return;
+            }
+            if (!listEl) {
+                console.error('[Integrity Overlay] showBlockingError error: #blocking-error-list element is missing.');
+                return;
+            }
             
             listEl.innerHTML = '';
             errors.forEach(err => {
@@ -1139,27 +1163,58 @@
                 listEl.appendChild(li);
             });
             
-            overlay.classList.remove('hidden');
+            overlay.classList.add('is-visible');
             document.body.style.overflow = 'hidden';
         }
 
+        function hideBlockingError() {
+            console.log('[Integrity Overlay] Hide');
+            const overlay = document.getElementById('blocking-error-overlay');
+            if (!overlay) {
+                console.error('[Integrity Overlay] hideBlockingError error: #blocking-error-overlay element is missing.');
+                return;
+            }
+            overlay.classList.remove('is-visible');
+            document.body.style.overflow = '';
+        }
+
         (function initBlockingErrorGate() {
+            console.log('[Integrity Overlay] Initialized');
             const overlay = document.getElementById('blocking-error-overlay');
             const clearBtn = document.getElementById('blocking-error-clear');
             const dismissBtn = document.getElementById('blocking-error-dismiss');
             
-            clearBtn.addEventListener('click', () => {
-                clearAllData();
-                overlay.classList.add('hidden');
-                document.body.style.overflow = '';
-            });
+            if (!overlay) {
+                console.error('[Integrity Overlay] initBlockingErrorGate error: #blocking-error-overlay element is missing.');
+            }
+            if (!clearBtn) {
+                console.error('[Integrity Overlay] initBlockingErrorGate error: #blocking-error-clear element is missing.');
+            }
+            if (!dismissBtn) {
+                console.error('[Integrity Overlay] initBlockingErrorGate error: #blocking-error-dismiss element is missing.');
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    console.log('[Integrity Overlay] Clear Click');
+                    clearAllData();
+                    hideBlockingError();
+                });
+            }
             
-            dismissBtn.addEventListener('click', () => {
-                overlay.classList.add('hidden');
-                document.body.style.overflow = '';
-                renderAll(); // Restore previous valid UI state
-            });
+            if (dismissBtn) {
+                dismissBtn.addEventListener('click', () => {
+                    console.log('[Integrity Overlay] Dismiss Click');
+                    hideBlockingError();
+                    renderAll(); // Restore previous valid UI state
+                });
+            }
         })();
+
+        // ── Emergency Escape Hatch ─────────────────────────────────────
+        window.forceHideIntegrityOverlay = () => {
+            hideBlockingError();
+        };
 
         // ── Hidden file input ──────────────────────────────────────────
         const fileInput = document.createElement('input');
@@ -1215,6 +1270,9 @@
         // Verifies that computed totals are finite and consistent.
         // Returns { valid: boolean, errors: string[] }
         function validateReconciliationIntegrity(rows) {
+            if (!rows || rows.length === 0) {
+                return { valid: true, errors: [] };
+            }
             const errors = [];
             let totalExp = 0, totalRec = 0;
 
@@ -2403,6 +2461,12 @@
                                     proposedNewRows.push(...sheetRows);
                                     processedSheetCount++;
                                 });
+
+                                // EC-15: If ALL sheets are skipped, fail the import
+                                if (processedSheetCount === 0) {
+                                    showToast(`Failed to import "${file.name}": All sheets were skipped due to incompatible headers or missing required columns.`, 'error');
+                                    return;
+                                }
 
                                 // Proposed combined dataset
                                 const proposedAllRows = allRows.concat(proposedNewRows);
