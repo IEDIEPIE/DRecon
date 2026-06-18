@@ -432,65 +432,6 @@
 </head>
 <body class="bg-background min-h-screen flex flex-col">
 
-<!-- ════════════════════════════════════════════
-     EMAIL GATE MODAL
-════════════════════════════════════════════ -->
-<div id="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-heading">
-  <div id="gate-card">
-
-    <!-- Logo -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
-      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="4" y="4" width="10" height="24" rx="2" fill="#57f1db" opacity="0.9"/>
-        <path d="M14 16 C14 10, 28 10, 28 16 C28 22, 14 22, 14 16Z" fill="#57f1db" opacity="0.5"/>
-        <circle cx="24" cy="16" r="5" fill="#57f1db"/>
-      </svg>
-      <span style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">DRecon</span>
-    </div>
-
-    <!-- Heading -->
-    <h1 id="gate-heading" style="font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;margin-bottom:8px;">Start Your Free Commission Audit</h1>
-    <p style="font-size:13px;color:#859490;margin-bottom:28px;line-height:1.5;">Enter your details to unlock your one free carrier statement audit</p>
-
-    <!-- Form -->
-    <form id="gate-form" novalidate autocomplete="on">
-
-      <!-- Full Name -->
-      <div style="margin-bottom:16px;">
-        <label for="gate-name" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">FULL NAME <span style="color:#ffb4ab;">*</span></label>
-        <input id="gate-name" class="gate-input" type="text" name="name" placeholder="Jane Smith" required autocomplete="name" />
-        <p class="gate-error-msg" id="gate-name-err">Please enter your full name.</p>
-      </div>
-
-      <!-- Agency Name -->
-      <div style="margin-bottom:16px;">
-        <label for="gate-agency" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">AGENCY NAME <span style="color:#ffb4ab;">*</span></label>
-        <input id="gate-agency" class="gate-input" type="text" name="agency" placeholder="Smith Insurance Group" required autocomplete="organization" />
-        <p class="gate-error-msg" id="gate-agency-err">Please enter your agency name.</p>
-      </div>
-
-      <!-- Work Email -->
-      <div style="margin-bottom:16px;">
-        <label for="gate-email" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">WORK EMAIL <span style="color:#ffb4ab;">*</span></label>
-        <input id="gate-email" class="gate-input" type="email" name="email" placeholder="jane@smithinsurance.com" required autocomplete="email" />
-        <p class="gate-error-msg" id="gate-email-err">Please enter a valid work email address.</p>
-      </div>
-
-      <!-- Phone (optional) -->
-      <div style="margin-bottom:28px;">
-        <label for="gate-phone" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#859490;margin-bottom:6px;">PHONE NUMBER <span style="color:#4a5a78;font-weight:400;">(optional)</span></label>
-        <input id="gate-phone" class="gate-input" type="tel" name="phone" placeholder="(555) 000-0000" autocomplete="tel" />
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" id="gate-submit">Unlock Free Audit</button>
-
-      <!-- Fine print -->
-      <p style="text-align:center;font-size:11px;color:#4a5a78;margin-top:14px;">One free audit per agency. No credit card required.</p>
-
-    </form>
-  </div>
-</div>
 
 <!-- ════════════════════════════════════════════
      COLUMN MAPPING CONFIRMATION MODAL
@@ -589,6 +530,18 @@
       <input id="dispute-email-input" type="email" placeholder="e.g. commission_disputes@progressive.com" class="w-full bg-surface-container-highest border border-outline-variant/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary" />
     </div>
 
+    <!-- Agency Identity -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div>
+        <label for="dispute-agency-name" class="block font-label-caps text-label-caps text-outline mb-2">AGENCY NAME</label>
+        <input id="dispute-agency-name" type="text" placeholder="e.g. Acme Insurance Group" class="w-full bg-surface-container-highest border border-outline-variant/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary" />
+      </div>
+      <div>
+        <label for="dispute-producer-code" class="block font-label-caps text-label-caps text-outline mb-2">PRODUCER CODE</label>
+        <input id="dispute-producer-code" type="text" placeholder="e.g. AG-12345" class="w-full bg-surface-container-highest border border-outline-variant/30 rounded-lg px-3 py-2 text-white outline-none focus:border-primary" />
+      </div>
+    </div>
+
     <!-- Letter Text Area -->
     <div class="flex-grow overflow-hidden flex flex-col mb-4">
       <label class="block font-label-caps text-label-caps text-outline mb-2">DISPUTE LETTER PREVIEW</label>
@@ -604,6 +557,50 @@
       <button id="dispute-download-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide flex items-center gap-1.5" style="border:none; cursor:pointer; color:#003731;">
         <span class="material-symbols-outlined text-[16px]">download</span>
         Download TXT
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     COMMISSION RATE SETUP MODAL
+     ════════════════════════════════════════════ -->
+<div id="rate-calculator-overlay" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-surface-container-high rounded-xl p-6 max-w-md w-full border border-outline-variant/20 shadow-2xl flex flex-col max-h-[90vh] font-sans">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-title-md text-title-md text-white flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">percent</span>
+        Setup Commission Rates
+      </h3>
+      <button id="rate-calculator-close" class="text-outline hover:text-white flex items-center justify-center" aria-label="Close rate setup dialog">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    
+    <p class="font-body-sm text-body-sm text-outline mb-4">
+      Your carrier statement does not contain an "Expected Commission" column. Enter your agency contract rates for the detected carriers below to calculate expected commissions.
+    </p>
+
+    <!-- Scrollable container for carrier rate input list -->
+    <div class="flex-grow overflow-y-auto mb-4 pr-1 max-h-[300px] border border-outline-variant/10 rounded-lg p-3 bg-surface-container-lowest" id="rate-calculator-carriers-list">
+      <!-- Generated dynamically -->
+    </div>
+
+    <!-- Rate sheet upload zone option -->
+    <div class="mb-5 p-3.5 border border-dashed border-outline-variant/30 rounded-lg bg-surface-container/30 text-center relative cursor-pointer hover:bg-surface-variant/20 transition-all" id="rate-sheet-dropzone">
+      <span class="material-symbols-outlined text-primary text-[24px] mb-1">upload_file</span>
+      <p class="text-[12px] text-soft font-semibold">Or upload a Rate Sheet (CSV)</p>
+      <p class="text-[10px] text-outline mt-0.5">Columns: Carrier, Rate %</p>
+      <input type="file" id="rate-sheet-file-input" accept=".csv" class="hidden" />
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 shrink-0">
+      <button id="rate-calculator-cancel-btn" class="border border-outline hover:bg-surface-variant/30 text-white px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="background:transparent; cursor:pointer;">
+        Cancel
+      </button>
+      <button id="rate-calculator-apply-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">
+        Apply Rates
       </button>
     </div>
   </div>
@@ -645,72 +642,6 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════
-     REPORTS COMING SOON MODAL
-     ════════════════════════════════════════════ -->
-<div id="reports-modal-overlay" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="bg-surface-container-high rounded-xl p-6 max-w-sm w-full border border-outline-variant/20 shadow-2xl font-sans text-center">
-    <div class="mb-4 text-primary">
-      <span class="material-symbols-outlined text-[48px]" aria-hidden="true">bar_chart</span>
-    </div>
-    <h3 class="font-title-md text-title-md text-white mb-2" id="reports-modal-heading">Reporting Workspace</h3>
-    <p class="font-body-sm text-body-sm text-outline mb-6">Advanced reporting is in development.</p>
-    <div class="flex flex-col">
-      <button id="reports-modal-close-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════
-     SETTINGS COMING SOON MODAL
-     ════════════════════════════════════════════ -->
-<div id="settings-modal-overlay" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="bg-surface-container-high rounded-xl p-6 max-w-md w-full border border-outline-variant/20 shadow-2xl font-sans text-left">
-    <div class="flex justify-between items-center mb-4">
-      <div class="flex items-center gap-2 text-primary">
-        <span class="material-symbols-outlined text-[24px]" aria-hidden="true">settings</span>
-        <h3 class="font-title-md text-title-md text-white" id="settings-modal-heading">Expected Commission Rules</h3>
-      </div>
-      <button id="settings-modal-close-btn-top" class="text-outline hover:text-white transition-colors" aria-label="Close modal" style="background:none; border:none; cursor:pointer;">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-    
-    <p class="font-body-sm text-body-sm text-outline mb-4">
-      Expected commission rates are derived from your agency's carrier contracts. DRecon matches imported policies against these rules to automatically calculate expected commissions.
-    </p>
-
-    <div class="bg-surface-container rounded-lg p-4 mb-4 border border-outline-variant/10">
-      <h4 class="font-title-sm text-white mb-2 flex items-center gap-1.5 text-xs uppercase tracking-wider text-primary">
-        <span class="material-symbols-outlined text-sm">info</span> Rule Examples
-      </h4>
-      <ul class="space-y-2 text-[13px] text-outline">
-        <li class="flex justify-between border-b border-white/5 pb-1">
-          <span>Progressive Auto New Business</span>
-          <span class="text-white font-bold">10.0%</span>
-        </li>
-        <li class="flex justify-between border-b border-white/5 pb-1">
-          <span>Progressive Auto Renewal</span>
-          <span class="text-white font-bold">12.0%</span>
-        </li>
-        <li class="flex justify-between pb-1">
-          <span>Travelers Home</span>
-          <span class="text-white font-bold">15.0%</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="bg-primary-container/20 border border-primary/20 rounded-lg p-3.5 mb-6">
-      <p class="text-[12px] text-primary leading-relaxed">
-        <strong>Pilot Roadmap Notice:</strong> Commission Rule Builder is part of the pilot roadmap. In the current release, expected commission values are imported directly from your agency's AMS reports or custom mapping templates.
-      </p>
-    </div>
-
-    <div class="flex flex-col">
-      <button id="settings-modal-close-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Close</button>
-    </div>
-  </div>
-</div>
 
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 bg-surface-container shadow-sm border-b border-white/5 h-16">
@@ -728,20 +659,14 @@
   <!-- Desktop Navigation -->
   <nav class="hidden md:flex items-center gap-8 h-full" aria-label="Dashboard navigation">
     <a id="nav-dashboard" class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Dashboard</a>
-    <a id="nav-reports"   class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Reports</a>
-    <a id="nav-settings"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Settings</a>
     <a href="index.html"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 flex items-center gap-1">
       <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
       Back to Home
     </a>
   </nav>
 
-  <!-- Right side: notifications + avatar + mobile hamburger -->
+  <!-- Right side: avatar + mobile hamburger -->
   <div class="flex items-center gap-3">
-    <button class="text-on-surface-variant hover:text-primary transition-colors duration-200 relative p-2" aria-label="Notifications">
-      <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
-      <span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
-    </button>
     <div id="user-avatar" class="w-10 h-10 rounded-full bg-secondary-container hidden md:flex items-center justify-center text-on-secondary-container font-bold cursor-pointer hover:bg-surface-variant transition-all border border-outline-variant/30" aria-label="User account" role="button" tabindex="0" title="">
       DA
     </div>
@@ -758,14 +683,6 @@
     <a id="mob-nav-dashboard" class="flex items-center gap-3 px-3 py-3 rounded-lg text-primary font-semibold text-sm cursor-pointer hover:bg-white/5 transition-colors">
       <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
       Dashboard
-    </a>
-    <a id="mob-nav-reports" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
-      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">bar_chart</span>
-      Reports
-    </a>
-    <a id="mob-nav-settings" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
-      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
-      Settings
     </a>
     <a href="index.html" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm hover:bg-white/5 transition-colors">
       <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
@@ -840,40 +757,6 @@
 </div>
 </section>
 
-<!-- Onboarding Info Cards (P2-A & P2-B) -->
-<section id="onboarding-info-cards" class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg mb-stack-lg animate-fade-in">
-  <!-- Card 1: How We Calculate Expected Commission -->
-  <div class="bg-surface-container-high rounded-lg p-6 shadow-sm border border-outline-variant/10 flex flex-col justify-between font-sans">
-    <div>
-      <h3 class="font-title-md text-title-md text-white mb-3 flex items-center gap-2">
-        <span class="material-symbols-outlined text-primary">help_center</span>
-        How DRecon Calculates Expected Commission
-      </h3>
-      <p class="text-body-sm text-on-surface-variant leading-relaxed">
-        Expected commissions can be mapped directly from carrier statements or configured using commission schedules. Advanced carrier commission rules are coming soon.
-      </p>
-    </div>
-    <div class="mt-4 pt-3 border-t border-outline-variant/10 flex justify-between items-center text-[11px] text-outline">
-      <span>Objection Answered: "How does DRecon know what I should be paid?"</span>
-    </div>
-  </div>
-
-  <!-- Card 2: ROI Callout -->
-  <div class="bg-surface-container-high rounded-lg p-6 shadow-sm border border-outline-variant/10 flex flex-col justify-between font-sans">
-    <div>
-      <h3 class="font-title-md text-title-md text-white mb-3 flex items-center gap-2">
-        <span class="material-symbols-outlined text-primary">trending_up</span>
-        Reclaiming Missed Revenue
-      </h3>
-      <p class="text-body-sm text-on-surface-variant leading-relaxed">
-        Recovering $5,000 in commissions at $149/month would represent more than 30× monthly ROI.
-      </p>
-    </div>
-    <div class="mt-4 pt-3 border-t border-outline-variant/10 flex justify-between items-center text-[11px] text-outline">
-      <span>Tasteful, data-driven ROI verification. No hype.</span>
-    </div>
-  </div>
-</section>
 
 <!-- Recent Audits Section -->
 <section id="recent-audits-section" class="mb-stack-lg">
@@ -1258,160 +1141,29 @@
         // ══ EMAIL GATE ════════──────────────────────────
         // Runs immediately (script at </body>, DOM ready)
         // ════════════════════════──────────────────────────
-        (function initGate() {
+        (function initUser() {
             const STORAGE_KEY = 'drecon_user';
-            const overlay     = document.getElementById('gate-overlay');
-            const form        = document.getElementById('gate-form');
-            const submitBtn   = document.getElementById('gate-submit');
-
-            // ── Helpers ────────────────────────────────────────────
-            function showError(inputId, errId, show) {
-                const inp = document.getElementById(inputId);
-                const err = document.getElementById(errId);
-                if (!inp || !err) return;
-                inp.classList.toggle('gate-input-error', show);
-                err.classList.toggle('visible', show);
-                inp.setAttribute('aria-invalid', show ? 'true' : 'false');
-            }
-
-            function clearError(inputId, errId) {
-                showError(inputId, errId, false);
-            }
-
-            function isValidEmail(v) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
-            }
-
-            // ── Apply unlocked user info to UI ─────────────────────────
-            function applyUserToUI(user) {
-                const avatar = document.getElementById('user-avatar');
-                if (!avatar) return;
-
-                // First 2 letters of agency name (uppercase), fallback to name initials
-                const agencyInitials = (user.agency || user.name || 'U')
-                    .trim()
-                    .split(/\s+/)
-                    .map(w => w[0] || '')
-                    .join('')
-                    .substring(0, 2)
-                    .toUpperCase();
-
-                avatar.textContent = agencyInitials || 'AU';
-                avatar.title = `${user.name}\n${user.agency}`;
-                avatar.setAttribute('aria-label', `${user.name} — ${user.agency}`);
-            }
-
-            // ── Dismiss gate (with fade-out animation) ──────────────────
-            function dismissGate() {
-                overlay.classList.add('gate-hidden');
-                overlay.addEventListener('animationend', () => {
-                    overlay.remove();
-                }, { once: true });
-                // Re-enable body scroll (it was locked while gate was open)
-                document.body.style.overflow = '';
-            }
-
-            // ── Check localStorage on load ──────────────────────────────
-            let storedUser = null;
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) storedUser = JSON.parse(raw);
-            } catch (_) { /* malformed JSON — treat as not found */ }
-
-            if (storedUser && storedUser.email) {
-                // Already unlocked — skip gate immediately
-                overlay.remove();
-                applyUserToUI(storedUser);
-                return; // done — rest of gate JS not needed
-            }
-
-            // Gate is showing — lock body scroll and focus first input
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                const first = document.getElementById('gate-name');
-                if (first) first.focus();
-            }, 80);
-
-            // ── Clear errors on input ─────────────────────────────────
-            [['gate-name','gate-name-err'],['gate-agency','gate-agency-err'],['gate-email','gate-email-err']]
-                .forEach(([inp, err]) => {
-                    document.getElementById(inp).addEventListener('input', () => clearError(inp, err));
-                });
-
-            // ── Trap focus inside modal ───────────────────────────────
-            const card = document.getElementById('gate-card');
-            overlay.addEventListener('keydown', function(e) {
-                if (e.key !== 'Tab') return;
-                const focusable = Array.from(card.querySelectorAll(
-                    'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
-                )).filter(el => !el.disabled);
-                if (!focusable.length) return;
-                const first = focusable[0], last = focusable[focusable.length - 1];
-                if (e.shiftKey) {
-                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
-                } else {
-                    if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
-                }
-            });
-
-            // ── Form submission ────────────────────────────────────────
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const name   = document.getElementById('gate-name').value.trim();
-                const agency = document.getElementById('gate-agency').value.trim();
-                const email  = document.getElementById('gate-email').value.trim();
-                const phone  = document.getElementById('gate-phone').value.trim();
-
-                // Validate
-                let valid = true;
-                if (!name)              { showError('gate-name',   'gate-name-err',   true); valid = false; }
-                if (!agency)            { showError('gate-agency', 'gate-agency-err', true); valid = false; }
-                if (!isValidEmail(email)) { showError('gate-email', 'gate-email-err', true); valid = false; }
-
-                if (!valid) {
-                    // Focus first errored field
-                    const first = form.querySelector('.gate-input-error');
-                    if (first) first.focus();
-                    return;
-                }
-
-                // Persist
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Unlocking…';
-
-                const user = { name, agency, email, phone, timestamp: Date.now() };
-                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(user)); } catch (_) {}
-
-                // ── Formspree webhook (fire-and-forget) ────────────────
-                // Dashboard unlocks regardless of success or failure.
-                fetch('https://formspree.io/f/mgobonrz', {
-                    method:  'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({
-                        name:      user.name,
-                        agency:    user.agency,
-                        email:     user.email,
-                        phone:     user.phone || '(not provided)',
-                        timestamp: new Date(user.timestamp).toISOString(),
-                    }),
-                }).catch(() => { /* webhook errors never block the user */ });
-
-                // Apply to UI
-                applyUserToUI(user);
-
-                // Short delay for perceived feedback, then dismiss
-                setTimeout(() => {
-                    dismissGate();
-                    // Welcome toast — slight delay so modal is gone first
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            const first = name.split(' ')[0];
-                            showToast(`Welcome ${first}! Your free audit is ready.`, 'success');
+                if (raw) {
+                    const storedUser = JSON.parse(raw);
+                    if (storedUser && storedUser.email) {
+                        const avatar = document.getElementById('user-avatar');
+                        if (avatar) {
+                            const agencyInitials = (storedUser.agency || storedUser.name || 'U')
+                                .trim()
+                                .split(/\s+/)
+                                .map(w => w[0] || '')
+                                .join('')
+                                .substring(0, 2)
+                                .toUpperCase();
+                            avatar.textContent = agencyInitials || 'AU';
+                            avatar.title = `${storedUser.name}\n${storedUser.agency}`;
+                            avatar.setAttribute('aria-label', `${storedUser.name} — ${storedUser.agency}`);
                         }
-                    }, 380);
-                }, 300);
-            });
+                    }
+                }
+            } catch (_) {}
         })();
 
         // ── COLUMN MAPPING CONFIRMATION GATE ───────────────────
@@ -1438,20 +1190,36 @@
         }
 
         function getMappingValidationMessage(mappingSelections) {
-            const requiredKeys = ['policy', 'expected', 'received'];
-            const missingRequired = requiredKeys.some(
-                key => !mappingSelections[key] || mappingSelections[key] === 'Not mapped'
-            );
-            if (missingRequired) {
-                return 'Policy Number, Expected Commission, and Received Commission must all be mapped before running the audit.';
+            const policyVal = mappingSelections.policy || mappingSelections.policyNumber;
+            const expectedVal = mappingSelections.expected || mappingSelections.expectedCommission;
+            const receivedVal = mappingSelections.received || mappingSelections.receivedCommission;
+            const premiumVal = mappingSelections.premium;
+
+            const hasPolicy = policyVal && policyVal !== 'Not mapped';
+            const hasReceived = receivedVal && receivedVal !== 'Not mapped';
+            const hasExpected = expectedVal && expectedVal !== 'Not mapped';
+            const hasPremium = premiumVal && premiumVal !== 'Not mapped';
+
+            if (!hasPolicy || !hasReceived) {
+                return 'Policy Number and Received Commission must be mapped before running the audit.';
             }
 
-            const requiredColumns = requiredKeys.map(key => mappingSelections[key]);
-            if (new Set(requiredColumns).size !== requiredColumns.length) {
-                return 'Policy Number, Expected Commission, and Received Commission must each use a different source column.';
+            if (!hasExpected && !hasPremium) {
+                return 'Either Expected Commission or Premium must be mapped before running the audit.';
             }
 
-            if (isPremiumColumnName(mappingSelections.expected)) {
+            // Uniqueness check: all mapped fields must use different columns
+            const mappedCols = [];
+            if (hasPolicy) mappedCols.push(policyVal);
+            if (hasExpected) mappedCols.push(expectedVal);
+            if (hasReceived) mappedCols.push(receivedVal);
+            if (hasPremium) mappedCols.push(premiumVal);
+
+            if (new Set(mappedCols).size !== mappedCols.length) {
+                return 'Policy Number, Expected Commission, Received Commission, and Premium must each use a different source column.';
+            }
+
+            if (hasExpected && isPremiumColumnName(expectedVal)) {
                 return 'Expected Commission cannot use a premium column. Select a commission amount column before running the audit.';
             }
 
@@ -1527,6 +1295,7 @@
                 { key: 'policy', label: 'Policy Number' },
                 { key: 'expected', label: 'Expected Commission' },
                 { key: 'received', label: 'Received Commission' },
+                { key: 'premium', label: 'Premium' },
                 { key: 'carrier', label: 'Carrier' }
             ];
 
@@ -1722,12 +1491,14 @@
                     const policySelect = activeSelectElements['policy'];
                     const expectedSelect = activeSelectElements['expected'];
                     const receivedSelect = activeSelectElements['received'];
+                    const premiumSelect = activeSelectElements['premium'];
                     const carrierSelect = activeSelectElements['carrier'];
 
                     const finalMapping = {
                         policy: policySelect ? policySelect.value : 'Not mapped',
                         expected: expectedSelect ? expectedSelect.value : 'Not mapped',
                         received: receivedSelect ? receivedSelect.value : 'Not mapped',
+                        premium: premiumSelect ? premiumSelect.value : 'Not mapped',
                         carrier: carrierSelect ? carrierSelect.value : 'Not mapped',
                         policyNumber: policySelect ? policySelect.value : 'Not mapped',
                         expectedCommission: expectedSelect ? expectedSelect.value : 'Not mapped',
@@ -1770,6 +1541,306 @@
                 }
             });
         })();
+
+        // ── RATE CALCULATOR MODAL IMPLEMENTATION ───────────────────
+        let activeRateCalculatorConfirmCallback = null;
+        let activeRateCalculatorCancelCallback = null;
+
+        function findRateForCarrier(carrierName, rates) {
+            if (!rates || !carrierName) return 0;
+            const cleanCarrier = carrierName.toLowerCase().trim();
+            
+            // 1. Exact match
+            if (rates[cleanCarrier] !== undefined) {
+                return parseFloat(rates[cleanCarrier]) || 0;
+            }
+            
+            // 2. Exact match on keys after removing non-alphanumeric chars
+            const normCarrier = cleanCarrier.replace(/[^a-z0-9]/g, '');
+            for (const key of Object.keys(rates)) {
+                const normKey = key.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+                if (normKey === normCarrier) {
+                    return parseFloat(rates[key]) || 0;
+                }
+            }
+            
+            // 3. Substring match: does the carrier name contain the rate key or vice-versa?
+            const sortedKeys = Object.keys(rates).sort((a, b) => b.length - a.length);
+            for (const key of sortedKeys) {
+                const cleanKey = key.toLowerCase().trim();
+                if (cleanKey.length >= 3) {
+                    if (cleanCarrier.includes(cleanKey) || cleanKey.includes(cleanCarrier)) {
+                        return parseFloat(rates[key]) || 0;
+                    }
+                }
+            }
+            
+            return 0;
+        }
+
+        function parseRateSheetFile(file, onLoaded) {
+            const name = file.name.toLowerCase();
+            const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls');
+
+            if (isExcel) {
+                if (typeof XLSX === 'undefined') {
+                    showToast('Excel library not loaded. Please refresh and try again.', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const sheet = workbook.Sheets[firstSheetName];
+                        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: '' });
+                        processRateSheetRows(rows, onLoaded);
+                    } catch (err) {
+                        showToast('Failed to parse Excel rate sheet: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const csvText = e.target.result;
+                        const rows = parseCSV(csvText);
+                        processRateSheetRows(rows, onLoaded);
+                    } catch (err) {
+                        showToast('Failed to parse CSV rate sheet: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function processRateSheetRows(rows, onLoaded) {
+            if (rows.length < 2) {
+                showToast('Rate sheet appears to be empty.', 'error');
+                return;
+            }
+            const headerRowIdx = findHeaderRow(rows);
+            const headers = rows[headerRowIdx].map(h => String(h).trim().toLowerCase());
+            const dataRows = rows.slice(headerRowIdx + 1);
+
+            const carrierAliases = ['carrier', 'company', 'insurer', 'name', 'carrier_name', 'carrier name'];
+            const rateAliases = ['rate', '%', 'pct', 'percent', 'percentage', 'commission', 'comm', 'comm %', 'comm_rate', 'commission_rate', 'commission rate'];
+
+            const carrierIdx = headers.findIndex(h => carrierAliases.some(alias => h.includes(alias)));
+            const rateIdx = headers.findIndex(h => rateAliases.some(alias => h.includes(alias)));
+
+            if (carrierIdx === -1 || rateIdx === -1) {
+                showToast('Could not identify "Carrier" and "Rate %" columns in rate sheet.', 'error');
+                return;
+            }
+
+            const rates = {};
+            dataRows.forEach(row => {
+                const carrier = String(row[carrierIdx] || '').trim().toLowerCase();
+                const rateRaw = String(row[rateIdx] || '').trim();
+                if (carrier && rateRaw) {
+                    let rateStr = rateRaw;
+                    if (rateStr.endsWith('%')) {
+                        rateStr = rateStr.substring(0, rateStr.length - 1).trim();
+                    }
+                    const rateVal = parseFloat(rateStr);
+                    if (!isNaN(rateVal) && isFinite(rateVal)) {
+                        rates[carrier] = rateVal;
+                    }
+                }
+            });
+
+            onLoaded(rates);
+        }
+
+        function populateRateCalculatorCarriers(uniqueCarriers, rates) {
+            const listEl = document.getElementById('rate-calculator-carriers-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            if (uniqueCarriers.length === 0) {
+                listEl.innerHTML = '<div class="text-outline text-body-sm py-4 text-center">No carriers detected</div>';
+                return;
+            }
+
+            let savedRates = {};
+            try {
+                const raw = localStorage.getItem('drecon_carrier_rates');
+                if (raw) savedRates = JSON.parse(raw);
+            } catch (_) {}
+
+            uniqueCarriers.forEach(carrier => {
+                const cleanCarrier = carrier.toLowerCase().trim();
+                let rateVal = 10.0;
+                if (rates && rates[cleanCarrier] !== undefined) {
+                    rateVal = rates[cleanCarrier];
+                } else if (savedRates[cleanCarrier] !== undefined) {
+                    rateVal = savedRates[cleanCarrier];
+                } else {
+                    const fuzzySavedVal = findRateForCarrier(carrier, savedRates);
+                    if (fuzzySavedVal !== 0) {
+                        rateVal = fuzzySavedVal * 100;
+                    }
+                }
+
+                const container = document.createElement('div');
+                container.className = 'flex items-center justify-between py-2 border-b border-outline-variant/10 last:border-0';
+
+                const label = document.createElement('label');
+                label.className = 'text-white text-body-sm font-semibold truncate mr-4 max-w-[200px]';
+                label.textContent = carrier;
+                label.setAttribute('for', 'rate-input-' + cleanCarrier.replace(/\s+/g, '-'));
+
+                const inputContainer = document.createElement('div');
+                inputContainer.className = 'flex items-center gap-1.5 shrink-0';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'rate-input-' + cleanCarrier.replace(/\s+/g, '-');
+                input.setAttribute('data-carrier', carrier);
+                input.value = rateVal.toFixed(1) + '%';
+                input.className = 'bg-surface-container-highest border border-outline-variant/30 rounded-lg px-2.5 py-1 text-white text-right text-body-sm outline-none focus:border-primary w-[80px]';
+                
+                input.addEventListener('blur', () => {
+                    let val = input.value.trim();
+                    if (val.endsWith('%')) val = val.substring(0, val.length - 1).trim();
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && isFinite(num)) {
+                        input.value = num.toFixed(1) + '%';
+                    } else {
+                        input.value = '0.0%';
+                    }
+                });
+
+                inputContainer.appendChild(input);
+                container.appendChild(label);
+                container.appendChild(inputContainer);
+                listEl.appendChild(container);
+            });
+        }
+
+        function showRateCalculatorModal(uniqueCarriers, onConfirm, onCancel) {
+            const overlay = document.getElementById('rate-calculator-overlay');
+            if (!overlay) return;
+
+            activeRateCalculatorConfirmCallback = onConfirm;
+            activeRateCalculatorCancelCallback = onCancel;
+
+            populateRateCalculatorCarriers(uniqueCarriers, null);
+
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                const closeBtn = document.getElementById('rate-calculator-close');
+                if (closeBtn) closeBtn.focus();
+            }, 80);
+        }
+
+        (function initRateCalculatorGate() {
+            const overlay = document.getElementById('rate-calculator-overlay');
+            const closeBtn = document.getElementById('rate-calculator-close');
+            const cancelBtn = document.getElementById('rate-calculator-cancel-btn');
+            const applyBtn = document.getElementById('rate-calculator-apply-btn');
+            const dropzone = document.getElementById('rate-sheet-dropzone');
+            const fileInput = document.getElementById('rate-sheet-file-input');
+
+            if (!overlay) return;
+
+            function hideModal() {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    hideModal();
+                    if (activeRateCalculatorCancelCallback) activeRateCalculatorCancelCallback();
+                });
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    hideModal();
+                    if (activeRateCalculatorCancelCallback) activeRateCalculatorCancelCallback();
+                });
+            }
+
+            if (applyBtn) {
+                applyBtn.addEventListener('click', () => {
+                    const inputs = overlay.querySelectorAll('input[id^="rate-input-"]');
+                    const rates = {};
+                    const savedRates = {};
+                    
+                    try {
+                        const raw = localStorage.getItem('drecon_carrier_rates');
+                        if (raw) Object.assign(savedRates, JSON.parse(raw));
+                    } catch (_) {}
+
+                    inputs.forEach(input => {
+                        const carrier = input.getAttribute('data-carrier');
+                        const cleanCarrier = carrier.toLowerCase().trim();
+                        let val = input.value.trim();
+                        if (val.endsWith('%')) {
+                            val = val.substring(0, val.length - 1).trim();
+                        }
+                        const num = parseFloat(val);
+                        const ratePct = (!isNaN(num) && isFinite(num)) ? num : 0.0;
+                        rates[cleanCarrier] = ratePct / 100;
+                        savedRates[cleanCarrier] = ratePct;
+                    });
+
+                    try {
+                        localStorage.setItem('drecon_carrier_rates', JSON.stringify(savedRates));
+                    } catch (_) {}
+
+                    hideModal();
+                    if (activeRateCalculatorConfirmCallback) activeRateCalculatorConfirmCallback(rates);
+                });
+            }
+
+            if (dropzone && fileInput) {
+                dropzone.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        parseRateSheetFile(file, (sheetRates) => {
+                            const carriers = Array.from(overlay.querySelectorAll('input[id^="rate-input-"]')).map(i => i.getAttribute('data-carrier'));
+                            populateRateCalculatorCarriers(carriers, sheetRates);
+                            showToast('Rates loaded successfully from rate sheet.', 'success');
+                        });
+                    }
+                });
+
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('bg-surface-variant/40');
+                });
+
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('bg-surface-variant/40');
+                });
+
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('bg-surface-variant/40');
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                        parseRateSheetFile(file, (sheetRates) => {
+                            const carriers = Array.from(overlay.querySelectorAll('input[id^="rate-input-"]')).map(i => i.getAttribute('data-carrier'));
+                            populateRateCalculatorCarriers(carriers, sheetRates);
+                            showToast('Rates loaded successfully from rate sheet.', 'success');
+                        });
+                    }
+                });
+            }
+        })();
+
 
         function showBlockingError(errors) {
             console.log('[Integrity Overlay] Show');
@@ -2066,7 +2137,9 @@
             { key: 'received', label: 'RECEIVED' },
             { key: 'variance', label: 'VARIANCE' },
             { key: 'status',   label: 'STATUS' },
+            { key: 'premium',  label: 'PREMIUM' },
         ];
+
 
         // ── Fuzzy column-name mapping ──────────────────────────────────
         // EC-06 FIX: Removed bare 'comm' from expected (ambiguous — could be received).
@@ -2093,6 +2166,8 @@
                        'amount_remitted', 'amount remitted'],
             variance: ['variance', 'variance_amount', 'difference', 'diff', 'delta', 'discrepancy', 'net_variance', 'net variance'],
             status:   ['status', 'state', 'result', 'flag', 'audit_status', 'match_status'],
+            premium:  ['premium', 'written_premium', 'written premium', 'net_premium', 'net premium',
+                       'gross_premium', 'gross premium', 'amt', 'amount', 'premium_amount', 'premium amount', 'written_prem'],
         };
 
         function normalise(str) {
@@ -2480,6 +2555,9 @@
 
             const expNum = toNum(expRaw, expColHeader);
             const recNum = toNum(recRaw, recColHeader);
+            const premRaw = get('premium');
+            const premNum = toNum(premRaw, (headers && mapping.premium !== -1) ? headers[mapping.premium] : '');
+
             // If we couldn't parse valid numbers treat as 0 for downstream use
             const expVal = isNaN(expNum) ? 0 : expNum;
             const recVal = isNaN(recNum) ? 0 : recNum;
@@ -2510,6 +2588,7 @@
                 carrier: (get('carrier') || '').trim() || 'Unknown',
                 expNum:  expVal,
                 recNum:  recVal,
+                premNum: isNaN(premNum) ? 0 : premNum,
                 varNum,
                 varRaw,
                 status,
@@ -2611,27 +2690,34 @@
             }
             const expIdx = mapping['expected'];
             const recIdx = mapping['received'];
+            const premIdx = mapping['premium'];
             const expVal = expIdx !== -1 ? rawRow[expIdx] : '';
             const recVal = recIdx !== -1 ? rawRow[recIdx] : '';
+            const premVal = premIdx !== -1 ? rawRow[premIdx] : '';
 
-            // Bug 3 fix: skip rows where expected or received is a formula string.
-            // SheetJS sometimes serialises cross-sheet references like "=Progressive!I3"
-            // instead of the computed value. These are not real data.
+            // Bug 3 fix: skip rows where expected, received, or premium is a formula string.
             const expStr = String(expVal).trim();
             const recStr = String(recVal).trim();
-            if (expStr.startsWith('=') || recStr.startsWith('=')) return false;
+            const premStr = String(premVal).trim();
+            if (expStr.startsWith('=') || recStr.startsWith('=') || premStr.startsWith('=')) return false;
 
             const parsedExpected = parseMoneyCell(expVal);
             const parsedReceived = parseMoneyCell(recVal);
-            // EC-34 FIX: Allow zero-expected rows. A policy with $0 expected and
-            // $500 received is a genuine overpayment that must be surfaced.
-            // Only reject rows where the value is unparseable, not zero.
+            const parsedPremium = parseMoneyCell(premVal);
+
             const expOk = parsedExpected.valid;
             const recOk = parsedReceived.valid; // received CAN be an explicit 0 (missing payment)
-            // Guard: reject rows where BOTH expected and received are zero
-            // (these are typically blank/padding rows, not real policy data).
-            if (!expOk || !recOk) return false;
-            if (parsedExpected.value === 0 && parsedReceived.value === 0) return false;
+            const premOk = parsedPremium.valid;
+
+            if (expIdx !== -1) {
+                if (!expOk || !recOk) return false;
+                if (parsedExpected.value === 0 && parsedReceived.value === 0) return false;
+            } else if (premIdx !== -1) {
+                if (!premOk || !recOk) return false;
+                if (parsedPremium.value === 0 && parsedReceived.value === 0) return false;
+            } else {
+                return false;
+            }
 
             return true;
         }
@@ -2670,6 +2756,8 @@
                     if (r.expNum > 0) {
                         underpaid += r.expNum;
                         underpaidClawbackCount++;
+                    } else if (r.expNum < 0) {
+                        clawback -= Math.abs(r.expNum);
                     }
                 } else if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
                     matchCount++;
@@ -2864,10 +2952,6 @@
                 return;
             }
 
-            const onboardingCards = document.getElementById('onboarding-info-cards');
-            if (onboardingCards) {
-                onboardingCards.classList.add('hidden');
-            }
 
             const trustContainer = document.getElementById('trust-indicators-container');
             if (trustContainer) {
@@ -3865,10 +3949,6 @@
             const reconciliationPanel = document.getElementById('reconciliation-panel');
             if (reconciliationPanel) reconciliationPanel.classList.add('hidden');
 
-            const onboardingCards = document.getElementById('onboarding-info-cards');
-            if (onboardingCards) {
-                onboardingCards.classList.remove('hidden');
-            }
             
             const sectionsToHide = [
                 'revenue-leakage-section',
@@ -4002,9 +4082,6 @@
             const sampleBadgeEl = document.getElementById('sample-data-badge');
             if (sampleBadgeEl) sampleBadgeEl.classList.remove('hidden');
 
-            // Hide onboarding cards
-            const onboardingCards = document.getElementById('onboarding-info-cards');
-            if (onboardingCards) onboardingCards.classList.add('hidden');
             
             // Reveal sections
             const sectionsToShow = [
@@ -4335,20 +4412,21 @@
                                         thisMapping.policy = findHeaderIndex(thisHeaders, finalMapping.policy || finalMapping.policyNumber);
                                         thisMapping.expected = findHeaderIndex(thisHeaders, finalMapping.expected || finalMapping.expectedCommission);
                                         thisMapping.received = findHeaderIndex(thisHeaders, finalMapping.received || finalMapping.receivedCommission);
+                                        thisMapping.premium = findHeaderIndex(thisHeaders, finalMapping.premium);
                                         thisMapping.carrier = findHeaderIndex(thisHeaders, finalMapping.carrier);
                                     } else {
                                         thisMapping = mapHeaders(thisHeaders);
                                     }
 
-                                    // Verify required fields: policy, expected, received
-                                    if (thisMapping.policy === -1 || thisMapping.expected === -1 || thisMapping.received === -1) {
+                                    // Verify required fields: policy, received, and either expected or premium
+                                    if (thisMapping.policy === -1 || thisMapping.received === -1 || (thisMapping.expected === -1 && thisMapping.premium === -1)) {
                                         console.warn(`Skipping sheet "${sn}": incompatible headers. Ignored ${candidateRowsInSheet} rows.`);
                                         
                                         tempAuditEvents.push({
                                             action: 'skip_sheet',
                                             fileName: file.name,
                                             sheetName: sn,
-                                            warnings: `Incompatible headers (policy=${thisMapping.policy}, expected=${thisMapping.expected}, received=${thisMapping.received}). Ignored ${candidateRowsInSheet} rows.`
+                                            warnings: `Incompatible headers (policy=${thisMapping.policy}, expected=${thisMapping.expected}, received=${thisMapping.received}, premium=${thisMapping.premium}). Ignored ${candidateRowsInSheet} rows.`
                                         });
 
                                         incompatibleSheets.push(`${sn} (${candidateRowsInSheet} rows ignored)`);
@@ -4429,92 +4507,124 @@ return;
                                     return;
                                 }
 
-                                // Proposed combined dataset
-                                const proposedAllRows = allRows.concat(proposedNewRows);
-                                
-                                // Atomic Integrity Validation Gate
-                                const integrity = validateReconciliationIntegrity(proposedAllRows);
-                                if (!integrity.valid) {
-                                    console.error('[Integrity Gate] Integrity check failed. Rejecting import.', integrity.errors);
-                                    showBlockingError(integrity.errors);
-                                    const exportBtn = document.getElementById('export-btn');
-                                    const xlsxBtn = document.getElementById('export-xlsx-btn');
-                                    [exportBtn, xlsxBtn].forEach(btn => {
-                                        if (btn) {
-                                            btn.classList.add('opacity-40', 'cursor-not-allowed');
-                                            btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
-                                            btn.setAttribute('aria-disabled', 'true');
-                                            btn.disabled = true;
+                                const commitExcelImport = () => {
+                                    // Proposed combined dataset
+                                    const proposedAllRows = allRows.concat(proposedNewRows);
+                                    
+                                    // Atomic Integrity Validation Gate
+                                    const integrity = validateReconciliationIntegrity(proposedAllRows);
+                                    if (!integrity.valid) {
+                                        console.error('[Integrity Gate] Integrity check failed. Rejecting import.', integrity.errors);
+                                        showBlockingError(integrity.errors);
+                                        const exportBtn = document.getElementById('export-btn');
+                                        const xlsxBtn = document.getElementById('export-xlsx-btn');
+                                        [exportBtn, xlsxBtn].forEach(btn => {
+                                            if (btn) {
+                                                btn.classList.add('opacity-40', 'cursor-not-allowed');
+                                                btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
+                                                btn.setAttribute('aria-disabled', 'true');
+                                                btn.disabled = true;
+                                            }
+                                        });
+                                        if (allRows.length === 0) {
+                                            exceptionsOnlyMode = true;
+                                            filterStatus = 'Underpaid';
+                                        }
+                                        return; // Reject import completely, do not mutate state
+                                    }
+
+                                    // Commit state atomically
+                                    allRows = proposedAllRows;
+                                    uploadedFiles.add(file.name);
+                                    activeRejectedRowsCount += rejectedRowsInThisImport;
+                                    currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
+
+                                    // Save to audit history
+                                    const metrics = computeSummaryMetrics(allRows);
+                                    saveAuditToHistory(file.name, allRows.length, metrics.underpaid, currentAuditId);
+
+                                    // Commit temporary skip audit logs to the audit trail
+                                    tempAuditEvents.forEach(evt => logAuditEvent(evt));
+
+                                    // Log successful ingestion event
+                                    let finalWarnings = incompatibleSheets.length > 0 ? `Skipped sheets: ${incompatibleSheets.join(', ')}` : '';
+                                    if (currentIngestAmbiguousWarnings.length > 0) {
+                                        if (finalWarnings) finalWarnings += '; ';
+                                        finalWarnings += `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
+                                    }
+                                    logAuditEvent({
+                                        action: 'ingest',
+                                        fileName: file.name,
+                                        rowsAccepted: proposedNewRows.length,
+                                        duplicateCount: detectDuplicates(proposedAllRows).length,
+                                        warnings: finalWarnings
+                                    });
+
+                                    exceptionsOnlyMode = true;
+                                    filterStatus = 'Underpaid';
+                                    renderAll();
+                                    updateAuditBadge();
+
+                                    // Build informative success/warning toast
+                                    const totalNewRows = proposedNewRows.length;
+                                    let toastMsg = `Loaded ${totalNewRows} rows from ${processedSheetCount} sheet${processedSheetCount !== 1 ? 's' : ''} in ${file.name}`;
+
+                                    // EC-14/EC-27: Surface skipped/zero-row/incompatible sheets
+                                    const warnings = [];
+                                    if (skippedByPattern.length > 0) {
+                                        warnings.push(`${skippedByPattern.length} skipped (pattern): ${skippedByPattern.join(', ')}`);
+                                    }
+                                    if (incompatibleSheets.length > 0) {
+                                        warnings.push(`${incompatibleSheets.length} skipped (incompatible headers): ${incompatibleSheets.join(', ')}`);
+                                    }
+                                    if (zeroRowSheets.length > 0) {
+                                        warnings.push(`${zeroRowSheets.length} empty: ${zeroRowSheets.join(', ')}`);
+                                    }
+                                    if (currentIngestAmbiguousWarnings.length > 0) {
+                                        warnings.push(`${currentIngestAmbiguousWarnings.length} ambiguous number formats`);
+                                    }
+
+                                    if (warnings.length > 0) {
+                                        toastMsg += '. ⚠ ' + warnings.join('; ');
+                                    }
+
+                                    if (totalNewRows === 0) {
+                                        showToast('⚠ No data rows found in any sheet. Check column mapping.', 'error');
+                                    } else if (warnings.length > 0) {
+                                        showToast(toastMsg, 'info');
+                                    } else {
+                                        showToast(toastMsg, 'success');
+                                    }
+                                };
+
+                                if (finalMapping.expected === 'Not mapped') {
+                                    const uniqueCarriers = Array.from(new Set(proposedNewRows.map(r => r.carrier))).filter(c => c && c !== 'Unknown');
+                                    showRateCalculatorModal(uniqueCarriers, function(rates) {
+                                        proposedNewRows.forEach(row => {
+                                            const rate = findRateForCarrier(row.carrier, rates);
+                                            row.expNum = row.premNum * rate;
+                                            row.varNum = row.recNum - row.expNum;
+                                            row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
+                                            if (row.recNum < 0) {
+                                                row.status = 'Clawback';
+                                            } else if (Math.abs(row.varNum) < 0.01) {
+                                                row.status = 'Match';
+                                            } else if (row.varNum < 0) {
+                                                row.status = 'Underpaid';
+                                            } else {
+                                                row.status = 'Overpaid';
+                                            }
+                                        });
+                                        commitExcelImport();
+                                    }, function() {
+                                        showToast('Upload cancelled. No data processed.', 'info');
+                                        if (allRows.length === 0) {
+                                            exceptionsOnlyMode = true;
+                                            filterStatus = 'Underpaid';
                                         }
                                     });
-                                    if (allRows.length === 0) {
-                                        exceptionsOnlyMode = true;
-                                        filterStatus = 'Underpaid';
-                                    }
-                                    return; // Reject import completely, do not mutate state
-                                }
-
-                                // Commit state atomically
-                                allRows = proposedAllRows;
-                                uploadedFiles.add(file.name);
-                                activeRejectedRowsCount += rejectedRowsInThisImport;
-                                currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
-
-                                // Save to audit history
-                                const metrics = computeSummaryMetrics(allRows);
-                                saveAuditToHistory(file.name, allRows.length, metrics.underpaid, currentAuditId);
-
-                                // Commit temporary skip audit logs to the audit trail
-                                tempAuditEvents.forEach(evt => logAuditEvent(evt));
-
-                                // Log successful ingestion event
-                                let finalWarnings = incompatibleSheets.length > 0 ? `Skipped sheets: ${incompatibleSheets.join(', ')}` : '';
-                                if (currentIngestAmbiguousWarnings.length > 0) {
-                                    if (finalWarnings) finalWarnings += '; ';
-                                    finalWarnings += `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
-                                }
-                                logAuditEvent({
-                                    action: 'ingest',
-                                    fileName: file.name,
-                                    rowsAccepted: proposedNewRows.length,
-                                    duplicateCount: detectDuplicates(proposedAllRows).length,
-                                    warnings: finalWarnings
-                                });
-
-                                exceptionsOnlyMode = true;
-                                filterStatus = 'Underpaid';
-                                renderAll();
-                                updateAuditBadge();
-
-                                // Build informative success/warning toast
-                                const totalNewRows = proposedNewRows.length;
-                                let toastMsg = `Loaded ${totalNewRows} rows from ${processedSheetCount} sheet${processedSheetCount !== 1 ? 's' : ''} in ${file.name}`;
-
-                                // EC-14/EC-27: Surface skipped/zero-row/incompatible sheets
-                                const warnings = [];
-                                if (skippedByPattern.length > 0) {
-                                    warnings.push(`${skippedByPattern.length} skipped (pattern): ${skippedByPattern.join(', ')}`);
-                                }
-                                if (incompatibleSheets.length > 0) {
-                                    warnings.push(`${incompatibleSheets.length} skipped (incompatible headers): ${incompatibleSheets.join(', ')}`);
-                                }
-                                if (zeroRowSheets.length > 0) {
-                                    warnings.push(`${zeroRowSheets.length} empty: ${zeroRowSheets.join(', ')}`);
-                                }
-                                if (currentIngestAmbiguousWarnings.length > 0) {
-                                    warnings.push(`${currentIngestAmbiguousWarnings.length} ambiguous number formats`);
-                                }
-
-                                if (warnings.length > 0) {
-                                    toastMsg += '. ⚠ ' + warnings.join('; ');
-                                }
-
-                                if (totalNewRows === 0) {
-                                    showToast('⚠ No data rows found in any sheet. Check column mapping.', 'error');
-                                } else if (warnings.length > 0) {
-                                    showToast(toastMsg, 'info');
                                 } else {
-                                    showToast(toastMsg, 'success');
+                                    commitExcelImport();
                                 }
                             }),
                             onCancel: wrapCallback(function() {
@@ -4618,6 +4728,7 @@ return;
                     policy: findHeaderIndex(headers, chosenHeaders.policy || chosenHeaders.policyNumber),
                     expected: findHeaderIndex(headers, chosenHeaders.expected || chosenHeaders.expectedCommission),
                     received: findHeaderIndex(headers, chosenHeaders.received || chosenHeaders.receivedCommission),
+                    premium: findHeaderIndex(headers, chosenHeaders.premium),
                     carrier: findHeaderIndex(headers, chosenHeaders.carrier)
                 };
             } else {
@@ -4630,9 +4741,9 @@ return;
             }
 
             // Reject files missing required columns
-            if (mapping.policy === -1 || mapping.expected === -1 || mapping.received === -1) {
+            if (mapping.policy === -1 || mapping.received === -1 || (mapping.expected === -1 && mapping.premium === -1)) {
                 if (!silent) {
-                    showToast('Import rejected: Policy, Expected, and Received columns must all be mapped.', 'error');
+                    showToast('Import rejected: Policy, Received, and either Expected or Premium columns must be mapped.', 'error');
                 }
                 return;
             }
@@ -4651,6 +4762,7 @@ return;
                 { key: 'policy', label: 'Policy Number' },
                 { key: 'expected', label: 'Expected Commission' },
                 { key: 'received', label: 'Received Commission' },
+                { key: 'premium', label: 'Premium' },
                 { key: 'carrier', label: 'Carrier' }
             ];
             fieldsToVerify.forEach(f => {
@@ -4695,76 +4807,108 @@ return;
                 newRows = newRows.map(r => Object.assign({}, r, { carrier: finalCarrierName }));
             }
 
-            const prevCount = allRows.length;
-            const proposedAllRows = allRows.concat(newRows);
-            
-            // Atomic Integrity Validation Gate
-            const integrity = validateReconciliationIntegrity(proposedAllRows);
-            if (!integrity.valid) {
-                console.error('[Integrity Gate] Integrity check failed. Rejecting CSV import.', integrity.errors);
-                showBlockingError(integrity.errors);
-                const exportBtn = document.getElementById('export-btn');
-                const xlsxBtn = document.getElementById('export-xlsx-btn');
-                [exportBtn, xlsxBtn].forEach(btn => {
-                    if (btn) {
-                        btn.classList.add('opacity-40', 'cursor-not-allowed');
-                        btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
-                        btn.setAttribute('aria-disabled', 'true');
-                        btn.disabled = true;
+            const commitCSVImport = () => {
+                const prevCount = allRows.length;
+                const proposedAllRows = allRows.concat(newRows);
+                
+                // Atomic Integrity Validation Gate
+                const integrity = validateReconciliationIntegrity(proposedAllRows);
+                if (!integrity.valid) {
+                    console.error('[Integrity Gate] Integrity check failed. Rejecting CSV import.', integrity.errors);
+                    showBlockingError(integrity.errors);
+                    const exportBtn = document.getElementById('export-btn');
+                    const xlsxBtn = document.getElementById('export-xlsx-btn');
+                    [exportBtn, xlsxBtn].forEach(btn => {
+                        if (btn) {
+                            btn.classList.add('opacity-40', 'cursor-not-allowed');
+                            btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
+                            btn.setAttribute('aria-disabled', 'true');
+                            btn.disabled = true;
+                        }
+                    });
+                    if (allRows.length === 0) {
+                        exceptionsOnlyMode = true;
+                        filterStatus = 'Underpaid';
+                    }
+                    return; // Rollback: no state mutated, no audit logged
+                }
+
+                // Commit state atomically
+                allRows = proposedAllRows;
+                uploadedFiles.add(fileName);
+                activeRejectedRowsCount += skipped;
+                currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
+
+                // Save to audit history
+                const metrics = computeSummaryMetrics(allRows);
+                saveAuditToHistory(fileName, allRows.length, metrics.underpaid, currentAuditId);
+
+                // EC-52: Audit trail logging
+                let finalWarnings = '';
+                if (currentIngestAmbiguousWarnings.length > 0) {
+                    finalWarnings = `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
+                }
+                logAuditEvent({
+                    action: 'ingest',
+                    fileName: fileName,
+                    headerRow: headers.join(', '),
+                    mapping: Object.assign({}, mapping),
+                    rowsAccepted: newRows.length,
+                    rowsRejected: skipped,
+                    totalRowsAfter: allRows.length,
+                    duplicateCount: detectDuplicates(proposedAllRows).length,
+                    carrierOverride: (carrierName && mapping.carrier === -1) ? carrierName : null,
+                    warnings: finalWarnings
+                });
+
+                if (silent) return; // caller handles render + toast
+
+                // Single-file (CSV) path: render and toast immediately
+                exceptionsOnlyMode = true;
+                filterStatus = 'Underpaid';
+                renderAll();
+                updateAuditBadge();
+
+                let msg = prevCount === 0
+                    ? `Loaded ${newRows.length} rows from ${fileName}`
+                    : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
+
+                if (currentIngestAmbiguousWarnings.length > 0) {
+                    msg += `. ⚠ ${currentIngestAmbiguousWarnings.length} ambiguous number formats`;
+                    showToast(msg, 'info');
+                } else {
+                    showToast(msg, 'success');
+                }
+            };
+
+            if (mapping.expected === -1) {
+                const uniqueCarriers = Array.from(new Set(newRows.map(r => r.carrier))).filter(c => c && c !== 'Unknown');
+                showRateCalculatorModal(uniqueCarriers, function(rates) {
+                    newRows.forEach(row => {
+                        const rate = findRateForCarrier(row.carrier, rates);
+                        row.expNum = row.premNum * rate;
+                        row.varNum = row.recNum - row.expNum;
+                        row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
+                        if (row.recNum < 0) {
+                            row.status = 'Clawback';
+                        } else if (Math.abs(row.varNum) < 0.01) {
+                            row.status = 'Match';
+                        } else if (row.varNum < 0) {
+                            row.status = 'Underpaid';
+                        } else {
+                            row.status = 'Overpaid';
+                        }
+                    });
+                    commitCSVImport();
+                }, function() {
+                    showToast('Upload cancelled. No data processed.', 'info');
+                    if (allRows.length === 0) {
+                        exceptionsOnlyMode = true;
+                        filterStatus = 'Underpaid';
                     }
                 });
-                if (allRows.length === 0) {
-                    exceptionsOnlyMode = true;
-                    filterStatus = 'Underpaid';
-                }
-                return; // Rollback: no state mutated, no audit logged
-            }
-
-            // Commit state atomically
-            allRows = proposedAllRows;
-            uploadedFiles.add(fileName);
-            activeRejectedRowsCount += skipped;
-            currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
-
-            // Save to audit history
-            const metrics = computeSummaryMetrics(allRows);
-            saveAuditToHistory(fileName, allRows.length, metrics.underpaid, currentAuditId);
-
-            // EC-52: Audit trail logging
-            let finalWarnings = '';
-            if (currentIngestAmbiguousWarnings.length > 0) {
-                finalWarnings = `${currentIngestAmbiguousWarnings.length} ambiguous number formats detected`;
-            }
-            logAuditEvent({
-                action: 'ingest',
-                fileName: fileName,
-                headerRow: headers.join(', '),
-                mapping: Object.assign({}, mapping),
-                rowsAccepted: newRows.length,
-                rowsRejected: skipped,
-                totalRowsAfter: allRows.length,
-                duplicateCount: detectDuplicates(proposedAllRows).length,
-                carrierOverride: (carrierName && mapping.carrier === -1) ? carrierName : null,
-                warnings: finalWarnings
-            });
-
-            if (silent) return; // caller handles render + toast
-
-            // Single-file (CSV) path: render and toast immediately
-            exceptionsOnlyMode = true;
-            filterStatus = 'Underpaid';
-            renderAll();
-            updateAuditBadge();
-
-            let msg = prevCount === 0
-                ? `Loaded ${newRows.length} rows from ${fileName}`
-                : `Added ${newRows.length} rows — ${allRows.length} total across all files`;
-
-            if (currentIngestAmbiguousWarnings.length > 0) {
-                msg += `. ⚠ ${currentIngestAmbiguousWarnings.length} ambiguous number formats`;
-                showToast(msg, 'info');
             } else {
-                showToast(msg, 'success');
+                commitCSVImport();
             }
         }
 
@@ -5966,10 +6110,31 @@ return;
             }
         }
 
-        function getDisputeLetterContent(carrierName, carrierEmail) {
+        function getDisputeLetterContent(carrierName, carrierEmail, agencyNameOverride, producerCodeOverride) {
             const dateStr = new Date().toISOString().split('T')[0];
             const emailStr = carrierEmail ? escapeFormulaInjection(carrierEmail.trim()) : '(not provided)';
             const escapedCarrierName = escapeFormulaInjection(carrierName);
+
+            // Resolve agency identity: override > DOM input > localStorage > fallback
+            let agencyName = agencyNameOverride || '';
+            if (!agencyName) {
+                const agencyEl = document.getElementById('dispute-agency-name');
+                agencyName = agencyEl ? agencyEl.value.trim() : '';
+            }
+            if (!agencyName) {
+                try { const u = JSON.parse(localStorage.getItem('drecon_user') || '{}'); agencyName = u.agency || ''; } catch(_) {}
+            }
+            agencyName = agencyName || 'Your Agency Name';
+
+            let producerCode = producerCodeOverride || '';
+            if (!producerCode) {
+                const prodEl = document.getElementById('dispute-producer-code');
+                producerCode = prodEl ? prodEl.value.trim() : '';
+            }
+            if (!producerCode) {
+                try { producerCode = localStorage.getItem('drecon_producer_code') || ''; } catch(_) {}
+            }
+            const producerLine = producerCode ? `\nProducer Code: ${escapeFormulaInjection(producerCode)}` : '';
             
             const carrierRows = allRows.filter(r => 
                 String(r.carrier).toLowerCase() === carrierName.toLowerCase() && 
@@ -5997,6 +6162,7 @@ We have audited our commission statements for ${escapedCarrierName} and identifi
 
 Date of Audit: ${dateStr}
 Carrier: ${escapedCarrierName}
+Agency: ${escapeFormulaInjection(agencyName)}${producerLine}
 Total Discrepancies: ${carrierRows.length} policies
 Total Outstanding Amount: ${formatCurrency(totalUnderpaid)}
 
@@ -6005,7 +6171,7 @@ ${tableText}
 Please review this statement and credit the missing commission amounts at your earliest convenience.
 
 Sincerely,
-Audit Operations team
+${escapeFormulaInjection(agencyName)}${producerLine}
 
 Generated by DRecon
 Generated Date: ${dateStr}`;
@@ -6018,6 +6184,47 @@ Generated Date: ${dateStr}`;
             const email = disputeEmailInput ? disputeEmailInput.value : '';
             disputeLetterText.value = getDisputeLetterContent(carrier, email);
         }
+
+        function prefillDisputeAgencyFields() {
+            const agencyInput = document.getElementById('dispute-agency-name');
+            const producerInput = document.getElementById('dispute-producer-code');
+            if (agencyInput && !agencyInput.value.trim()) {
+                try {
+                    const u = JSON.parse(localStorage.getItem('drecon_user') || '{}');
+                    if (u.agency) agencyInput.value = u.agency;
+                } catch(_) {}
+            }
+            if (producerInput && !producerInput.value.trim()) {
+                try {
+                    const stored = localStorage.getItem('drecon_producer_code');
+                    if (stored) producerInput.value = stored;
+                } catch(_) {}
+            }
+        }
+
+        // Persist agency/producer inputs to localStorage on change
+        (function initDisputeIdentityPersistence() {
+            const agencyInput = document.getElementById('dispute-agency-name');
+            const producerInput = document.getElementById('dispute-producer-code');
+            if (agencyInput) {
+                agencyInput.addEventListener('change', function() {
+                    try {
+                        const u = JSON.parse(localStorage.getItem('drecon_user') || '{}');
+                        u.agency = agencyInput.value.trim();
+                        localStorage.setItem('drecon_user', JSON.stringify(u));
+                    } catch(_) {}
+                    generateDisputeLetterPreview();
+                });
+                agencyInput.addEventListener('input', generateDisputeLetterPreview);
+            }
+            if (producerInput) {
+                producerInput.addEventListener('change', function() {
+                    try { localStorage.setItem('drecon_producer_code', producerInput.value.trim()); } catch(_) {}
+                    generateDisputeLetterPreview();
+                });
+                producerInput.addEventListener('input', generateDisputeLetterPreview);
+            }
+        })();
 
         function openDisputeModalForCarrier(carrierName) {
             if (allRows.length === 0) return;
@@ -6054,6 +6261,7 @@ Generated Date: ${dateStr}`;
             }
 
             updateEmailForSelectedCarrier();
+            prefillDisputeAgencyFields();
 
             if (disputeModalOverlay) {
                 disputeModalOverlay.classList.remove('hidden');
@@ -6100,6 +6308,7 @@ Generated Date: ${dateStr}`;
                 }
 
                 updateEmailForSelectedCarrier();
+                prefillDisputeAgencyFields();
 
                 if (disputeModalOverlay) {
                     disputeModalOverlay.classList.remove('hidden');
@@ -6286,64 +6495,6 @@ Generated Date: ${dateStr}`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Helper to show/hide modals with scroll lock and accessibility
-        function openModalPlaceholder(overlayId, closeBtnId) {
-            const overlay = document.getElementById(overlayId);
-            if (!overlay) return;
-            overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            
-            // Focus trap and focus close button
-            setTimeout(() => {
-                const closeBtn = document.getElementById(closeBtnId);
-                if (closeBtn) closeBtn.focus();
-            }, 80);
-        }
-
-        function closeModalPlaceholder(overlayId) {
-            const overlay = document.getElementById(overlayId);
-            if (!overlay) return;
-            overlay.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-
-        // Reports Nav / Modal Wiring
-        document.getElementById('nav-reports').addEventListener('click', (e) => {
-            e.preventDefault();
-            openModalPlaceholder('reports-modal-overlay', 'reports-modal-close-btn');
-        });
-        document.getElementById('mob-nav-reports').addEventListener('click', () => {
-            closeMobileMenu();
-            openModalPlaceholder('reports-modal-overlay', 'reports-modal-close-btn');
-        });
-        const reportsCloseBtn = document.getElementById('reports-modal-close-btn');
-        if (reportsCloseBtn) {
-            reportsCloseBtn.addEventListener('click', () => {
-                closeModalPlaceholder('reports-modal-overlay');
-            });
-        }
-
-        // Settings Nav / Modal Wiring
-        document.getElementById('nav-settings').addEventListener('click', (e) => {
-            e.preventDefault();
-            openModalPlaceholder('settings-modal-overlay', 'settings-modal-close-btn');
-        });
-        document.getElementById('mob-nav-settings').addEventListener('click', () => {
-            closeMobileMenu();
-            openModalPlaceholder('settings-modal-overlay', 'settings-modal-close-btn');
-        });
-        const settingsCloseBtn = document.getElementById('settings-modal-close-btn');
-        if (settingsCloseBtn) {
-            settingsCloseBtn.addEventListener('click', () => {
-                closeModalPlaceholder('settings-modal-overlay');
-            });
-        }
-        const settingsCloseBtnTop = document.getElementById('settings-modal-close-btn-top');
-        if (settingsCloseBtnTop) {
-            settingsCloseBtnTop.addEventListener('click', () => {
-                closeModalPlaceholder('settings-modal-overlay');
-            });
-        }
 
         // ── Mobile hamburger menu ─────────────────────────────────────
         const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
@@ -6529,13 +6680,23 @@ Generated Date: ${dateStr}`;
                 actionsDiv.className = 'flex items-center gap-1.5 ml-2 border-l border-outline-variant/20 pl-2';
 
                 const filterBtn = document.createElement('button');
-                filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-primary hover:text-white px-2 py-1 rounded bg-primary/10 hover:bg-primary/20 transition-colors';
-                filterBtn.style.border = 'none';
-                filterBtn.style.cursor = 'pointer';
-                filterBtn.textContent = 'Filter';
-                filterBtn.addEventListener('click', () => {
-                    runHistoryAuditFilter(a.auditId, a.auditName);
-                });
+                const auditDataLoaded = uploadedFiles.has(a.auditName);
+                if (auditDataLoaded) {
+                    filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-primary hover:text-white px-2 py-1 rounded bg-primary/10 hover:bg-primary/20 transition-colors';
+                    filterBtn.style.border = 'none';
+                    filterBtn.style.cursor = 'pointer';
+                    filterBtn.textContent = 'Filter';
+                    filterBtn.addEventListener('click', () => {
+                        runHistoryAuditFilter(a.auditId, a.auditName);
+                    });
+                } else {
+                    filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-outline/50 px-2 py-1 rounded bg-surface-variant/10 cursor-not-allowed';
+                    filterBtn.style.border = 'none';
+                    filterBtn.textContent = 'Filter';
+                    filterBtn.disabled = true;
+                    filterBtn.title = 'Re-upload this file to filter';
+                    filterBtn.setAttribute('aria-disabled', 'true');
+                }
 
                 const summaryBtn = document.createElement('button');
                 summaryBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-outline hover:text-white px-2 py-1 rounded bg-surface-variant/30 hover:bg-surface-variant/50 transition-colors';
@@ -6571,9 +6732,10 @@ Generated Date: ${dateStr}`;
             // Show file active badge
             const fileBadge = document.getElementById('file-filter-badge');
             const fileText = document.getElementById('file-filter-badge-text');
-            fileText.textContent = `File: ${name}`;
-            fileBadge.classList.remove('hidden');
-            document.getElementById('filter-badges-container').classList.remove('hidden');
+            if (fileText) fileText.textContent = `File: ${name}`;
+            if (fileBadge) fileBadge.classList.remove('hidden');
+            const badgesContainer = document.getElementById('filter-badges-container');
+            if (badgesContainer) badgesContainer.classList.remove('hidden');
             
             renderAll();
         };
@@ -6673,8 +6835,6 @@ Generated Date: ${dateStr}`;
         setupFocusTrap('pdf-export-modal-overlay', 'div');
         setupFocusTrap('audit-detail-modal-overlay', 'div');
         setupFocusTrap('blocking-error-overlay', 'div');
-        setupFocusTrap('reports-modal-overlay', 'div');
-        setupFocusTrap('settings-modal-overlay', 'div');
 
         // ── Global Escape Key Listener ─────────────────────────────────
         if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
@@ -6710,19 +6870,6 @@ Generated Date: ${dateStr}`;
                     document.body.style.overflow = '';
                 }
 
-                // 5. Reports Modal Close
-                const reportsModal = document.getElementById('reports-modal-overlay');
-                if (reportsModal && !reportsModal.classList.contains('hidden')) {
-                    reportsModal.classList.add('hidden');
-                    document.body.style.overflow = '';
-                }
-
-                // 6. Settings Modal Close
-                const settingsModal = document.getElementById('settings-modal-overlay');
-                if (settingsModal && !settingsModal.classList.contains('hidden')) {
-                    settingsModal.classList.add('hidden');
-                    document.body.style.overflow = '';
-                }
 
                 // Note: Integrity Overlay (blocking-error-overlay) is intentionally EXCLUDED.
                 // It does not close via Escape key.
