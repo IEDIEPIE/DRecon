@@ -395,6 +395,33 @@
             border-color: #1f2a3f transparent transparent transparent;
         }
 
+        /* Tooltip positioning overrides to prevent clipping and hidden overflow issues */
+        .tooltip-container.tooltip-right .tooltip-text {
+            left: 0;
+            transform: translateX(0);
+        }
+        .tooltip-container.tooltip-right:hover .tooltip-text {
+            transform: translateX(0) translateY(-4px);
+        }
+        .tooltip-container.tooltip-right .tooltip-text::after {
+            left: 15px;
+            margin-left: 0;
+        }
+
+        .tooltip-container.tooltip-left .tooltip-text {
+            left: auto;
+            right: 0;
+            transform: translateX(0);
+        }
+        .tooltip-container.tooltip-left:hover .tooltip-text {
+            transform: translateX(0) translateY(-4px);
+        }
+        .tooltip-container.tooltip-left .tooltip-text::after {
+            left: auto;
+            right: 15px;
+            margin-left: 0;
+        }
+
         /* ── Collapsed table columns on mobile/laptop ── */
         #carrier-summary table.collapsed-columns [data-col="underpaid"],
         #carrier-summary table.collapsed-columns [data-col="overpaid"],
@@ -516,10 +543,10 @@
   <div style="background: #111e36; border: 2px solid #ffb4ab; border-radius: 12px; padding: 28px; max-width: 500px; width: 100%; box-shadow: 0 0 24px rgba(255,180,171,0.2); font-family: 'Inter', sans-serif;">
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; color: #ffb4ab;">
       <span class="material-symbols-outlined" style="font-size: 32px;" aria-hidden="true">error</span>
-      <h2 id="blocking-error-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: #ffffff;">Data Integrity Violation</h2>
+      <h2 id="blocking-error-heading" style="font-size: 20px; font-weight: 800; margin: 0; color: #ffffff;">Statement Review Required</h2>
     </div>
     <p style="font-size: 14px; color: #d8e2fe; line-height: 1.5; margin-bottom: 20px;">
-      The system detected critical discrepancies during import. Processing has been stopped to prevent silent financial data corruption.
+      The imported statement contains inconsistencies that need review before the audit can continue.
     </p>
     <div id="blocking-error-list" style="max-height: 150px; overflow-y: auto; background: rgba(255,180,171,0.05); border: 1px solid rgba(255,180,171,0.2); border-radius: 6px; padding: 12px; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #ffb4ab; line-height: 1.4; text-align: left;">
       <!-- Errors listed here -->
@@ -618,6 +645,73 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════
+     REPORTS COMING SOON MODAL
+     ════════════════════════════════════════════ -->
+<div id="reports-modal-overlay" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-surface-container-high rounded-xl p-6 max-w-sm w-full border border-outline-variant/20 shadow-2xl font-sans text-center">
+    <div class="mb-4 text-primary">
+      <span class="material-symbols-outlined text-[48px]" aria-hidden="true">bar_chart</span>
+    </div>
+    <h3 class="font-title-md text-title-md text-white mb-2" id="reports-modal-heading">Reporting Workspace</h3>
+    <p class="font-body-sm text-body-sm text-outline mb-6">Advanced reporting is in development.</p>
+    <div class="flex flex-col">
+      <button id="reports-modal-close-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SETTINGS COMING SOON MODAL
+     ════════════════════════════════════════════ -->
+<div id="settings-modal-overlay" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-surface-container-high rounded-xl p-6 max-w-md w-full border border-outline-variant/20 shadow-2xl font-sans text-left">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2 text-primary">
+        <span class="material-symbols-outlined text-[24px]" aria-hidden="true">settings</span>
+        <h3 class="font-title-md text-title-md text-white" id="settings-modal-heading">Expected Commission Rules</h3>
+      </div>
+      <button id="settings-modal-close-btn-top" class="text-outline hover:text-white transition-colors" aria-label="Close modal" style="background:none; border:none; cursor:pointer;">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    
+    <p class="font-body-sm text-body-sm text-outline mb-4">
+      Expected commission rates are derived from your agency's carrier contracts. DRecon matches imported policies against these rules to automatically calculate expected commissions.
+    </p>
+
+    <div class="bg-surface-container rounded-lg p-4 mb-4 border border-outline-variant/10">
+      <h4 class="font-title-sm text-white mb-2 flex items-center gap-1.5 text-xs uppercase tracking-wider text-primary">
+        <span class="material-symbols-outlined text-sm">info</span> Rule Examples
+      </h4>
+      <ul class="space-y-2 text-[13px] text-outline">
+        <li class="flex justify-between border-b border-white/5 pb-1">
+          <span>Progressive Auto New Business</span>
+          <span class="text-white font-bold">10.0%</span>
+        </li>
+        <li class="flex justify-between border-b border-white/5 pb-1">
+          <span>Progressive Auto Renewal</span>
+          <span class="text-white font-bold">12.0%</span>
+        </li>
+        <li class="flex justify-between pb-1">
+          <span>Travelers Home</span>
+          <span class="text-white font-bold">15.0%</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bg-primary-container/20 border border-primary/20 rounded-lg p-3.5 mb-6">
+      <p class="text-[12px] text-primary leading-relaxed">
+        <strong>Pilot Roadmap Notice:</strong> Commission Rule Builder is part of the pilot roadmap. In the current release, expected commission values are imported directly from your agency's AMS reports or custom mapping templates.
+      </p>
+    </div>
+
+    <div class="flex flex-col">
+      <button id="settings-modal-close-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 bg-surface-container shadow-sm border-b border-white/5 h-16">
 <div class="flex justify-between items-center px-gutter h-full w-full max-w-[1440px] mx-auto">
@@ -634,8 +728,8 @@
   <!-- Desktop Navigation -->
   <nav class="hidden md:flex items-center gap-8 h-full" aria-label="Dashboard navigation">
     <a id="nav-dashboard" class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Dashboard</a>
-    <a id="nav-reports"   class="hidden text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Reports</a>
-    <a id="nav-settings"  class="hidden text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Settings</a>
+    <a id="nav-reports"   class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Reports</a>
+    <a id="nav-settings"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer">Settings</a>
     <a href="index.html"  class="text-on-surface-variant font-body-md text-body-md hover:text-primary-fixed-dim transition-colors duration-200 flex items-center gap-1">
       <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
       Back to Home
@@ -665,11 +759,11 @@
       <span class="material-symbols-outlined text-[18px]" aria-hidden="true">dashboard</span>
       Dashboard
     </a>
-    <a id="mob-nav-reports" class="hidden flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
+    <a id="mob-nav-reports" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
       <span class="material-symbols-outlined text-[18px]" aria-hidden="true">bar_chart</span>
       Reports
     </a>
-    <a id="mob-nav-settings" class="hidden flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
+    <a id="mob-nav-settings" class="flex items-center gap-3 px-3 py-3 rounded-lg text-on-surface-variant text-sm cursor-pointer hover:bg-white/5 transition-colors">
       <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
       Settings
     </a>
@@ -691,9 +785,15 @@
 <h1 class="font-title-lg text-title-lg text-white mb-2">Commission Reconciliation</h1>
 <p class="font-body-md text-body-md text-on-surface-variant">Upload carrier statements to audit commissions and detect underpayments</p>
 </div>
-<div class="inline-flex items-center px-3 py-1 bg-surface-container-high border border-outline-variant rounded-full">
-<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">history</span>
-<span id="last-audit-badge" class="font-label-caps text-label-caps text-on-surface-variant">No audit yet</span>
+<div class="flex items-center gap-2">
+  <div id="hero-warning-badge" class="hidden inline-flex items-center px-3 py-1 bg-error/20 border border-error/40 rounded-full cursor-pointer hover:bg-error/30 transition-all text-error font-bold text-xs" style="font-family: 'Inter', sans-serif;">
+    <span class="material-symbols-outlined text-[16px] mr-1">warning</span>
+    <span id="hero-warning-badge-text">⚠ 0 Import Warnings</span>
+  </div>
+  <div class="inline-flex items-center px-3 py-1 bg-surface-container-high border border-outline-variant rounded-full">
+    <span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">history</span>
+    <span id="last-audit-badge" class="font-label-caps text-label-caps text-on-surface-variant">No audit yet</span>
+  </div>
 </div>
 </div>
 </section>
@@ -713,7 +813,66 @@
                         Supports .csv — Max file size 25MB per file
                     </p>
 </div>
+<!-- Security Trust Strip -->
+<div class="mt-6 border-t border-outline-variant/20 pt-4 text-center">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3 max-w-4xl mx-auto text-left sm:text-center">
+        <div class="flex items-center sm:justify-center gap-2 text-primary font-bold text-[13px]" style="font-family: 'Inter', sans-serif;">
+            <span class="text-emerald-400 font-extrabold text-[15px]">✓</span>
+            <span>Files processed locally</span>
+        </div>
+        <div class="flex items-center sm:justify-center gap-2 text-primary font-bold text-[13px]" style="font-family: 'Inter', sans-serif;">
+            <span class="text-emerald-400 font-extrabold text-[15px]">✓</span>
+            <span>No spreadsheet uploads to servers</span>
+        </div>
+        <div class="flex items-center sm:justify-center gap-2 text-primary font-bold text-[13px]" style="font-family: 'Inter', sans-serif;">
+            <span class="text-emerald-400 font-extrabold text-[15px]">✓</span>
+            <span>No AMS migration required</span>
+        </div>
+        <div class="flex items-center sm:justify-center gap-2 text-primary font-bold text-[13px]" style="font-family: 'Inter', sans-serif;">
+            <span class="text-emerald-400 font-extrabold text-[15px]">✓</span>
+            <span>Browser-only reconciliation</span>
+        </div>
+    </div>
+    <p class="text-[12px] text-outline italic" style="font-family: 'Inter', sans-serif;">
+        Built for independent insurance agencies. Customer policy data remains local to your device.
+    </p>
 </div>
+</div>
+</section>
+
+<!-- Onboarding Info Cards (P2-A & P2-B) -->
+<section id="onboarding-info-cards" class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg mb-stack-lg animate-fade-in">
+  <!-- Card 1: How We Calculate Expected Commission -->
+  <div class="bg-surface-container-high rounded-lg p-6 shadow-sm border border-outline-variant/10 flex flex-col justify-between font-sans">
+    <div>
+      <h3 class="font-title-md text-title-md text-white mb-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">help_center</span>
+        How DRecon Calculates Expected Commission
+      </h3>
+      <p class="text-body-sm text-on-surface-variant leading-relaxed">
+        Expected commissions can be mapped directly from carrier statements or configured using commission schedules. Advanced carrier commission rules are coming soon.
+      </p>
+    </div>
+    <div class="mt-4 pt-3 border-t border-outline-variant/10 flex justify-between items-center text-[11px] text-outline">
+      <span>Objection Answered: "How does DRecon know what I should be paid?"</span>
+    </div>
+  </div>
+
+  <!-- Card 2: ROI Callout -->
+  <div class="bg-surface-container-high rounded-lg p-6 shadow-sm border border-outline-variant/10 flex flex-col justify-between font-sans">
+    <div>
+      <h3 class="font-title-md text-title-md text-white mb-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">trending_up</span>
+        Reclaiming Missed Revenue
+      </h3>
+      <p class="text-body-sm text-on-surface-variant leading-relaxed">
+        Recovering $5,000 in commissions at $149/month would represent more than 30× monthly ROI.
+      </p>
+    </div>
+    <div class="mt-4 pt-3 border-t border-outline-variant/10 flex justify-between items-center text-[11px] text-outline">
+      <span>Tasteful, data-driven ROI verification. No hype.</span>
+    </div>
+  </div>
 </section>
 
 <!-- Recent Audits Section -->
@@ -743,11 +902,11 @@
     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">picture_as_pdf</span>
     Export PDF
   </button>
-  <button class="opacity-40 cursor-not-allowed flex items-center gap-1.5 border border-outline px-3.5 py-2 rounded font-label-caps text-label-caps text-on-surface-variant text-primary border-primary/20" id="export-xlsx-btn" aria-label="Export XLSX audit workbook" aria-disabled="true">
+  <button class="opacity-40 cursor-not-allowed flex items-center gap-1.5 border border-outline px-3.5 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="export-xlsx-btn" aria-label="Export XLSX audit workbook" aria-disabled="true">
     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">table_view</span>
     Export XLSX
   </button>
-  <button class="opacity-40 cursor-not-allowed flex items-center gap-1.5 border border-outline px-3.5 py-2 rounded font-label-caps text-label-caps text-on-surface-variant text-primary border-primary/20" id="dispute-btn" aria-label="Generate Dispute Letter" aria-disabled="true">
+  <button class="opacity-40 cursor-not-allowed flex items-center gap-1.5 border border-outline px-3.5 py-2 rounded font-label-caps text-label-caps text-on-surface-variant" id="dispute-btn" aria-label="Generate Dispute Letter" aria-disabled="true">
     <span class="material-symbols-outlined text-[16px]" aria-hidden="true">mail</span>
     Generate Letter
   </button>
@@ -797,13 +956,16 @@
     <div class="p-5 bg-primary/10 border border-primary/30 rounded-xl shadow-md transition-all duration-300 relative flex flex-col justify-between min-h-[120px]">
       <div class="flex items-center mb-1">
         <p class="font-label-caps text-label-caps text-primary font-bold text-xs tracking-wider uppercase">Money Owed</p>
-        <div class="tooltip-container ml-1.5">
+        <div class="tooltip-container tooltip-right ml-1.5">
           <span class="material-symbols-outlined tooltip-icon text-primary text-base">payments</span>
           <span class="tooltip-text">Total underpaid commission available for recovery. Clawbacks are not subtracted.</span>
         </div>
       </div>
       <!-- Largest value on screen -->
-      <p id="total-potential-recovery" class="text-4xl font-extrabold text-primary summary-value metric-value mt-2">$0.00</p>
+      <div class="flex items-baseline justify-between mt-2">
+        <p id="total-potential-recovery" class="text-4xl font-extrabold text-primary summary-value metric-value">$0.00</p>
+        <span id="total-potential-recovery-policies" class="text-xs text-outline font-semibold">0 policies</span>
+      </div>
       <p class="text-[11px] text-outline mt-1 font-medium uppercase tracking-wide">Potential Recovery</p>
     </div>
 
@@ -824,7 +986,7 @@
     <div class="p-5 bg-surface-container-high/60 backdrop-blur-sm border border-outline-variant/10 rounded-xl shadow-sm hover:border-outline-variant/40 transition-all duration-300 relative flex flex-col justify-between min-h-[120px]">
       <div class="flex items-center mb-1">
         <p class="font-label-caps text-label-caps text-outline mb-1 text-xs tracking-wider uppercase">Exception Rate</p>
-        <div class="tooltip-container ml-1.5">
+        <div class="tooltip-container tooltip-left ml-1.5">
           <span class="material-symbols-outlined tooltip-icon text-outline text-base">filter_alt</span>
           <span class="tooltip-text">Percentage of audited policies with commission discrepancies.</span>
         </div>
@@ -848,6 +1010,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Sample Data Alert Badge -->
+<div id="sample-data-badge" class="hidden px-6 py-3 border-b border-tertiary/30 bg-tertiary/10 text-tertiary font-sans flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+  <span class="material-symbols-outlined text-[16px]">science</span>
+  <span>SAMPLE DATA — NOT REAL COMMISSIONS (Auditing In Sandbox Mode)</span>
 </div>
 
 <!-- Trust Indicators (F6.3) -->
@@ -1013,6 +1181,12 @@
       </button>
     </div>
   </div>
+  <!-- Rendering limit warning banner -->
+  <div id="rendering-limit-warning" class="hidden px-6 py-3 border-b border-outline-variant/20 bg-tertiary/10 text-tertiary font-sans flex items-center gap-2">
+    <span class="material-symbols-outlined text-[18px]">warning</span>
+    <span class="text-body-sm font-semibold">Performance Guard:</span>
+    <span class="text-body-sm" id="rendering-limit-text">Only showing the first 500 of 3,200 policies to prevent browser lag. Use search or filters to narrow down.</span>
+  </div>
 </div>
 
 <!-- Main results table -->
@@ -1108,7 +1282,7 @@
                 return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
             }
 
-            // ── Apply registered user to UI ────────────────────────────
+            // ── Apply unlocked user info to UI ─────────────────────────
             function applyUserToUI(user) {
                 const avatar = document.getElementById('user-avatar');
                 if (!avatar) return;
@@ -1145,7 +1319,7 @@
             } catch (_) { /* malformed JSON — treat as not found */ }
 
             if (storedUser && storedUser.email) {
-                // Already registered — skip gate immediately
+                // Already unlocked — skip gate immediately
                 overlay.remove();
                 applyUserToUI(storedUser);
                 return; // done — rest of gate JS not needed
@@ -1691,6 +1865,9 @@
         const xlsxBtn  = document.getElementById('export-xlsx-btn');
         const clearBtn = document.getElementById('clear-btn');
 
+        // ── Configuration Constants ───────────────────────────────────
+        const MAX_RENDER_ROWS = 500;
+
         // ── Global accumulated row store ───────────────────────────────
         // Each entry: { policy, carrier, expected, received, variance, status, fileName, sheetName, auditId }
         // (all pre-resolved strings, ready to render)
@@ -1770,23 +1947,23 @@
             for (let i = 0; i < rows.length; i++) {
                 const r = rows[i];
                 if (!Number.isFinite(r.expNum)) {
-                    errors.push(`Row ${i + 1} (${r.policy}): expected is ${r.expNum} (not a finite number)`);
+                    errors.push(`Row ${i + 1} (${r.policy}): expected commission contains invalid data`);
                 }
                 if (!Number.isFinite(r.recNum)) {
-                    errors.push(`Row ${i + 1} (${r.policy}): received is ${r.recNum} (not a finite number)`);
+                    errors.push(`Row ${i + 1} (${r.policy}): received commission contains invalid data`);
                 }
                 if (!Number.isFinite(r.varNum)) {
-                    errors.push(`Row ${i + 1} (${r.policy}): variance is ${r.varNum} (not a finite number)`);
+                    errors.push(`Row ${i + 1} (${r.policy}): commission variance calculation is invalid`);
                 }
                 totalExp += r.expNum;
                 totalRec += r.recNum;
             }
 
             if (!Number.isFinite(totalExp)) {
-                errors.push(`Total Expected is ${totalExp} (corrupted)`);
+                errors.push(`Total expected commissions contain invalid values`);
             }
             if (!Number.isFinite(totalRec)) {
-                errors.push(`Total Received is ${totalRec} (corrupted)`);
+                errors.push(`Total received commissions contain invalid values`);
             }
 
             // Cross-check: sum of variances should equal totalRec - totalExp
@@ -1794,7 +1971,7 @@
             const expectedVar = totalRec - totalExp;
             if (Number.isFinite(sumVar) && Number.isFinite(expectedVar) &&
                 Math.abs(sumVar - expectedVar) > 0.01) {
-                errors.push(`Variance sum mismatch: Σvariance=${sumVar.toFixed(2)}, totalRec-totalExp=${expectedVar.toFixed(2)}`);
+                errors.push(`Expected commissions do not reconcile with received commissions. The imported statement contains inconsistent totals. Please review the highlighted rows and try again.`);
             }
 
             // Post-import reconciliation carrier-level invariants
@@ -1820,13 +1997,13 @@
             }
 
             if (sumCarrierRows !== rows.length) {
-                errors.push(`Carrier invariant failure: sum(carrier rows) = ${sumCarrierRows}, total rows = ${rows.length}`);
+                errors.push(`Carrier audit summary: Policy count does not match statement details`);
             }
             if (Math.abs(sumCarrierExpected - totalExp) > 0.01) {
-                errors.push(`Carrier invariant failure: sum(carrier expected) = ${sumCarrierExpected.toFixed(2)}, total expected = ${totalExp.toFixed(2)}`);
+                errors.push(`Carrier audit summary: Expected commissions do not match statement details`);
             }
             if (Math.abs(sumCarrierReceived - totalRec) > 0.01) {
-                errors.push(`Carrier invariant failure: sum(carrier received) = ${sumCarrierReceived.toFixed(2)}, total received = ${totalRec.toFixed(2)}`);
+                errors.push(`Carrier audit summary: Received commissions do not match statement details`);
             }
 
             return { valid: errors.length === 0, errors };
@@ -2151,6 +2328,15 @@
             return String(name).replace(/\.\./g, '_').replace(/[^a-zA-Z0-9_\-]/g, '_');
         }
 
+        function escapeFormulaInjection(val) {
+            if (val === null || val === undefined) return '';
+            const str = String(val);
+            if (/^[=+\-@]/.test(str)) {
+                return "'" + str;
+            }
+            return str;
+        }
+
         // ── Format currency values ─────────────────────────────────────
         function formatCurrency(val) {
             if (val === '' || val == null) return '—';
@@ -2464,6 +2650,7 @@
             let overpaidCount = 0;
             let clawbackCount = 0;
             let unknownCount = 0;
+            let underpaidClawbackCount = 0;
 
             for (const r of rows) {
                 expected += r.expNum;
@@ -2477,8 +2664,13 @@
                     overpaid += Math.abs(r.varNum);
                     overpaidCount++;
                 } else if (statusLc === 'clawback') {
-                    clawback += Math.abs(r.varNum);
+                    // Split clawback: received negative part goes to clawback, expected goes to underpaid (if expected > 0)
+                    clawback += Math.abs(r.recNum);
                     clawbackCount++;
+                    if (r.expNum > 0) {
+                        underpaid += r.expNum;
+                        underpaidClawbackCount++;
+                    }
                 } else if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
                     matchCount++;
                 } else {
@@ -2503,6 +2695,20 @@
                 console.warn(`[Invariant Warning] Breakdown mismatch: variance (${variance}) !== overpaid (${overpaid}) - underpaid (${underpaid}) - clawback (${clawback})`);
             }
 
+            let collectionRate = 0;
+            if (expected > 0) {
+                collectionRate = Math.min((received / expected) * 100, 100);
+            } else if (expected === 0 && received > 0) {
+                collectionRate = 100;
+            }
+            if (!Number.isFinite(collectionRate) || collectionRate < 0) {
+                collectionRate = 0;
+            }
+
+            const exceptionRate = rows.length > 0
+                ? ((underpaidCount + overpaidCount + clawbackCount) / rows.length) * 100
+                : 0;
+
             return {
                 expected,
                 received,
@@ -2510,12 +2716,15 @@
                 overpaid,
                 clawback,
                 variance,
+                collectionRate,
+                exceptionRate,
                 totalRows: rows.length,
                 matchCount,
                 underpaidCount,
                 overpaidCount,
                 clawbackCount,
-                unknownCount
+                unknownCount,
+                underpaidClawbackCount
             };
         }
 
@@ -2613,9 +2822,18 @@
                 c.expected  += r.expNum;
                 c.received  += r.recNum;
                 const sl = r.status.toLowerCase();
-                if (sl === 'underpaid') { c.underpaid += Math.abs(r.varNum); c.affectedPolicies++; }
-                else if (sl === 'overpaid')  { c.overpaid  += Math.abs(r.varNum); }
-                else if (sl === 'clawback')  { c.clawback  += Math.abs(r.varNum); }
+                if (sl === 'underpaid') {
+                    c.underpaid += Math.abs(r.varNum);
+                    c.affectedPolicies++;
+                } else if (sl === 'overpaid') {
+                    c.overpaid  += Math.abs(r.varNum);
+                } else if (sl === 'clawback') {
+                    c.clawback  += Math.abs(r.recNum);
+                    if (r.expNum > 0) {
+                        c.underpaid += r.expNum;
+                        c.affectedPolicies++;
+                    }
+                }
             }
 
             return {
@@ -2644,6 +2862,11 @@
             if (allRows.length === 0) {
                 showEmptyState();
                 return;
+            }
+
+            const onboardingCards = document.getElementById('onboarding-info-cards');
+            if (onboardingCards) {
+                onboardingCards.classList.add('hidden');
             }
 
             const trustContainer = document.getElementById('trust-indicators-container');
@@ -2751,7 +2974,23 @@
 
             // Render table body
             tbody.innerHTML = '';
-            for (const r of filteredRows) {
+
+            // Large file rendering protection (safe rendering limit)
+            const rowsToRender = filteredRows.slice(0, MAX_RENDER_ROWS);
+            const limitWarningEl = document.getElementById('rendering-limit-warning');
+            if (limitWarningEl) {
+                if (filteredRows.length > MAX_RENDER_ROWS) {
+                    limitWarningEl.classList.remove('hidden');
+                    const textEl = document.getElementById('rendering-limit-text');
+                    if (textEl) {
+                        textEl.textContent = `Only showing the first ${MAX_RENDER_ROWS} of ${filteredRows.length.toLocaleString()} policies to prevent browser lag. Use search or filters to narrow down.`;
+                    }
+                } else {
+                    limitWarningEl.classList.add('hidden');
+                }
+            }
+
+            for (const r of rowsToRender) {
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
 
@@ -2867,20 +3106,16 @@
                 potRecoveryEl.title = potRecoveryStr;
             }
 
+            const potRecoveryPoliciesEl = document.getElementById('total-potential-recovery-policies');
+            if (potRecoveryPoliciesEl) {
+                const count = metrics.underpaidCount + metrics.underpaidClawbackCount;
+                potRecoveryPoliciesEl.textContent = `${count} ${count === 1 ? 'policy' : 'policies'}`;
+            }
+
             // Collection Rate Card (Card 8)
             const colRateEl = document.getElementById('total-collection-rate');
             if (colRateEl) {
-                let rawRate = 0;
-                if (metrics.expected > 0) {
-                    rawRate = (metrics.received / metrics.expected) * 100;
-                } else if (metrics.expected === 0 && metrics.received > 0) {
-                    rawRate = 100;
-                }
-                if (!Number.isFinite(rawRate)) {
-                    rawRate = 0;
-                }
-                const collectionRate = Math.min(rawRate, 100);
-                const formattedRate = collectionRate.toFixed(2) + '%';
+                const formattedRate = metrics.collectionRate.toFixed(2) + '%';
                 colRateEl.textContent = formattedRate;
                 colRateEl.title = formattedRate;
             }
@@ -2893,12 +3128,11 @@
             if (funnelAuditedEl && funnelExceptionsEl) {
                 const audited = metrics.totalRows;
                 const exceptions = metrics.underpaidCount + metrics.overpaidCount + metrics.clawbackCount;
-                const rate = audited > 0 ? (exceptions / audited) * 100 : 0;
 
                 funnelAuditedEl.textContent = audited;
                 funnelExceptionsEl.textContent = exceptions;
                 if (funnelExceptionRateEl) {
-                    const formattedRate = rate.toFixed(2) + '%';
+                    const formattedRate = metrics.exceptionRate.toFixed(2) + '%';
                     funnelExceptionRateEl.textContent = formattedRate;
                     funnelExceptionRateEl.title = formattedRate;
                 }
@@ -3149,7 +3383,11 @@
                 } else if (statusLc === 'overpaid') {
                     c.overpaid += Math.abs(r.varNum);
                 } else if (statusLc === 'clawback') {
-                    c.clawback += Math.abs(r.varNum);
+                    c.clawback += Math.abs(r.recNum);
+                    if (r.expNum > 0) {
+                        c.underpaid += r.expNum;
+                        c.affectedPolicies++;
+                    }
                 }
             }
 
@@ -3428,8 +3666,16 @@
                 });
             }
 
+            const heroWarningBadge = document.getElementById('hero-warning-badge');
+            const heroWarningText = document.getElementById('hero-warning-badge-text');
+
             if (warningItems.length > 0) {
                 panel.classList.remove('hidden');
+                
+                if (heroWarningBadge && heroWarningText) {
+                    heroWarningText.textContent = `⚠ ${warningItems.length} Import Warnings`;
+                    heroWarningBadge.classList.remove('hidden');
+                }
                 
                 // Set title safely
                 title.innerHTML = '';
@@ -3461,6 +3707,9 @@
                 });
             } else {
                 panel.classList.add('hidden');
+                if (heroWarningBadge) {
+                    heroWarningBadge.classList.add('hidden');
+                }
             }
         }
 
@@ -3593,13 +3842,33 @@
                                     <span>Identify revenue leakage and generate dispute letters</span>
                                 </li>
                             </ul>
+                            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center w-full">
+                                <button id="sandbox-load-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary font-bold text-sm px-6 py-3 rounded-full transition-all duration-200 active:scale-95 shadow-md flex items-center justify-center gap-2" style="border:none; cursor:pointer;">
+                                    <span class="material-symbols-outlined text-[18px]">science</span>
+                                    Explore with Sample Data
+                                </button>
+                            </div>
                         </div>
                     </td>
                 </tr>
             `;
+
+            // Attach event listener to sandbox load button
+            const sandboxBtn = document.getElementById('sandbox-load-btn');
+            if (sandboxBtn) {
+                sandboxBtn.addEventListener('click', () => {
+                    loadSandboxData();
+                });
+            }
+
             document.getElementById('summary-banner').classList.add('hidden');
             const reconciliationPanel = document.getElementById('reconciliation-panel');
             if (reconciliationPanel) reconciliationPanel.classList.add('hidden');
+
+            const onboardingCards = document.getElementById('onboarding-info-cards');
+            if (onboardingCards) {
+                onboardingCards.classList.remove('hidden');
+            }
             
             const sectionsToHide = [
                 'revenue-leakage-section',
@@ -3607,6 +3876,8 @@
                 'data-quality-panel',
                 'table-toolbar',
                 'filter-badges-container',
+                'rendering-limit-warning',
+                'sample-data-badge',
                 'carrier-cards',
                 'carrier-summary',
                 'trust-indicators-container'
@@ -3645,8 +3916,151 @@
                 }
             });
 
+            const potRecoveryPoliciesEl = document.getElementById('total-potential-recovery-policies');
+            if (potRecoveryPoliciesEl) {
+                potRecoveryPoliciesEl.textContent = '0 policies';
+            }
+
             const funnelRateEl = document.getElementById('funnel-exception-rate');
             if (funnelRateEl) funnelRateEl.removeAttribute('title');
+        }
+
+        function loadSandboxData() {
+            // Reset state
+            allRows = [];
+            uploadedFiles.clear();
+            activeRejectedRowsCount = 0;
+            activeAmbiguousWarnings.clear();
+            const alertsEl = document.getElementById('warnings-area');
+            if (alertsEl) alertsEl.innerHTML = '';
+            
+            // Build 550 realistic mock rows
+            const carriers = ['Progressive', 'Travelers', 'Liberty Mutual', 'GEICO'];
+            const mockRows = [];
+            const auditId = 'sandbox-' + Date.now();
+            
+            // Generate rows
+            for (let i = 1; i <= 550; i++) {
+                const carrier = carriers[i % carriers.length];
+                const policy = 'POL-' + (100000 + i);
+                
+                let expNum = 0;
+                let recNum = 0;
+                let status = 'Match';
+                
+                // Distribute statuses
+                const mod = i % 10;
+                if (mod === 0 || mod === 1 || mod === 2 || mod === 3 || mod === 4 || mod === 5) {
+                    // Underpaid (60% of rows)
+                    expNum = 100 + (i % 50) * 5;
+                    recNum = expNum - (10 + (i % 5) * 5); // underpaid by 10 to 30 dollars
+                    status = 'Underpaid';
+                } else if (mod === 6 || mod === 7) {
+                    // Match (20% of rows)
+                    expNum = 150 + (i % 20) * 10;
+                    recNum = expNum;
+                    status = 'Match';
+                } else if (mod === 8) {
+                    // Overpaid (10% of rows)
+                    expNum = 80 + (i % 30) * 5;
+                    recNum = expNum + (5 + (i % 3) * 5); // overpaid
+                    status = 'Overpaid';
+                } else if (mod === 9) {
+                    // Clawback (10% of rows)
+                    const clawbackType = i % 3;
+                    if (clawbackType === 0) {
+                        expNum = 120; // expected > 0
+                    } else {
+                        expNum = 0;
+                    }
+                    recNum = -50 - (i % 10) * 10; // recoupment amount
+                    status = 'Clawback';
+                }
+                
+                const varNum = recNum - expNum;
+                const varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
+                
+                mockRows.push({
+                    policy,
+                    carrier,
+                    expNum,
+                    recNum,
+                    varNum,
+                    varRaw,
+                    status,
+                    fileName: 'sandbox_statement.xlsx',
+                    sheetName: 'Mock Sheet',
+                    auditId
+                });
+            }
+            
+            // Set allRows and simulate ingestion commit
+            allRows = mockRows;
+            uploadedFiles.add('sandbox_statement.xlsx');
+            
+            // Show sample data badge
+            const sampleBadgeEl = document.getElementById('sample-data-badge');
+            if (sampleBadgeEl) sampleBadgeEl.classList.remove('hidden');
+
+            // Hide onboarding cards
+            const onboardingCards = document.getElementById('onboarding-info-cards');
+            if (onboardingCards) onboardingCards.classList.add('hidden');
+            
+            // Reveal sections
+            const sectionsToShow = [
+                'revenue-leakage-section',
+                'executive-summary-panel',
+                'data-quality-panel',
+                'table-toolbar',
+                'filter-badges-container',
+                'carrier-summary',
+                'trust-indicators-container'
+            ];
+            sectionsToShow.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('hidden');
+            });
+            
+            const reconciliationPanel = document.getElementById('reconciliation-panel');
+            if (reconciliationPanel) reconciliationPanel.classList.remove('hidden');
+
+            document.getElementById('summary-banner').classList.remove('hidden');
+
+            // Toggle action buttons
+            const disputeBtn = document.getElementById('dispute-btn');
+            const disputeAllBtn = document.getElementById('dispute-all-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const xlsxBtn = document.getElementById('export-xlsx-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            [exportBtn, xlsxBtn, clearBtn, disputeBtn].forEach(btn => {
+                if (!btn) return;
+                btn.classList.remove('opacity-40', 'cursor-not-allowed');
+                btn.classList.add('hover:bg-surface-variant/30', 'cursor-pointer');
+                btn.removeAttribute('aria-disabled');
+                btn.disabled = false;
+            });
+            if (disputeAllBtn) {
+                disputeAllBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+                disputeAllBtn.classList.add('hover:bg-primary-fixed-dim', 'cursor-pointer');
+                disputeAllBtn.removeAttribute('aria-disabled');
+                disputeAllBtn.disabled = false;
+            }
+
+            // Save to audit history
+            const metrics = computeSummaryMetrics(allRows);
+            saveAuditToHistory('sandbox_statement.xlsx', allRows.length, metrics.underpaid, auditId);
+            
+            // Add custom event to trace audit trail
+            logAuditEvent({
+                timestamp: new Date().toISOString(),
+                level: 'INFO',
+                event: 'IMPORT_SUCCESS',
+                message: `Successfully loaded sandbox dataset containing ${allRows.length} rows for testing.`,
+                details: { fileName: 'sandbox_statement.xlsx', rowCount: allRows.length }
+            });
+
+            // Re-render dashboard
+            renderAll();
         }
 
         function processMultipleFiles(files) {
@@ -3964,15 +4378,14 @@ skippedSheetNames.push(sn);
                                         resolved.fileName = file.name;
                                         resolved.sheetName = sn;
                                         resolved.auditId = currentAuditId;
+                                        
+                                        // P0-E: Assign sheet name or cleaned filename as the carrier name if no column mapped or resolves to 'Unknown'
+                                        const fileBasename = file.name.split(/[/\\]/).pop().replace(/\.[^/.]+$/, '');
+                                        if (thisMapping.carrier === -1 || !resolved.carrier || resolved.carrier.trim().toLowerCase() === 'unknown') {
+                                            resolved.carrier = sn || fileBasename;
+                                        }
                                         return resolved;
                                     });
-
-                                    // EC-20 FIX: Only override carrier with sheet name when
-                                    // the sheet has NO mapped carrier column. If the sheet
-                                    // has its own carrier column, preserve its values.
-                                    if (thisMapping.carrier === -1) {
-                                        sheetRows = sheetRows.map(r => Object.assign({}, r, { carrier: sn }));
-                                    }
 
                                     proposedNewRows.push(...sheetRows);
                                     importedRowCount += sheetRows.length;
@@ -4009,6 +4422,10 @@ return;
                                 // EC-15: If ALL sheets are skipped, fail the import
                                 if (processedSheetCount === 0) {
                                     showToast(`Failed to import "${file.name}": All sheets were skipped due to incompatible headers or missing required columns.`, 'error');
+                                    if (allRows.length === 0) {
+                                        exceptionsOnlyMode = true;
+                                        filterStatus = 'Underpaid';
+                                    }
                                     return;
                                 }
 
@@ -4020,17 +4437,21 @@ return;
                                 if (!integrity.valid) {
                                     console.error('[Integrity Gate] Integrity check failed. Rejecting import.', integrity.errors);
                                     showBlockingError(integrity.errors);
-const exportBtn = document.getElementById('export-btn');
-const xlsxBtn = document.getElementById('export-xlsx-btn');
-[exportBtn, xlsxBtn].forEach(btn => {
-    if (btn) {
-        btn.classList.add('opacity-40', 'cursor-not-allowed');
-        btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
-        btn.setAttribute('aria-disabled', 'true');
-        btn.disabled = true;
-    }
-});
-return; // Reject import completely, do not mutate state
+                                    const exportBtn = document.getElementById('export-btn');
+                                    const xlsxBtn = document.getElementById('export-xlsx-btn');
+                                    [exportBtn, xlsxBtn].forEach(btn => {
+                                        if (btn) {
+                                            btn.classList.add('opacity-40', 'cursor-not-allowed');
+                                            btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
+                                            btn.setAttribute('aria-disabled', 'true');
+                                            btn.disabled = true;
+                                        }
+                                    });
+                                    if (allRows.length === 0) {
+                                        exceptionsOnlyMode = true;
+                                        filterStatus = 'Underpaid';
+                                    }
+                                    return; // Reject import completely, do not mutate state
                                 }
 
                                 // Commit state atomically
@@ -4098,6 +4519,10 @@ return; // Reject import completely, do not mutate state
                             }),
                             onCancel: wrapCallback(function() {
                                 showToast('Upload cancelled. No data processed.', 'info');
+                                if (allRows.length === 0) {
+                                    exceptionsOnlyMode = true;
+                                    filterStatus = 'Underpaid';
+                                }
                             })
                         });
                     } catch (err) {
@@ -4144,6 +4569,10 @@ return; // Reject import completely, do not mutate state
                             }),
                             onCancel: wrapCallback(function() {
                                 showToast('Upload cancelled. No data processed.', 'info');
+                                if (allRows.length === 0) {
+                                    exceptionsOnlyMode = true;
+                                    filterStatus = 'Underpaid';
+                                }
                             })
                         });
                     } catch (err) {
@@ -4250,12 +4679,18 @@ return; // Reject import completely, do not mutate state
                 resolved.fileName = fileName;
                 resolved.sheetName = "CSV";
                 resolved.auditId = currentAuditId;
+                
+                // P0-E: Assign cleaned filename if mapping.carrier === -1 or carrier resolves to 'Unknown'
+                const fileBasename = fileName.split(/[/\\]/).pop().replace(/\.[^/.]+$/, '');
+                if (mapping.carrier === -1 || !resolved.carrier || resolved.carrier.trim().toLowerCase() === 'unknown') {
+                    resolved.carrier = fileBasename;
+                }
                 return resolved;
             });
 
             // EC-20 FIX: Only override carrier with sheet/file name when
             // the carrier column is NOT mapped. Preserve actual carrier data.
-            const finalCarrierName = carrierName || csvCarrierName;
+            const finalCarrierName = carrierName;
             if (finalCarrierName && mapping.carrier === -1) {
                 newRows = newRows.map(r => Object.assign({}, r, { carrier: finalCarrierName }));
             }
@@ -4268,17 +4703,21 @@ return; // Reject import completely, do not mutate state
             if (!integrity.valid) {
                 console.error('[Integrity Gate] Integrity check failed. Rejecting CSV import.', integrity.errors);
                 showBlockingError(integrity.errors);
-const exportBtn = document.getElementById('export-btn');
-const xlsxBtn = document.getElementById('export-xlsx-btn');
-[exportBtn, xlsxBtn].forEach(btn => {
-    if (btn) {
-        btn.classList.add('opacity-40', 'cursor-not-allowed');
-        btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
-        btn.setAttribute('aria-disabled', 'true');
-        btn.disabled = true;
-    }
-});
-return; // Rollback: no state mutated, no audit logged
+                const exportBtn = document.getElementById('export-btn');
+                const xlsxBtn = document.getElementById('export-xlsx-btn');
+                [exportBtn, xlsxBtn].forEach(btn => {
+                    if (btn) {
+                        btn.classList.add('opacity-40', 'cursor-not-allowed');
+                        btn.classList.remove('hover:bg-surface-variant/30', 'cursor-pointer');
+                        btn.setAttribute('aria-disabled', 'true');
+                        btn.disabled = true;
+                    }
+                });
+                if (allRows.length === 0) {
+                    exceptionsOnlyMode = true;
+                    filterStatus = 'Underpaid';
+                }
+                return; // Rollback: no state mutated, no audit logged
             }
 
             // Commit state atomically
@@ -4546,8 +4985,18 @@ return; // Rollback: no state mutated, no audit logged
             }
 
             // ── Auto-filter + frozen header view helper ──
+            function getExcelColumnName(columnNumber) {
+                let columnName = '';
+                while (columnNumber > 0) {
+                    let modulo = (columnNumber - 1) % 26;
+                    columnName = String.fromCharCode(65 + modulo) + columnName;
+                    columnNumber = Math.floor((columnNumber - modulo) / 26);
+                }
+                return columnName;
+            }
+
             function applySheetMeta(ws, numRows, numCols) {
-                const endCol = String.fromCharCode(64 + numCols);
+                const endCol = getExcelColumnName(numCols);
                 const ref = `A1:${endCol}${numRows}`;
                 ws['!ref']        = ref;
                 ws['!autofilter'] = { ref };
@@ -4555,15 +5004,14 @@ return; // Rollback: no state mutated, no audit logged
             }
 
             // ── Sheet 1: Executive Summary ──
-            const collectionRateNum = metrics.expected > 0
-                ? ((metrics.received / metrics.expected) * 100)
-                : (metrics.received > 0 ? 100 : 0);
+            const collectionRateNum = metrics.collectionRate;
+            const exceptionRateNum = metrics.exceptionRate;
 
             const summaryData = [
                 ['Field', 'Value'],
                 ['Audit ID',                    audit.auditId],
                 ['Audit Date',                  dateStr],
-                ['Files Processed',             Array.from(uploadedFiles).join(', ') || '—'],
+                ['Files Processed',             escapeFormulaInjection(Array.from(uploadedFiles).join(', ') || '—')],
                 ['Rows Processed',              metrics.totalRows],
                 ['Rows Rejected',               activeRejectedRowsCount],
                 ['Expected Commission',         metrics.expected],
@@ -4574,8 +5022,9 @@ return; // Rollback: no state mutated, no audit logged
                 ['Net Variance',                metrics.variance],
                 ['Potential Recovery',          metrics.underpaid],
                 ['Collection Rate (%)',         Number(collectionRateNum.toFixed(2))],
-                ['Largest Carrier Opportunity', exec.largestCarrier],
-                ['Recommended Next Action',     exec.recommendation]
+                ['Exception Rate (%)',          Number(exceptionRateNum.toFixed(2))],
+                ['Largest Carrier Opportunity', escapeFormulaInjection(exec.largestCarrier)],
+                ['Recommended Next Action',     escapeFormulaInjection(exec.recommendation)]
             ];
             const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
             ws1['!cols'] = colWidths([35, 40]);
@@ -4588,8 +5037,8 @@ return; // Rollback: no state mutated, no audit logged
             });
             const exHeaders2 = ['Policy','Carrier','Expected','Received','Variance','Status','File Name','Sheet Name','Audit ID'];
             const exceptData = [exHeaders2, ...exceptionRows.map(r => [
-                r.policy, r.carrier, r.expNum, r.recNum, r.varNum, r.status,
-                r.fileName || '', r.sheetName || '', r.auditId || ''
+                escapeFormulaInjection(r.policy), escapeFormulaInjection(r.carrier), r.expNum, r.recNum, r.varNum, r.status,
+                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), r.auditId || ''
             ])];
             const ws2 = XLSX.utils.aoa_to_sheet(exceptData);
             ws2['!cols'] = colWidths([25, 25, 18, 18, 18, 15, 25, 20, 25]);
@@ -4598,8 +5047,8 @@ return; // Rollback: no state mutated, no audit logged
             // ── Sheet 3: Full Audit (every row) ──
             const exHeaders3 = ['Policy','Carrier','Expected','Received','Variance','Status','File Name','Sheet Name','Audit ID'];
             const fullData = [exHeaders3, ...allRows.map(r => [
-                r.policy, r.carrier, r.expNum, r.recNum, r.varNum, r.status,
-                r.fileName || '', r.sheetName || '', r.auditId || ''
+                escapeFormulaInjection(r.policy), escapeFormulaInjection(r.carrier), r.expNum, r.recNum, r.varNum, r.status,
+                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), r.auditId || ''
             ])];
             const ws3 = XLSX.utils.aoa_to_sheet(fullData);
             ws3['!cols'] = colWidths([25, 25, 18, 18, 18, 15, 25, 20, 25]);
@@ -4613,7 +5062,7 @@ return; // Rollback: no state mutated, no audit logged
             const leakageHeaders = ['Carrier','Underpaid Amount','Affected Policies','Percent Total Leakage'];
             const leakageData = [leakageHeaders, ...leakageCarriers.map(c => {
                 const pct = totalUnderpaid > 0 ? Number(((c.underpaid / totalUnderpaid) * 100).toFixed(2)) : 0;
-                return [c.name, c.underpaid, c.affectedPolicies, pct];
+                return [escapeFormulaInjection(c.name), c.underpaid, c.affectedPolicies, pct];
             })];
             if (leakageData.length === 1) leakageData.push(['No carrier recovery opportunities detected.', '', '', '']);
             const ws4 = XLSX.utils.aoa_to_sheet(leakageData);
@@ -4629,19 +5078,19 @@ return; // Rollback: no state mutated, no audit logged
             }, {});
             const dupePolicies = Object.entries(dupes).filter(([, v]) => v > 1).map(([k]) => k.split('||'));
             if (dupePolicies.length > 0) {
-                dupePolicies.forEach(([pol, car]) => dqRows.push(['Duplicate Policy', `${pol} / ${car}`]));
+                dupePolicies.forEach(([pol, car]) => dqRows.push(['Duplicate Policy', `${escapeFormulaInjection(pol)} / ${escapeFormulaInjection(car)}`]));
             }
             if (activeSkippedSheets && activeSkippedSheets.length > 0) {
-                activeSkippedSheets.forEach(s => dqRows.push(['Skipped Sheet', s]));
+                activeSkippedSheets.forEach(s => dqRows.push(['Skipped Sheet', escapeFormulaInjection(s)]));
             }
             if (activeAmbiguousWarnings && activeAmbiguousWarnings.length > 0) {
-                Array.from(new Set(activeAmbiguousWarnings)).forEach(w => dqRows.push(['Ambiguous Number', w]));
+                Array.from(new Set(activeAmbiguousWarnings)).forEach(w => dqRows.push(['Ambiguous Number', escapeFormulaInjection(w)]));
             }
             if (activeMappingOverrides && activeMappingOverrides.length > 0) {
-                activeMappingOverrides.forEach(m => dqRows.push(['Mapping Override', m]));
+                activeMappingOverrides.forEach(m => dqRows.push(['Mapping Override', escapeFormulaInjection(m)]));
             }
             if (activeLowConfidenceMappings && activeLowConfidenceMappings.length > 0) {
-                activeLowConfidenceMappings.forEach(m => dqRows.push(['Low Confidence Mapping', m]));
+                activeLowConfidenceMappings.forEach(m => dqRows.push(['Low Confidence Mapping', escapeFormulaInjection(m)]));
             }
             if (dqRows.length === 1) dqRows.push(['No Issues Detected', '—']);
             const ws5 = XLSX.utils.aoa_to_sheet(dqRows);
@@ -4655,7 +5104,7 @@ return; // Rollback: no state mutated, no audit logged
                 ['Generated Date', dateStr],
                 ['Generated Time', timeStr],
                 ['Version',        '1.0'],
-                ['Files Imported', Array.from(uploadedFiles).join(', ') || '—'],
+                ['Files Imported', escapeFormulaInjection(Array.from(uploadedFiles).join(', ') || '—')],
                 ['Rows Imported',  metrics.totalRows],
                 ['Rows Rejected',  activeRejectedRowsCount]
             ];
@@ -4884,6 +5333,9 @@ return; // Rollback: no state mutated, no audit logged
             // Aggregate totals using the single source of truth helper
             const metrics = computeSummaryMetrics(rowsToExport);
 
+            const collectionRateNum = metrics.collectionRate;
+            const exceptionRateNum = metrics.exceptionRate;
+
             if (Math.abs(metrics.variance - (metrics.received - metrics.expected)) > 0.01) {
                 console.error('PDF metric invariant violation');
             }
@@ -4939,31 +5391,32 @@ return; // Rollback: no state mutated, no audit logged
             });
             y += BOX_H + 5;
 
-            // 2-row detail line
-            const detailItems = [
-                `Policies audited: ${metrics.totalRows}`,
-                `Underpaid policies: ${metrics.underpaidCount}`,
-                `Carriers: ${new Set(rowsToExport.map(r => r.carrier.toLowerCase())).size}`,
-            ];
+            // 2-row detail lines
             setFont('normal', 8, TEXT_DK);
-            detailItems.forEach((item, i) => {
-                doc.text(item, MARGIN + i * 62, y);
-            });
+            doc.text(`Policies audited: ${metrics.totalRows}`, MARGIN, y);
+            doc.text(`Underpaid policies: ${metrics.underpaidCount}`, MARGIN + 62, y);
+            doc.text(`Carriers: ${new Set(rowsToExport.map(r => r.carrier.toLowerCase())).size}`, MARGIN + 124, y);
+            y += 5;
+
+            const collectionRateStr = collectionRateNum.toFixed(2) + '%';
+            const exceptionRateStr = exceptionRateNum.toFixed(2) + '%';
+            doc.text(`Collection Rate: ${collectionRateStr}`, MARGIN, y);
+            doc.text(`Exception Rate: ${exceptionRateStr}`, MARGIN + 62, y);
             y += 8;
 
             // ══════════════════════════════════════════════════════════
-            // HOW NET VARIANCE IS CALCULATED
+            // AUDIT TOTALS BREAKDOWN
             // ══════════════════════════════════════════════════════════
-            ensureSpace(45);
+            ensureSpace(48);
             setFont('bold', 10, TEXT_DK);
-            doc.text('HOW NET VARIANCE IS CALCULATED', MARGIN, y);
+            doc.text('AUDIT TOTALS BREAKDOWN', MARGIN, y);
             doc.setDrawColor(...TEAL);
             doc.setLineWidth(0.6);
-            doc.line(MARGIN, y + 1.5, MARGIN + 64, y + 1.5);
+            doc.line(MARGIN, y + 1.5, MARGIN + 52, y + 1.5);
             y += 6;
 
             // Draw a neat explanation box
-            const reconBoxH = 34;
+            const reconBoxH = 36;
             fillRect(MARGIN, y, COL_W, reconBoxH, GREY_LT);
             doc.setDrawColor(...GREY_MID);
             doc.setLineWidth(0.3);
@@ -4980,6 +5433,9 @@ return; // Rollback: no state mutated, no audit logged
             doc.text('Net Variance (Received - Expected)', MARGIN + 6, y + 18);
             doc.text(`${fmt(metrics.received)} - ${fmt(metrics.expected)} = ${fmt(metrics.variance)}`, MARGIN + 6, y + 23);
 
+            setFont('italic', 6.5, [100, 110, 130]);
+            doc.text('Note: Net Variance includes underpayments, overpayments, and clawbacks.', MARGIN + 6, y + 31);
+
             // Draw divider inside the box
             doc.setDrawColor(200, 210, 225);
             doc.setLineWidth(0.2);
@@ -4988,7 +5444,7 @@ return; // Rollback: no state mutated, no audit logged
             // Draw Breakdown on the right side of the divider
             const breakdownX = MARGIN + 110;
             setFont('bold', 7.5, TEXT_DK);
-            doc.text('Variance Breakdown', breakdownX, y + 6);
+            doc.text('Breakdown Summary', breakdownX, y + 6);
 
             setFont('normal', 7.5, TEXT_DK);
             doc.text(`Overpaid (${metrics.overpaidCount})`, breakdownX, y + 12);
@@ -5022,32 +5478,40 @@ return; // Rollback: no state mutated, no audit logged
             // PER-CARRIER UNDERPAYMENT BREAKDOWN
             // ══════════════════════════════════════════════════════════
 
-            // Build carrier map — only include carriers that have at least
-            // one underpaid policy, sorted by underpaid amount descending.
+            // Build carrier map — include both underpaid and clawback policies per carrier
             const carrierMap = new Map();
             for (const r of rowsToExport) {
                 const key = r.carrier.toLowerCase();
                 if (!carrierMap.has(key)) {
                     carrierMap.set(key, {
                         name:     r.carrier,
-                        policies: [],
-                        totalExp: 0,
-                        totalRec: 0,
-                        totalVar: 0,
+                        underpaid: [],
+                        clawback:  [],
+                        totalUnderpaidExp: 0,
+                        totalUnderpaidRec: 0,
+                        totalUnderpaidVar: 0,
+                        totalClawbackExp: 0,
+                        totalClawbackRec: 0,
+                        totalClawbackVar: 0,
                     });
                 }
                 const c = carrierMap.get(key);
                 if (r.status === 'Underpaid' && r.recNum >= 0) {
-                    c.policies.push(r);
-                    c.totalExp += r.expNum;
-                    c.totalRec += r.recNum;
-                    c.totalVar += r.varNum;
+                    c.underpaid.push(r);
+                    c.totalUnderpaidExp += r.expNum;
+                    c.totalUnderpaidRec += r.recNum;
+                    c.totalUnderpaidVar += r.varNum;
+                } else if (r.status === 'Clawback') {
+                    c.clawback.push(r);
+                    c.totalClawbackExp += r.expNum;
+                    c.totalClawbackRec += r.recNum;
+                    c.totalClawbackVar += r.varNum;
                 }
             }
 
             const carriersSorted = Array.from(carrierMap.values())
-                .filter(c => c.policies.length > 0)
-                .sort((a, b) => a.totalVar - b.totalVar); // most underpaid first
+                .filter(c => c.underpaid.length > 0 || c.clawback.length > 0)
+                .sort((a, b) => (a.totalUnderpaidVar + a.totalClawbackVar) - (b.totalUnderpaidVar + b.totalClawbackVar)); // most underpaid/clawed back first
 
             // ── Column layout for the policy table ──────────────────
             // [Policy #] [Expected] [Received] [Variance]
@@ -5071,70 +5535,108 @@ return; // Rollback: no state mutated, no audit logged
 
             function drawTableRow(r, yy, isAlt) {
                 if (isAlt) fillRect(MARGIN, yy, COL_W, TABLE_ROW_H, GREY_LT);
-                setFont('normal', 8, TEXT_DK);
-                // Truncate long policy numbers to prevent overflow into adjacent columns
                 const polStr = String(r.policy);
-                const polDisplay = polStr.length > 22 ? polStr.substring(0, 20) + '…' : polStr;
-                doc.text(polDisplay,       TC[0].x + 2, yy + 5);
+                let fontSize = 8;
+                setFont('normal', fontSize, TEXT_DK);
+                // Dynamically shrink font size down to a minimum of 5.5pt if text exceeds column width minus padding
+                if (typeof doc.getTextWidth === 'function') {
+                    while (doc.getTextWidth(polStr) > (TC[0].w - 4) && fontSize > 5.5) {
+                        fontSize -= 0.1;
+                        setFont('normal', fontSize, TEXT_DK);
+                    }
+                }
+                doc.text(polStr,           TC[0].x + 2, yy + 5);
+                setFont('normal', 8, TEXT_DK); // restore font size for the rest of the row
                 doc.text(fmt(r.expNum),    TC[1].x + 2, yy + 5);
                 doc.text(fmt(r.recNum),    TC[2].x + 2, yy + 5);
-                setFont('bold', 8, RED);
+                const varColor = r.status === 'Underpaid' ? RED
+                    : r.status === 'Clawback' ? [200, 140, 50]
+                    : r.status === 'Overpaid' ? [50, 140, 200]
+                    : TEXT_DK;
+                setFont('bold', 8, varColor);
                 doc.text(fmt(r.varNum),    TC[3].x + 2, yy + 5);
                 return yy + TABLE_ROW_H;
             }
 
-            function drawSubtotalRow(c, yy) {
+            function drawSubtotalRow(label, totalExp, totalRec, totalVar, yy) {
                 fillRect(MARGIN, yy, COL_W, TABLE_ROW_H + 1, [220, 228, 240]);
                 setFont('bold', 8, TEXT_DK);
-                // Labeled "UNDERPAID SUBTOTAL" — these figures reflect only the underpaid
-                // policies listed above, not the carrier's full statement totals.
-                doc.text('UNDERPAID SUBTOTAL', TC[0].x + 2, yy + 5.5);
-                doc.text(fmt(c.totalExp), TC[1].x + 2, yy + 5.5);
-                doc.text(fmt(c.totalRec), TC[2].x + 2, yy + 5.5);
-                setFont('bold', 8, c.totalVar < -0.01 ? RED : TEXT_DK);
-                doc.text(fmt(c.totalVar), TC[3].x + 2, yy + 5.5);
+                doc.text(label, TC[0].x + 2, yy + 5.5);
+                doc.text(fmt(totalExp), TC[1].x + 2, yy + 5.5);
+                doc.text(fmt(totalRec), TC[2].x + 2, yy + 5.5);
+                setFont('bold', 8, totalVar < -0.01 ? RED : TEXT_DK);
+                doc.text(fmt(totalVar), TC[3].x + 2, yy + 5.5);
                 return yy + TABLE_ROW_H + 1;
             }
 
             if (carriersSorted.length === 0) {
-                // No underpaid policies — note it
+                // No exceptions — note it
                 setFont('italic', 9.5, GREY_MID);
-                doc.text('No underpaid policies found in this dataset.', MARGIN, y + 6);
+                doc.text('No exception policies found in this dataset.', MARGIN, y + 6);
                 y += 14;
             } else {
                 for (const carrier of carriersSorted) {
                     // Carrier section heading
-                    ensureSpace(20 + TABLE_HDR_H + TABLE_ROW_H);
+                    ensureSpace(22);
 
                     // Teal carrier name bar
                     fillRect(MARGIN, y, COL_W, 9, [8, 30, 60]);
                     setFont('bold', 9.5, TEAL);
-                    doc.text(carrier.name, MARGIN + 3, y + 6.2);
+                    doc.text(carrier.name.toUpperCase(), MARGIN + 3, y + 6.2);
 
-                    // Underpaid count badge on right
-                    const badge = `${carrier.policies.length} underpaid ${carrier.policies.length === 1 ? 'policy' : 'policies'}`;
+                    const uCount = carrier.underpaid.length;
+                    const cCount = carrier.clawback.length;
+                    const badgeParts = [];
+                    if (uCount > 0) badgeParts.push(`${uCount} underpaid`);
+                    if (cCount > 0) badgeParts.push(`${cCount} clawback`);
+                    const badge = badgeParts.join(' / ') + ' ' + (uCount + cCount === 1 ? 'policy' : 'policies');
                     setFont('normal', 7.5, GREY_MID);
                     doc.text(badge, PAGE_W - MARGIN - 2, y + 6.2, { align: 'right' });
                     y += 11;
 
-                    // Table header
-                    ensureSpace(TABLE_HDR_H + TABLE_ROW_H);
-                    y = drawTableHeader(y);
+                    // 1. Underpaid table
+                    if (uCount > 0) {
+                        ensureSpace(12 + TABLE_HDR_H + TABLE_ROW_H);
+                        setFont('bold', 8, TEXT_DK);
+                        doc.text('Underpaid Commission Rate Discrepancies', MARGIN, y + 4);
+                        y += 6;
 
-                    // Policy rows
-                    carrier.policies.forEach((r, idx) => {
-                        ensureSpace(TABLE_ROW_H + 2);
-                        y = drawTableRow(r, y, idx % 2 === 1);
-                        // Thin row separator
-                        doc.setDrawColor(220, 228, 240);
-                        doc.setLineWidth(0.2);
-                        doc.line(MARGIN, y, PAGE_W - MARGIN, y);
-                    });
+                        y = drawTableHeader(y);
+                        carrier.underpaid.forEach((r, idx) => {
+                            ensureSpace(TABLE_ROW_H + 2);
+                            y = drawTableRow(r, y, idx % 2 === 1);
+                            doc.setDrawColor(220, 228, 240);
+                            doc.setLineWidth(0.2);
+                            doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+                        });
 
-                    // Subtotal row
-                    ensureSpace(TABLE_ROW_H + 8);
-                    y = drawSubtotalRow(carrier, y);
-                    y += 8; // gap between carriers
+                        ensureSpace(TABLE_ROW_H + 6);
+                        y = drawSubtotalRow('UNDERPAID SUBTOTAL', carrier.totalUnderpaidExp, carrier.totalUnderpaidRec, carrier.totalUnderpaidVar, y);
+                        y += 6;
+                    }
+
+                    // 2. Clawback table
+                    if (cCount > 0) {
+                        ensureSpace(12 + TABLE_HDR_H + TABLE_ROW_H);
+                        setFont('bold', 8, TEXT_DK);
+                        doc.text('Clawbacks & Recoupments', MARGIN, y + 4);
+                        y += 6;
+
+                        y = drawTableHeader(y);
+                        carrier.clawback.forEach((r, idx) => {
+                            ensureSpace(TABLE_ROW_H + 2);
+                            y = drawTableRow(r, y, idx % 2 === 1);
+                            doc.setDrawColor(220, 228, 240);
+                            doc.setLineWidth(0.2);
+                            doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+                        });
+
+                        ensureSpace(TABLE_ROW_H + 6);
+                        y = drawSubtotalRow('CLAWBACK SUBTOTAL', carrier.totalClawbackExp, carrier.totalClawbackRec, carrier.totalClawbackVar, y);
+                        y += 6;
+                    }
+
+                    y += 6; // gap between carriers
                 }
             }
 
@@ -5189,9 +5691,18 @@ return; // Rollback: no state mutated, no audit logged
 
             function drawFullRow(r, yy, isAlt) {
                 if (isAlt) fillRect(MARGIN, yy, COL_W, TABLE_ROW_H, GREY_LT);
-                setFont('normal', 7, TEXT_DK);
                 const pol = String(r.policy);
-                doc.text(pol.length > 14 ? pol.substring(0, 12) + '…' : pol, FC[0].x + 1.5, yy + 5);
+                let fontSize = 7;
+                setFont('normal', fontSize, TEXT_DK);
+                // Dynamically shrink font size down to a minimum of 5.5pt if text exceeds column width minus padding
+                if (typeof doc.getTextWidth === 'function') {
+                    while (doc.getTextWidth(pol) > (FC[0].w - 3) && fontSize > 5.5) {
+                        fontSize -= 0.1;
+                        setFont('normal', fontSize, TEXT_DK);
+                    }
+                }
+                doc.text(pol, FC[0].x + 1.5, yy + 5);
+                setFont('normal', 7, TEXT_DK); // restore font size for the rest of the row
                 const car = String(r.carrier);
                 doc.text(car.length > 14 ? car.substring(0, 12) + '…' : car, FC[1].x + 1.5, yy + 5);
                 doc.text(fmt(r.expNum), FC[2].x + 1.5, yy + 5);
@@ -5233,17 +5744,51 @@ return; // Rollback: no state mutated, no audit logged
                 doc.line(MARGIN, y, PAGE_W - MARGIN, y);
             });
 
-            // Grand total row
-            ensureSpace(TABLE_ROW_H + 4);
-            fillRect(MARGIN, y, COL_W, TABLE_ROW_H + 1, [220, 228, 240]);
-            setFont('bold', 7, TEXT_DK);
-            doc.text('GRAND TOTAL', FC[0].x + 1.5, y + 5.5);
-            doc.text(`${rowsToExport.length} policies`, FC[1].x + 1.5, y + 5.5);
-            doc.text(fmt(metrics.expected), FC[2].x + 1.5, y + 5.5);
-            doc.text(fmt(metrics.received), FC[3].x + 1.5, y + 5.5);
-            setFont('bold', 7, metrics.variance < -0.01 ? RED : TEXT_DK);
-            doc.text(fmt(metrics.variance), FC[4].x + 1.5, y + 5.5);
-            y += TABLE_ROW_H + 4;
+            // Audit Totals Breakdown Panel
+            const panelH = 22;
+            ensureSpace(panelH + 12);
+            
+            // Draw panel container
+            fillRect(MARGIN, y, COL_W, panelH, [245, 248, 252]);
+            doc.setDrawColor(180, 200, 220);
+            doc.setLineWidth(0.4);
+            doc.rect(MARGIN, y, COL_W, panelH);
+            
+            // Calculate column positions
+            const numCols = 5;
+            const cardW = COL_W / numCols;
+            
+            const cols = [
+                { label: 'Potential Recovery', value: fmt(metrics.underpaid), color: RED, isBold: true },
+                { label: 'Total Underpaid', value: fmt(metrics.underpaid), color: RED },
+                { label: 'Total Overpaid', value: fmt(metrics.overpaid), color: [0, 100, 80] },
+                { label: 'Total Clawbacks', value: fmt(metrics.clawback), color: [160, 100, 0] },
+                { label: 'Net Variance', value: fmt(metrics.variance), color: metrics.variance < -0.01 ? RED : TEXT_DK, isBold: true }
+            ];
+            
+            cols.forEach((col, i) => {
+                const cx = MARGIN + i * cardW;
+                // Draw a divider line on the right except for the last column
+                if (i < numCols - 1) {
+                    doc.setDrawColor(200, 215, 230);
+                    doc.setLineWidth(0.25);
+                    doc.line(cx + cardW, y + 3, cx + cardW, y + panelH - 3);
+                }
+                
+                // Text positioning
+                setFont(col.isBold ? 'bold' : 'normal', 6.5, GREY_MID);
+                doc.text(col.label.toUpperCase(), cx + cardW / 2, y + 7, { align: 'center' });
+                
+                setFont('bold', col.isBold ? 9.5 : 8.5, col.color);
+                doc.text(col.value, cx + cardW / 2, y + 14, { align: 'center' });
+            });
+            
+            y += panelH + 4;
+            
+            // Footnote text
+            setFont('italic', 7, GREY_MID);
+            doc.text('Net Variance includes underpayments, overpayments, and clawbacks.', MARGIN, y);
+            y += 8;
 
             // ══════════════════════════════════════════════════════════
             // Stamp footer on every page with the correct page number
@@ -5376,6 +5921,25 @@ return; // Rollback: no state mutated, no audit logged
             });
         }
 
+        // Hero Warning Badge Click to Scroll and Expand Data Quality Panel
+        const heroWarningBadge = document.getElementById('hero-warning-badge');
+        if (heroWarningBadge) {
+            heroWarningBadge.addEventListener('click', function() {
+                const panel = document.getElementById('data-quality-panel');
+                const content = document.getElementById('data-quality-content');
+                const chevron = document.getElementById('data-quality-chevron');
+                if (content) {
+                    content.classList.remove('hidden');
+                }
+                if (chevron) {
+                    chevron.style.transform = 'rotate(180deg)';
+                }
+                if (panel) {
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+
         // ── Dispute Letters Modal Dialog Wiring ──
         const disputeBtn = document.getElementById('dispute-btn');
         const disputeAllBtn = document.getElementById('dispute-all-btn');
@@ -5385,9 +5949,27 @@ return; // Rollback: no state mutated, no audit logged
         const disputeLetterText = document.getElementById('dispute-letter-text');
         const disputeModalClose = document.getElementById('dispute-modal-close');
 
+        const CARRIER_DISPUTE_EMAILS = {
+            'progressive': 'disputes@progressive.com',
+            'travelers': 'commissiondisputes@travelers.com',
+            'liberty mutual': 'commission.disputes@libertymutual.com',
+            'geico': 'agencyrelations@geico.com',
+            'hartford': 'commission.disputes@thehartford.com',
+            'nationwide': 'commissions@nationwide.com',
+            'allstate': 'agencycommissions@allstate.com'
+        };
+
+        function updateEmailForSelectedCarrier() {
+            if (disputeCarrierSelect && disputeEmailInput) {
+                const carrierKey = String(disputeCarrierSelect.value).toLowerCase().trim();
+                disputeEmailInput.value = CARRIER_DISPUTE_EMAILS[carrierKey] || '';
+            }
+        }
+
         function getDisputeLetterContent(carrierName, carrierEmail) {
             const dateStr = new Date().toISOString().split('T')[0];
-            const emailStr = carrierEmail ? carrierEmail.trim() : '(not provided)';
+            const emailStr = carrierEmail ? escapeFormulaInjection(carrierEmail.trim()) : '(not provided)';
+            const escapedCarrierName = escapeFormulaInjection(carrierName);
             
             const carrierRows = allRows.filter(r => 
                 String(r.carrier).toLowerCase() === carrierName.toLowerCase() && 
@@ -5399,7 +5981,7 @@ return; // Rollback: no state mutated, no audit logged
             let tableText = 'Policy Number'.padEnd(25) + 'Expected'.padEnd(15) + 'Received'.padEnd(15) + 'Underpaid'.padEnd(15) + '\n';
             tableText += '-'.repeat(70) + '\n';
             carrierRows.forEach(r => {
-                const colPolicy = String(r.policy || '').padEnd(25);
+                const colPolicy = escapeFormulaInjection(String(r.policy || '')).padEnd(25);
                 const colExpected = formatCurrency(r.expNum).padEnd(15);
                 const colReceived = formatCurrency(r.recNum).padEnd(15);
                 const colUnderpaid = formatCurrency(Math.abs(r.varNum)).padEnd(15);
@@ -5407,14 +5989,14 @@ return; // Rollback: no state mutated, no audit logged
             });
 
             return `Prepared For: ${emailStr}
-Attention: Commission Department - ${carrierName}
+Attention: Commission Department - ${escapedCarrierName}
 
 Dear Representative,
 
-We have audited our commission statements for ${carrierName} and identified discrepancies. Below is a detailed list of policies where commission received is less than expected:
+We have audited our commission statements for ${escapedCarrierName} and identified discrepancies. Below is a detailed list of policies where commission received is less than expected:
 
 Date of Audit: ${dateStr}
-Carrier: ${carrierName}
+Carrier: ${escapedCarrierName}
 Total Discrepancies: ${carrierRows.length} policies
 Total Outstanding Amount: ${formatCurrency(totalUnderpaid)}
 
@@ -5471,9 +6053,7 @@ Generated Date: ${dateStr}`;
                 });
             }
 
-            if (disputeEmailInput) {
-                disputeEmailInput.value = '';
-            }
+            updateEmailForSelectedCarrier();
 
             if (disputeModalOverlay) {
                 disputeModalOverlay.classList.remove('hidden');
@@ -5519,6 +6099,8 @@ Generated Date: ${dateStr}`;
                     });
                 }
 
+                updateEmailForSelectedCarrier();
+
                 if (disputeModalOverlay) {
                     disputeModalOverlay.classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
@@ -5542,7 +6124,7 @@ Generated Date: ${dateStr}`;
 
         if (disputeCarrierSelect) {
             disputeCarrierSelect.addEventListener('change', function() {
-                if (disputeEmailInput) disputeEmailInput.value = '';
+                updateEmailForSelectedCarrier();
                 generateDisputeLetterPreview();
             });
         }
@@ -5704,21 +6286,64 @@ Generated Date: ${dateStr}`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Reports
+        // Helper to show/hide modals with scroll lock and accessibility
+        function openModalPlaceholder(overlayId, closeBtnId) {
+            const overlay = document.getElementById(overlayId);
+            if (!overlay) return;
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus trap and focus close button
+            setTimeout(() => {
+                const closeBtn = document.getElementById(closeBtnId);
+                if (closeBtn) closeBtn.focus();
+            }, 80);
+        }
+
+        function closeModalPlaceholder(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Reports Nav / Modal Wiring
         document.getElementById('nav-reports').addEventListener('click', (e) => {
             e.preventDefault();
+            openModalPlaceholder('reports-modal-overlay', 'reports-modal-close-btn');
         });
         document.getElementById('mob-nav-reports').addEventListener('click', () => {
             closeMobileMenu();
+            openModalPlaceholder('reports-modal-overlay', 'reports-modal-close-btn');
         });
+        const reportsCloseBtn = document.getElementById('reports-modal-close-btn');
+        if (reportsCloseBtn) {
+            reportsCloseBtn.addEventListener('click', () => {
+                closeModalPlaceholder('reports-modal-overlay');
+            });
+        }
 
-        // Settings
+        // Settings Nav / Modal Wiring
         document.getElementById('nav-settings').addEventListener('click', (e) => {
             e.preventDefault();
+            openModalPlaceholder('settings-modal-overlay', 'settings-modal-close-btn');
         });
         document.getElementById('mob-nav-settings').addEventListener('click', () => {
             closeMobileMenu();
+            openModalPlaceholder('settings-modal-overlay', 'settings-modal-close-btn');
         });
+        const settingsCloseBtn = document.getElementById('settings-modal-close-btn');
+        if (settingsCloseBtn) {
+            settingsCloseBtn.addEventListener('click', () => {
+                closeModalPlaceholder('settings-modal-overlay');
+            });
+        }
+        const settingsCloseBtnTop = document.getElementById('settings-modal-close-btn-top');
+        if (settingsCloseBtnTop) {
+            settingsCloseBtnTop.addEventListener('click', () => {
+                closeModalPlaceholder('settings-modal-overlay');
+            });
+        }
 
         // ── Mobile hamburger menu ─────────────────────────────────────
         const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
@@ -6048,6 +6673,8 @@ Generated Date: ${dateStr}`;
         setupFocusTrap('pdf-export-modal-overlay', 'div');
         setupFocusTrap('audit-detail-modal-overlay', 'div');
         setupFocusTrap('blocking-error-overlay', 'div');
+        setupFocusTrap('reports-modal-overlay', 'div');
+        setupFocusTrap('settings-modal-overlay', 'div');
 
         // ── Global Escape Key Listener ─────────────────────────────────
         if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
@@ -6083,10 +6710,27 @@ Generated Date: ${dateStr}`;
                     document.body.style.overflow = '';
                 }
 
+                // 5. Reports Modal Close
+                const reportsModal = document.getElementById('reports-modal-overlay');
+                if (reportsModal && !reportsModal.classList.contains('hidden')) {
+                    reportsModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+
+                // 6. Settings Modal Close
+                const settingsModal = document.getElementById('settings-modal-overlay');
+                if (settingsModal && !settingsModal.classList.contains('hidden')) {
+                    settingsModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+
                 // Note: Integrity Overlay (blocking-error-overlay) is intentionally EXCLUDED.
                 // It does not close via Escape key.
             });
         }
+
+        // Initialize status filter to default 'Underpaid' on load
+        filterStatus = 'Underpaid';
 
         // Initialize history list and run migration
         migrateAuditHistory();
