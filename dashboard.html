@@ -5,15 +5,15 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DRecon | Commission Reconciliation Dashboard</title>
 <meta name="description" content="DRecon commission reconciliation dashboard. Upload carrier CSVs, flag underpayments, and export dispute-ready reports." />
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <!-- jsPDF for PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <!-- SheetJS for Excel (.xlsx / .xls) support -->
-<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js" defer></script>
 <!-- Local JSZip for dispute zip creation -->
-<script src="js/vendor/jszip.min.js"></script>
+<script src="js/vendor/jszip.min.js" defer></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -466,11 +466,11 @@
     <!-- Buttons -->
     <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
       <!-- Cancel Button -->
-      <button id="mapping-modal-cancel" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; background:transparent; cursor:pointer;">
+      <button id="mapping-modal-cancel" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; background:transparent; cursor:pointer;" aria-label="Cancel column mapping">
         Cancel
       </button>
       <!-- Confirm Button -->
-      <button id="mapping-modal-confirm" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 shadow-[0_0_12px_rgba(45,212,191,0.3)] text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; border:none; cursor:pointer; color:#003731;">
+      <button id="mapping-modal-confirm" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 shadow-[0_0_12px_rgba(45,212,191,0.3)] text-[13px] tracking-wide" style="font-family:'Inter', sans-serif; border:none; cursor:pointer; color:#003731;" aria-label="Confirm column mapping and run audit">
         Looks correct — Run Audit
       </button>
     </div>
@@ -493,10 +493,10 @@
       <!-- Errors listed here -->
     </div>
     <div style="display: flex; justify-content: flex-end; gap: 12px;">
-      <button id="blocking-error-clear" class="bg-error hover:bg-error-fixed-dim text-on-error px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 text-[13px] tracking-wide" style="border: none; cursor: pointer; background: #ffb4ab; color: #601410;">
+      <button id="blocking-error-clear" class="bg-error hover:bg-error-fixed-dim text-on-error px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 text-[13px] tracking-wide" style="border: none; cursor: pointer; background: #ffb4ab; color: #601410;" aria-label="Clear all uploaded data">
         Clear All Data
       </button>
-      <button id="blocking-error-dismiss" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="background: transparent; cursor: pointer; color: #ffffff; border: 1px solid #859490;">
+      <button id="blocking-error-dismiss" class="border border-outline px-6 py-2.5 rounded-full font-bold text-on-surface-variant hover:bg-surface-variant/30 transition-all active:scale-95 text-[13px] tracking-wide" style="background: transparent; cursor: pointer; color: #ffffff; border: 1px solid #859490;" aria-label="Dismiss error overlay">
         Dismiss
       </button>
     </div>
@@ -596,10 +596,10 @@
 
     <!-- Action Buttons -->
     <div class="flex justify-end gap-3 shrink-0">
-      <button id="rate-calculator-cancel-btn" class="border border-outline hover:bg-surface-variant/30 text-white px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="background:transparent; cursor:pointer;">
+      <button id="rate-calculator-cancel-btn" class="border border-outline hover:bg-surface-variant/30 text-white px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="background:transparent; cursor:pointer;" aria-label="Cancel rate calculator">
         Cancel
       </button>
-      <button id="rate-calculator-apply-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">
+      <button id="rate-calculator-apply-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-5 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;" aria-label="Apply commission rates">
         Apply Rates
       </button>
     </div>
@@ -614,9 +614,9 @@
     <h3 class="font-title-md text-title-md text-white mb-2">Export PDF Report</h3>
     <p class="font-body-sm text-body-sm text-outline mb-6">Choose whether to include all reconciled policies or only exception policies (underpaid, overpaid, and clawbacks) in your PDF report.</p>
     <div class="flex flex-col gap-3">
-      <button id="pdf-export-full-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Export Full Audit</button>
-      <button id="pdf-export-exceptions-btn" class="bg-surface-container-highest hover:bg-surface-variant text-white py-2.5 rounded-full font-bold transition-all border border-outline-variant/30 text-[13px] tracking-wide" style="background:transparent; cursor:pointer;">Export Exceptions Only</button>
-      <button id="pdf-export-cancel-btn" class="text-outline hover:text-white py-2 text-[13px] font-semibold" style="background:transparent; border:none; cursor:pointer;">Cancel</button>
+      <button id="pdf-export-full-btn" class="bg-primary hover:bg-primary-fixed-dim text-on-primary py-2.5 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;" aria-label="Export full audit as PDF">Export Full Audit</button>
+      <button id="pdf-export-exceptions-btn" class="bg-surface-container-highest hover:bg-surface-variant text-white py-2.5 rounded-full font-bold transition-all border border-outline-variant/30 text-[13px] tracking-wide" style="background:transparent; cursor:pointer;" aria-label="Export exceptions only as PDF">Export Exceptions Only</button>
+      <button id="pdf-export-cancel-btn" class="text-outline hover:text-white py-2 text-[13px] font-semibold" style="background:transparent; border:none; cursor:pointer;" aria-label="Cancel PDF export">Cancel</button>
     </div>
   </div>
 </div>
@@ -637,7 +637,7 @@
       <!-- Populated dynamically -->
     </div>
     <div class="flex justify-end">
-      <button id="audit-detail-modal-ok" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-6 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;">Close</button>
+      <button id="audit-detail-modal-ok" class="bg-primary hover:bg-primary-fixed-dim text-on-primary px-6 py-2 rounded-full font-bold transition-all text-[13px] tracking-wide" style="border:none; cursor:pointer; color:#003731;" aria-label="Close audit details">Close</button>
     </div>
   </div>
 </div>
@@ -848,6 +848,10 @@
       <div class="flex items-baseline justify-between mt-2">
         <p id="total-potential-recovery" class="text-4xl font-extrabold text-primary summary-value metric-value">$0.00</p>
         <span id="total-potential-recovery-policies" class="text-xs text-outline font-semibold">0 policies</span>
+      </div>
+      <div class="flex justify-between items-center text-[10px] text-outline mt-2 pt-2 border-t border-primary/20">
+        <div>Underpaid: <span id="sub-underpaid-recovery" class="font-semibold text-white">$0.00</span></div>
+        <div>Clawbacks: <span id="sub-clawback-exposure" class="font-semibold text-white">$0.00</span></div>
       </div>
       <p class="text-[11px] text-outline mt-1 font-medium uppercase tracking-wide">Potential Recovery</p>
     </div>
@@ -1137,6 +1141,32 @@
 </div>
 </footer>
 <script>
+        // safeStorage wrapper to handle Private Browsing and QuotaExceededError gracefully
+        const safeStorage = {
+            getItem(key) {
+                try {
+                    if (typeof window !== 'undefined' && 'localStorage' in window && window.localStorage) {
+                        return window.localStorage.getItem(key);
+                    }
+                } catch (e) {
+                    console.warn('safeStorage.getItem failed:', e);
+                }
+                return null;
+            },
+            setItem(key, value) {
+                try {
+                    if (typeof window !== 'undefined' && 'localStorage' in window && window.localStorage) {
+                        window.localStorage.setItem(key, value);
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn('safeStorage.setItem failed:', e);
+                    return false;
+                }
+                return false;
+            }
+        };
+
         // ════════════════════════──────────────────────────
         // ══ EMAIL GATE ════════──────────────────────────
         // Runs immediately (script at </body>, DOM ready)
@@ -1144,7 +1174,7 @@
         (function initUser() {
             const STORAGE_KEY = 'drecon_user';
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
+                const raw = safeStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     const storedUser = JSON.parse(raw);
                     if (storedUser && storedUser.email) {
@@ -1285,6 +1315,10 @@
             const warningBanner = document.getElementById('mapping-warning-banner');
             const warningText = document.getElementById('mapping-warning-text');
             const confirmBtn = document.getElementById('mapping-modal-confirm');
+            if (!overlay || !tbody || !confirmBtn) {
+                console.error('[showMappingConfirmationModal] Critical DOM elements missing');
+                return;
+            }
 
             tbody.innerHTML = '';
             warningBanner.classList.add('hidden');
@@ -1485,6 +1519,9 @@
             const confirmBtn = document.getElementById('mapping-modal-confirm');
             const cancelBtn = document.getElementById('mapping-modal-cancel');
             const card = document.getElementById('mapping-modal-card');
+            
+            if (confirmBtn._dreconInitialized) return;
+            confirmBtn._dreconInitialized = true;
 
             confirmBtn.addEventListener('click', () => {
                 if (activeMappingConfirmCallback) {
@@ -1556,21 +1593,66 @@
             }
             
             // 2. Exact match on keys after removing non-alphanumeric chars
-            const normCarrier = cleanCarrier.replace(/[^a-z0-9]/g, '');
+            const normalize = str => str.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+            const normCarrier = normalize(cleanCarrier);
+            if (!normCarrier) return 0;
+
             for (const key of Object.keys(rates)) {
-                const normKey = key.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
-                if (normKey === normCarrier) {
+                if (normalize(key) === normCarrier) {
                     return parseFloat(rates[key]) || 0;
                 }
             }
             
-            // 3. Substring match: does the carrier name contain the rate key or vice-versa?
-            const sortedKeys = Object.keys(rates).sort((a, b) => b.length - a.length);
-            for (const key of sortedKeys) {
-                const cleanKey = key.toLowerCase().trim();
-                if (cleanKey.length >= 3) {
-                    if (cleanCarrier.includes(cleanKey) || cleanKey.includes(cleanCarrier)) {
-                        return parseFloat(rates[key]) || 0;
+            // 3. Explicit alias match
+            const CARRIER_GROUPS = [
+                ['progressive', 'progressivecommercial', 'progressivedirect', 'progressiveselect', 'progressivecasualty', 'progressivehome', 'progressivechoice'],
+                ['travelers', 'travelersinsurance', 'travelersindemnity', 'travelerscasualty', 'travelersgroup', 'travelershome'],
+                ['ace', 'aceamerican', 'aceinsurance', 'acegroup', 'acefire'],
+                ['aetna', 'aetnalife', 'aetnainsurance'],
+                ['cigna', 'cignalife', 'cignainsurance'],
+                ['hartford', 'thehartford', 'hartfordinsurance', 'hartfordcasualty'],
+                ['liberty', 'libertymutual', 'libertymutualinsurance']
+            ];
+
+            for (const group of CARRIER_GROUPS) {
+                if (group.includes(normCarrier)) {
+                    for (const member of group) {
+                        for (const key of Object.keys(rates)) {
+                            if (normalize(key) === member) {
+                                return parseFloat(rates[key]) || 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 4. Controlled fuzzy match (Forward prefix/suffix/word-boundary check on clean base names)
+            function getCleanBaseName(str) {
+                let s = str.toLowerCase().trim();
+                s = s.replace(/^(the|a|an)\s+/g, '');
+                s = s.replace(/\s+(insurance|co|corp|corporation|inc|incorporated|ltd|limited|group|casualty|indemnity|fire|marine|life|health|auto|home|casualty\s+company|insurance\s+company|casualty\s+insurance|casualty\s+and\s+surety|surety|casualty\s+&\s+surety)\b/g, '');
+                return s.trim();
+            }
+
+            const baseCarrier = getCleanBaseName(cleanCarrier);
+            if (!baseCarrier) return 0;
+
+            const baseKeys = Object.keys(rates).map(k => ({ original: k, base: getCleanBaseName(k) }));
+
+            for (const item of baseKeys) {
+                if (item.base === baseCarrier && baseCarrier.length > 0) {
+                    return parseFloat(rates[item.original]) || 0;
+                }
+            }
+
+            for (const item of baseKeys) {
+                if (item.base.length >= 3 && baseCarrier.length >= 3) {
+                    // Unidirectional prefix match on whole-word boundary
+                    if (baseCarrier.startsWith(item.base) && (baseCarrier === item.base || baseCarrier[item.base.length] === ' ')) {
+                        return parseFloat(rates[item.original]) || 0;
+                    }
+                    if (item.base.startsWith(baseCarrier) && (item.base === baseCarrier || item.base[baseCarrier.length] === ' ')) {
+                        return parseFloat(rates[item.original]) || 0;
                     }
                 }
             }
@@ -1600,6 +1682,9 @@
                         showToast('Failed to parse Excel rate sheet: ' + err.message, 'error');
                     }
                 };
+                reader.onerror = function(e) {
+                    showToast('Failed to read Excel rate sheet file.', 'error');
+                };
                 reader.readAsArrayBuffer(file);
             } else {
                 const reader = new FileReader();
@@ -1611,6 +1696,9 @@
                     } catch (err) {
                         showToast('Failed to parse CSV rate sheet: ' + err.message, 'error');
                     }
+                };
+                reader.onerror = function(e) {
+                    showToast('Failed to read CSV rate sheet file.', 'error');
                 };
                 reader.readAsText(file);
             }
@@ -1667,7 +1755,7 @@
 
             let savedRates = {};
             try {
-                const raw = localStorage.getItem('drecon_carrier_rates');
+                const raw = safeStorage.getItem('drecon_carrier_rates');
                 if (raw) savedRates = JSON.parse(raw);
             } catch (_) {}
 
@@ -1775,7 +1863,7 @@
                     const savedRates = {};
                     
                     try {
-                        const raw = localStorage.getItem('drecon_carrier_rates');
+                        const raw = safeStorage.getItem('drecon_carrier_rates');
                         if (raw) Object.assign(savedRates, JSON.parse(raw));
                     } catch (_) {}
 
@@ -1793,7 +1881,7 @@
                     });
 
                     try {
-                        localStorage.setItem('drecon_carrier_rates', JSON.stringify(savedRates));
+                        safeStorage.setItem('drecon_carrier_rates', JSON.stringify(savedRates));
                     } catch (_) {}
 
                     hideModal();
@@ -1867,7 +1955,12 @@
             document.body.style.overflow = 'hidden';
             setTimeout(() => {
                 const dismiss = document.getElementById('blocking-error-dismiss');
-                if (dismiss) dismiss.focus();
+                if (dismiss) {
+                    dismiss.focus();
+                } else {
+                    const overlay = document.getElementById('blocking-error-overlay');
+                    if (overlay) overlay.focus();
+                }
             }, 80);
         }
 
@@ -1947,6 +2040,7 @@
         // Reset when the user clicks "Clear All".
         let uploadedFiles = new Set();
         let fileQueue = [];
+        let queuePromise = Promise.resolve();
         let isProcessingQueue = false;
 
         // ── Global Filters & Sprint Variables ──────────────────────────
@@ -1963,6 +2057,12 @@
         let activeMappingOverrides = [];
         let activeLowConfidenceMappings = [];
         let activeRejectedRowsCount = 0;
+        let activeFinishProcessing = null;
+        function finishProcessing() {
+            if (typeof activeFinishProcessing === 'function') {
+                activeFinishProcessing();
+            }
+        }
 
         // EC-52: Audit trail — records every ingestion event for diagnostics.
         // Each entry: { timestamp, fileName, sheetName, headerRow, mapping, rowsAccepted, rowsRejected, warnings, userConfirmed }
@@ -1989,20 +2089,35 @@
             return `AUD-${yyyy}${mm}${dd}-${hh}${min}${ss}-${hex}`;
         }
 
-        // EC-35: Duplicate detection — flags (policy, carrier) duplicates.
+        // EC-35: Duplicate detection — flags (policy, carrier, expected, received) duplicates.
         // Returns array of duplicate keys found. Does NOT remove rows.
         function detectDuplicates(rows) {
             const seen = new Map(); // key → count
             const duplicateKeys = [];
             for (const r of rows) {
-                const key = (r.policy + '||' + r.carrier).toLowerCase();
+                const key = (String(r.policy).trim() + '||' + String(r.carrier).trim() + '||' + r.expNum + '||' + r.recNum).toLowerCase();
                 const count = (seen.get(key) || 0) + 1;
                 seen.set(key, count);
                 if (count === 2) { // only flag on first duplicate
-                    duplicateKeys.push({ policy: r.policy, carrier: r.carrier });
+                    duplicateKeys.push({ policy: r.policy, carrier: r.carrier, expected: r.expNum, received: r.recNum });
                 }
             }
             return duplicateKeys;
+        }
+
+        function updateDuplicateFlags(rows) {
+            for (const r of rows) {
+                r.isDuplicate = false;
+            }
+            const seen = new Set();
+            for (const r of rows) {
+                const key = (String(r.policy).trim() + '||' + String(r.carrier).trim() + '||' + r.expNum + '||' + r.recNum).toLowerCase();
+                if (seen.has(key)) {
+                    r.isDuplicate = true;
+                } else {
+                    seen.add(key);
+                }
+            }
         }
 
         // EC-53: Reconciliation integrity validation.
@@ -2335,6 +2450,9 @@
         // ── CSV/TSV/DSV parser (handles quoted fields) ─────────────────
         // EC-11: Auto-detects delimiter if not provided.
         function parseCSV(text, explicitDelimiter) {
+            if (text && text.startsWith('\uFEFF')) {
+                text = text.substring(1);
+            }
             const delim = explicitDelimiter || detectDelimiter(text);
             const rows = [];
             let current = '';
@@ -2417,6 +2535,7 @@
             if (val === '' || val == null) return '—';
             const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
             if (isNaN(num)) return val;
+            if (Math.abs(num) < 0.005) return '$0.00';
             return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
@@ -2428,11 +2547,65 @@
             return sign + '$' + Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        function parseMoneyCell(s) {
+            if (typeof s === 'number') {
+                return Number.isFinite(s) ? { valid: true, value: s, isMissing: false } : { valid: false };
+            }
+
+            let str = String(s == null ? '' : s).trim();
+            if (str.startsWith('=') || str.includes('%')) {
+                return { valid: false };
+            }
+            if (
+                str === '' || str === 'N/A' || str === 'n/a' ||
+                str === '—' || str === '–' || str === 'â€”' || str === 'â€“' || str === '-'
+            ) {
+                return { valid: true, value: 0, isMissing: true };
+            }
+
+            // Permit common three-letter currency codes, but reject other text.
+            str = str.replace(/^(USD|EUR|GBP|CAD|AUD)\s*/i, '');
+            if (/[A-Za-z]/.test(str)) return { valid: false };
+
+            str = str.replace(/[^0-9.,()\-\s]/g, '').trim();
+            if (/^\((.+)\)$/.test(str)) {
+                str = '-' + str.substring(1, str.length - 1);
+            }
+            str = str.replace(/\s+/g, '');
+
+            if (str.includes('.') && str.includes(',')) {
+                if (str.indexOf('.') < str.indexOf(',')) {
+                    str = str.replace(/\./g, '').replace(/,/g, '.');
+                } else {
+                    str = str.replace(/,/g, '');
+                }
+            } else if (str.includes(',')) {
+                str = /,\d{2}$/.test(str)
+                    ? str.replace(/,/g, '.')
+                    : str.replace(/,/g, '');
+            } else if (str.includes('.')) {
+                if (/\.\d{3}$/.test(str)) {
+                    str = str.replace(/\./g, '');
+                }
+            }
+
+            const isNegative = str.startsWith('-');
+            const digits = str.replace(/[^0-9.]/g, '');
+            const parts = digits.split('.');
+            let cleanValue = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+            if (isNegative) cleanValue = '-' + cleanValue;
+
+            const value = Number(cleanValue);
+            return Number.isFinite(value) && cleanValue !== ''
+                ? { valid: true, value, isMissing: false }
+                : { valid: false };
+        }
+
         // ── Resolve a raw CSV row into a canonical object ──────────────
         // Returns { policy, carrier, expected, received, variance, status }
         // All numeric values stored as plain Numbers; display formatting
         // happens only in the render functions.
-        function resolveRow(rawRow, mapping, headers) {
+        function resolveRow(rawRow, mapping, headers, rowNum) {
             const get = (key) => mapping[key] !== -1 ? (rawRow[mapping[key]] || '') : '';
 
             const expRaw = get('expected');
@@ -2451,6 +2624,12 @@
                     const normHeader = String(colHeader).toLowerCase();
                     const rateWords = ['rate', 'commission rate', 'pct', '%', 'percentage'];
                     if (rateWords.some(w => normHeader.includes(w))) {
+                        // Check if header contains absolute money terms
+                        const moneyWords = ['amount', 'amt', 'usd', 'received', 'expected', 'due', 'paid', 'remitted', 'earned'];
+                        if (moneyWords.some(w => normHeader.includes(w))) {
+                            return false;
+                        }
+                        
                         let cleanStr = str.replace(/[^0-9.,\-]/g, '');
                         if (cleanStr.includes('.') && cleanStr.includes(',')) {
                             if (cleanStr.indexOf('.') < cleanStr.indexOf(',')) {
@@ -2463,6 +2642,10 @@
                                 cleanStr = cleanStr.replace(/,/g, '.');
                             } else {
                                 cleanStr = cleanStr.replace(/,/g, '');
+                            }
+                        } else if (cleanStr.includes('.')) {
+                            if (/\.\d{3}$/.test(cleanStr)) {
+                                cleanStr = cleanStr.replace(/\./g, '');
                             }
                         }
                         const val = parseFloat(cleanStr);
@@ -2479,6 +2662,7 @@
                 if (typeof s === 'number') {
                     return isNaN(s) || !isFinite(s) ? 0 : s;
                 }
+                if (typeof s === 'string' && s.toLowerCase() === 'nan') return 0;
                 let str = String(s).trim();
 
                 if (str === '' || str === 'N/A' || str === '—' || str === '-') {
@@ -2490,11 +2674,24 @@
                     return 0;
                 }
 
-                // EC-24 FIX: Detect scientific notation BEFORE stripping letters.
-                // Values like 1.2E+4, 1e6, 2.5e-3 must be parsed directly.
+                // A1 Scientific Notation Hardening:
+                // Strip currency symbols/codes, spaces, commas, and handle European dots
+                let sciClean = str.replace(/[\$€£¥]/g, '')            // currency symbols
+                                 .replace(/^[a-zA-Z]{3}/, '')         // 3-letter currency code prefix
+                                 .replace(/\s+/g, '');                // spaces
+                
+                // If European format with a single dot followed by exactly three digits and no commas, strip the dot
+                if (/\.\d{3}$/.test(sciClean) && !sciClean.includes(',')) {
+                    if (!sciClean.toLowerCase().includes('e')) {
+                        sciClean = sciClean.replace(/\./, '');
+                    }
+                } else {
+                    sciClean = sciClean.replace(/,/g, '');
+                }
+
                 const sciNotationPattern = /^\s*[+-]?\d+\.?\d*[eE][+-]?\d+\s*$/;
-                if (sciNotationPattern.test(str)) {
-                    const sciVal = parseFloat(str.trim());
+                if (sciNotationPattern.test(sciClean)) {
+                    const sciVal = parseFloat(sciClean);
                     return Number.isFinite(sciVal) ? sciVal : 0;
                 }
 
@@ -2536,6 +2733,7 @@
                     }
                 }
 
+
                 let isNegative = str.startsWith('-');
                 let digits = str.replace(/[^0-9.]/g, '');
                 let parts = digits.split('.');
@@ -2553,8 +2751,14 @@
                 return val;
             }
 
+            const parsedExpected = parseMoneyCell(expRaw);
+            const parsedReceived = parseMoneyCell(recRaw);
+
+            const isExpectedMissing = parsedExpected.isMissing;
+            const isReceivedMissing = parsedReceived.isMissing;
+
             const expNum = toNum(expRaw, expColHeader);
-            const recNum = toNum(recRaw, recColHeader);
+            const recNum = isReceivedMissing ? 0 : toNum(recRaw, recColHeader);
             const premRaw = get('premium');
             const premNum = toNum(premRaw, (headers && mapping.premium !== -1) ? headers[mapping.premium] : '');
 
@@ -2562,18 +2766,13 @@
             const expVal = isNaN(expNum) ? 0 : expNum;
             const recVal = isNaN(recNum) ? 0 : recNum;
 
-            // Variance: always recalculate from expVal/recVal so we never trust
-            // a mis-serialised Excel formula string (fixes the $0 variance bug).
             const varNum = recVal - expVal;
             const varRaw = (varNum >= 0 ? '+' : '') + varNum.toFixed(2);
 
-            // Status: Always compute status based on variance and received value to ensure financial audit accuracy.
-            // Do not trust statement status columns since carrier statements might contain incorrect status labels.
-            // Special case: negative received value = clawback (carrier recouping funds).
-            // Must be detected BEFORE the variance check so clawbacks aren't counted
-            // as underpaid — the agency owes money, not the carrier.
             let status;
-            if (recNum < 0) {
+            if (isExpectedMissing) {
+                status = 'Missing Data';
+            } else if (recVal < 0) {
                 status = 'Clawback';
             } else if (Math.abs(varNum) < 0.01) {
                 status = 'Match';
@@ -2581,6 +2780,11 @@
                 status = 'Underpaid';
             } else {
                 status = 'Overpaid';
+            }
+
+            const rowWarnings = [];
+            if (isReceivedMissing) {
+                rowWarnings.push(`Row ${rowNum || 'unknown'}: Received amount missing (treated as 0.00)`);
             }
 
             return {
@@ -2592,6 +2796,7 @@
                 varNum,
                 varRaw,
                 status,
+                warnings: rowWarnings
             };
         }
 
@@ -2639,55 +2844,7 @@
             // 4. Both monetary cells must contain explicit, parseable amounts.
             // Never let blanks, formulas, percentages, or arbitrary text become
             // zero-dollar values in a financial audit.
-            function parseMoneyCell(s) {
-                if (typeof s === 'number') {
-                    return Number.isFinite(s) ? { valid: true, value: s } : { valid: false };
-                }
 
-                let str = String(s == null ? '' : s).trim();
-                if (str.startsWith('=') || str.includes('%')) {
-                    return { valid: false };
-                }
-                if (
-                    str === '' || str === 'N/A' || str === 'n/a' ||
-                    str === '—' || str === '–' || str === 'â€”' || str === 'â€“' || str === '-'
-                ) {
-                    return { valid: true, value: 0 };
-                }
-
-                // Permit common three-letter currency codes, but reject other text.
-                str = str.replace(/^(USD|EUR|GBP|CAD|AUD)\s*/i, '');
-                if (/[A-Za-z]/.test(str)) return { valid: false };
-
-                str = str.replace(/[^0-9.,()\-\s]/g, '').trim();
-                if (/^\((.+)\)$/.test(str)) {
-                    str = '-' + str.substring(1, str.length - 1);
-                }
-                str = str.replace(/\s+/g, '');
-
-                if (str.includes('.') && str.includes(',')) {
-                    if (str.indexOf('.') < str.indexOf(',')) {
-                        str = str.replace(/\./g, '').replace(/,/g, '.');
-                    } else {
-                        str = str.replace(/,/g, '');
-                    }
-                } else if (str.includes(',')) {
-                    str = /,\d{2}$/.test(str)
-                        ? str.replace(/,/g, '.')
-                        : str.replace(/,/g, '');
-                }
-
-                const isNegative = str.startsWith('-');
-                const digits = str.replace(/[^0-9.]/g, '');
-                const parts = digits.split('.');
-                let cleanValue = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
-                if (isNegative) cleanValue = '-' + cleanValue;
-
-                const value = Number(cleanValue);
-                return Number.isFinite(value) && cleanValue !== ''
-                    ? { valid: true, value }
-                    : { valid: false };
-            }
             const expIdx = mapping['expected'];
             const recIdx = mapping['received'];
             const premIdx = mapping['premium'];
@@ -2711,10 +2868,8 @@
 
             if (expIdx !== -1) {
                 if (!expOk || !recOk) return false;
-                if (parsedExpected.value === 0 && parsedReceived.value === 0) return false;
             } else if (premIdx !== -1) {
                 if (!premOk || !recOk) return false;
-                if (parsedPremium.value === 0 && parsedReceived.value === 0) return false;
             } else {
                 return false;
             }
@@ -2730,6 +2885,7 @@
             let underpaid = 0;
             let overpaid = 0;
             let clawback = 0;
+            let expectedClawbackSum = 0;
             
             let matchCount = 0;
             let underpaidCount = 0;
@@ -2737,12 +2893,24 @@
             let clawbackCount = 0;
             let unknownCount = 0;
             let underpaidClawbackCount = 0;
+            let missingDataCount = 0;
+            let duplicateExcludedCount = 0;
 
             for (const r of rows) {
+                if (r.isDuplicate === true) {
+                    duplicateExcludedCount++;
+                    continue;
+                }
+                
+                const statusLc = r.status.toLowerCase();
+                if (statusLc === 'missing data') {
+                    missingDataCount++;
+                    continue;
+                }
+
                 expected += r.expNum;
                 received += r.recNum;
                 
-                const statusLc = r.status.toLowerCase();
                 if (statusLc === 'underpaid') {
                     underpaid += Math.abs(r.varNum);
                     underpaidCount++;
@@ -2750,15 +2918,9 @@
                     overpaid += Math.abs(r.varNum);
                     overpaidCount++;
                 } else if (statusLc === 'clawback') {
-                    // Split clawback: received negative part goes to clawback, expected goes to underpaid (if expected > 0)
                     clawback += Math.abs(r.recNum);
                     clawbackCount++;
-                    if (r.expNum > 0) {
-                        underpaid += r.expNum;
-                        underpaidClawbackCount++;
-                    } else if (r.expNum < 0) {
-                        clawback -= Math.abs(r.expNum);
-                    }
+                    expectedClawbackSum += r.expNum;
                 } else if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
                     matchCount++;
                 } else {
@@ -2772,15 +2934,16 @@
             underpaid = Math.round(underpaid * 100) / 100;
             overpaid = Math.round(overpaid * 100) / 100;
             clawback = Math.round(clawback * 100) / 100;
+            expectedClawbackSum = Math.round(expectedClawbackSum * 100) / 100;
             const variance = Math.round((received - expected) * 100) / 100;
 
             // Invariant verification (non-throwing in production UI, strictly asserted in tests)
-            const formulaVariance = Math.round((overpaid - underpaid - clawback) * 100) / 100;
+            const formulaVariance = Math.round((overpaid - underpaid - clawback - expectedClawbackSum) * 100) / 100;
             if (Math.abs(variance - (received - expected)) > 0.01) {
                 console.warn(`[Invariant Warning] Net variance mismatch: variance (${variance}) !== received (${received}) - expected (${expected})`);
             }
             if (Math.abs(variance - formulaVariance) > 0.01) {
-                console.warn(`[Invariant Warning] Breakdown mismatch: variance (${variance}) !== overpaid (${overpaid}) - underpaid (${underpaid}) - clawback (${clawback})`);
+                console.warn(`[Invariant Warning] Breakdown mismatch: variance (${variance}) !== overpaid (${overpaid}) - underpaid (${underpaid}) - clawback (${clawback}) - expectedClawbackSum (${expectedClawbackSum})`);
             }
 
             let collectionRate = 0;
@@ -2793,9 +2956,12 @@
                 collectionRate = 0;
             }
 
-            const exceptionRate = rows.length > 0
-                ? ((underpaidCount + overpaidCount + clawbackCount) / rows.length) * 100
+            const activeValidCount = rows.length - duplicateExcludedCount - missingDataCount;
+            const exceptionRate = activeValidCount > 0
+                ? ((underpaidCount + overpaidCount + clawbackCount) / activeValidCount) * 100
                 : 0;
+
+            const totalOpportunity = Math.round((underpaid + clawback) * 100) / 100;
 
             return {
                 expected,
@@ -2812,7 +2978,11 @@
                 overpaidCount,
                 clawbackCount,
                 unknownCount,
-                underpaidClawbackCount
+                underpaidClawbackCount,
+                missingDataCount,
+                duplicateExcludedCount,
+                expectedClawbackSum,
+                totalOpportunity
             };
         }
 
@@ -2823,6 +2993,9 @@
                     totalPolicies: 0,
                     exceptionPolicies: 0,
                     recoveryAmount: 0,
+                    underpaidRecovery: 0,
+                    clawbackExposure: 0,
+                    totalOpportunity: 0,
                     largestCarrier: '—',
                     largestCarrierAmount: 0,
                     priorityLevel: 'LOW',
@@ -2833,12 +3006,17 @@
             const metrics = computeSummaryMetrics(rows);
             const totalPolicies = metrics.totalRows;
             const exceptionPolicies = (metrics.underpaidCount || 0) + (metrics.overpaidCount || 0) + (metrics.clawbackCount || 0);
-            const recoveryAmount = metrics.underpaid;
+            
+            const totalOpportunity = metrics.totalOpportunity;
+            const underpaidRecovery = metrics.underpaid;
+            const clawbackExposure = metrics.clawback;
+            const recoveryAmount = totalOpportunity;
 
             // Group rows by carrier to find underpayments and counts
             const carrierMap = new Map();
             const carrierCountMap = new Map();
             for (const r of rows) {
+                if (r.isDuplicate === true) continue;
                 const key = String(r.carrier).trim();
                 if (!carrierMap.has(key)) {
                     carrierMap.set(key, 0);
@@ -2878,6 +3056,9 @@
                 totalPolicies,
                 exceptionPolicies,
                 recoveryAmount,
+                underpaidRecovery,
+                clawbackExposure,
+                totalOpportunity,
                 largestCarrier,
                 largestCarrierAmount,
                 priorityLevel,
@@ -2897,6 +3078,9 @@
             // Build carrier breakdown (mirrors renderCarrierSummary logic)
             const carrierMap = new Map();
             for (const r of allRows) {
+                if (r.isDuplicate === true) continue;
+                if (r.status.toLowerCase() === 'missing data') continue;
+
                 const key = String(r.carrier).toLowerCase().trim();
                 if (!carrierMap.has(key)) {
                     carrierMap.set(key, {
@@ -2917,10 +3101,7 @@
                     c.overpaid  += Math.abs(r.varNum);
                 } else if (sl === 'clawback') {
                     c.clawback  += Math.abs(r.recNum);
-                    if (r.expNum > 0) {
-                        c.underpaid += r.expNum;
-                        c.affectedPolicies++;
-                    }
+                    c.affectedPolicies++;
                 }
             }
 
@@ -2944,18 +3125,67 @@
             };
         }
 
+        // ── P2-1: Trust Indicator Helper ──────────────────────────────────
+        function updateTrustIndicators(hasDuplicates) {
+            const container = document.getElementById('trust-indicators-container');
+            if (!container) return;
+
+            const hasMappingWarnings = activeLowConfidenceMappings.length > 0 || activeMappingOverrides.length > 0;
+            const hasSkippedSheets = activeSkippedSheets.length > 0;
+            const hasAmbiguous = activeAmbiguousWarnings.length > 0;
+
+            container.innerHTML = '';
+
+            function createIndicator(isWarning, text) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-1.5' + (isWarning ? ' font-semibold' : ' text-primary');
+                if (isWarning) {
+                    div.style.color = '#ffd54f';
+                }
+                
+                const spanIcon = document.createElement('span');
+                spanIcon.className = 'material-symbols-outlined text-[16px]';
+                spanIcon.textContent = isWarning ? 'warning' : 'check_circle';
+                
+                const spanText = document.createElement('span');
+                spanText.textContent = (isWarning ? '⚠ ' : '✓ ') + text;
+                
+                div.appendChild(spanIcon);
+                div.appendChild(spanText);
+                return div;
+            }
+
+            // 1. Mapping Indicator
+            if (hasMappingWarnings) {
+                container.appendChild(createIndicator(true, 'Mapping warnings detected'));
+            } else {
+                container.appendChild(createIndicator(false, 'Mapping validation passed'));
+            }
+
+            // 2. Duplicate Indicator
+            if (hasDuplicates) {
+                container.appendChild(createIndicator(true, 'Duplicate policies detected'));
+            } else {
+                container.appendChild(createIndicator(false, 'Duplicate policies checked'));
+            }
+
+            // 3. Import / Skipped Sheets Indicator
+            if (hasSkippedSheets) {
+                container.appendChild(createIndicator(true, 'Sheets skipped during import'));
+            } else if (hasAmbiguous) {
+                container.appendChild(createIndicator(true, 'Import warnings detected'));
+            } else {
+                container.appendChild(createIndicator(false, 'Policies validated'));
+            }
+
+            container.classList.remove('hidden');
+        }
 
         // ── Render the full table from allRows ─────────────────────────
         function renderAll() {
             if (allRows.length === 0) {
                 showEmptyState();
                 return;
-            }
-
-
-            const trustContainer = document.getElementById('trust-indicators-container');
-            if (trustContainer) {
-                trustContainer.classList.remove('hidden');
             }
 
             // Normalise search query once
@@ -2974,12 +3204,33 @@
                 }
             }
 
+            // Call state-driven trust indicators helper with single source of truth duplicate count
+            updateTrustIndicators(duplicateKeysSet.size > 0);
+
             // Filter rows
             let filteredRows = allRows;
 
             // 1. Audit ID Filter
             if (filterAuditId) {
-                filteredRows = filteredRows.filter(r => r.auditId === filterAuditId);
+                let targetFileName = null;
+                try {
+                    const stored = safeStorage.getItem('drecon_recent_audits');
+                    if (stored) {
+                        const audits = JSON.parse(stored);
+                        if (Array.isArray(audits)) {
+                            const match = audits.find(a => a.auditId === filterAuditId);
+                            if (match && match.auditName) {
+                                targetFileName = match.auditName.toLowerCase();
+                            }
+                        }
+                    }
+                } catch (e) {}
+
+                filteredRows = filteredRows.filter(r => {
+                    if (r.auditId === filterAuditId) return true;
+                    if (targetFileName && r.fileName && r.fileName.toLowerCase() === targetFileName) return true;
+                    return false;
+                });
             }
 
             // 2. Carrier Filter
@@ -3016,6 +3267,8 @@
                 });
             }
 
+            // B3 contextual empty state check moved to table body render to avoid early returns
+
             // Show toolbar when we have data
             const toolbarEl = document.getElementById('table-toolbar');
             if (toolbarEl) toolbarEl.classList.remove('hidden');
@@ -3026,7 +3279,25 @@
                 if (filterCarrier || filterStatus) {
                     let baseRows = allRows;
                     if (filterAuditId) {
-                        baseRows = baseRows.filter(r => r.auditId === filterAuditId);
+                        let targetFileName = null;
+                        try {
+                            const stored = safeStorage.getItem('drecon_recent_audits');
+                            if (stored) {
+                                const audits = JSON.parse(stored);
+                                if (Array.isArray(audits)) {
+                                    const match = audits.find(a => a.auditId === filterAuditId);
+                                    if (match && match.auditName) {
+                                        targetFileName = match.auditName.toLowerCase();
+                                    }
+                                }
+                            }
+                        } catch (e) {}
+
+                        baseRows = baseRows.filter(r => {
+                            if (r.auditId === filterAuditId) return true;
+                            if (targetFileName && r.fileName && r.fileName.toLowerCase() === targetFileName) return true;
+                            return false;
+                        });
                     }
                     if (filterCarrier) {
                         baseRows = baseRows.filter(r => String(r.carrier).toLowerCase() === filterCarrier.toLowerCase());
@@ -3059,94 +3330,105 @@
             // Render table body
             tbody.innerHTML = '';
 
-            // Large file rendering protection (safe rendering limit)
-            const rowsToRender = filteredRows.slice(0, MAX_RENDER_ROWS);
-            const limitWarningEl = document.getElementById('rendering-limit-warning');
-            if (limitWarningEl) {
-                if (filteredRows.length > MAX_RENDER_ROWS) {
-                    limitWarningEl.classList.remove('hidden');
-                    const textEl = document.getElementById('rendering-limit-text');
-                    if (textEl) {
-                        textEl.textContent = `Only showing the first ${MAX_RENDER_ROWS} of ${filteredRows.length.toLocaleString()} policies to prevent browser lag. Use search or filters to narrow down.`;
+            if (filteredRows.length === 0 && allRows.length > 0) {
+                let reason = 'all-filtered-out';
+                if (normalizedSearch) reason = 'no-search-matches';
+                else if (filterCarrier) reason = 'no-carrier-matches';
+                else if (filterStatus) reason = 'no-status-matches';
+                renderEmptyResultsState(reason);
+                // Still show toolbar so user can clear filters
+                const toolbarEl2 = document.getElementById('table-toolbar');
+                if (toolbarEl2) toolbarEl2.classList.remove('hidden');
+            } else {
+                // Large file rendering protection (safe rendering limit)
+                const rowsToRender = filteredRows.slice(0, MAX_RENDER_ROWS);
+                const limitWarningEl = document.getElementById('rendering-limit-warning');
+                if (limitWarningEl) {
+                    if (filteredRows.length > MAX_RENDER_ROWS) {
+                        limitWarningEl.classList.remove('hidden');
+                        const textEl = document.getElementById('rendering-limit-text');
+                        if (textEl) {
+                            textEl.textContent = `Only showing the first ${MAX_RENDER_ROWS} of ${filteredRows.length.toLocaleString()} policies to prevent browser lag. Use search or filters to narrow down.`;
+                        }
+                    } else {
+                        limitWarningEl.classList.add('hidden');
                     }
-                } else {
-                    limitWarningEl.classList.add('hidden');
-                }
-            }
-
-            for (const r of rowsToRender) {
-                const tr = document.createElement('tr');
-                tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
-
-                const key = (r.policy + '||' + r.carrier).toLowerCase();
-                const isDuplicate = duplicateKeysSet.has(key);
-                if (isDuplicate) {
-                    tr.style.backgroundColor = 'rgba(255, 213, 79, 0.05)';
                 }
 
-                // Policy
-                const tdPolicy = document.createElement('td');
-                tdPolicy.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                tdPolicy.textContent = r.policy;
-                if (isDuplicate) {
-                    const badgeSpan = document.createElement('span');
-                    badgeSpan.textContent = ' [DUPLICATE]';
-                    badgeSpan.style.color = '#ffd54f';
-                    badgeSpan.style.fontWeight = 'bold';
-                    badgeSpan.style.fontSize = '10px';
-                    badgeSpan.style.marginLeft = '6px';
-                    tdPolicy.appendChild(badgeSpan);
+                for (const r of rowsToRender) {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-colors';
+
+                    const key = (r.policy + '||' + r.carrier).toLowerCase();
+                    const isDuplicate = duplicateKeysSet.has(key);
+                    if (isDuplicate) {
+                        tr.style.backgroundColor = 'rgba(255, 213, 79, 0.05)';
+                    }
+
+                    // Policy
+                    const tdPolicy = document.createElement('td');
+                    tdPolicy.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    tdPolicy.textContent = r.policy;
+                    if (isDuplicate) {
+                        const badgeSpan = document.createElement('span');
+                        badgeSpan.textContent = ' [DUPLICATE]';
+                        badgeSpan.style.color = '#ffd54f';
+                        badgeSpan.style.fontWeight = 'bold';
+                        badgeSpan.style.fontSize = '10px';
+                        badgeSpan.style.marginLeft = '6px';
+                        tdPolicy.appendChild(badgeSpan);
+                    }
+                    tr.appendChild(tdPolicy);
+
+                    // Carrier
+                    const tdCarrier = document.createElement('td');
+                    tdCarrier.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    tdCarrier.textContent = r.carrier;
+                    tr.appendChild(tdCarrier);
+
+                    // Expected
+                    const tdExp = document.createElement('td');
+                    tdExp.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    tdExp.textContent = formatCurrency(r.expNum);
+                    tr.appendChild(tdExp);
+
+                    // Received
+                    const tdRec = document.createElement('td');
+                    tdRec.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    tdRec.textContent = formatCurrency(r.recNum);
+                    tr.appendChild(tdRec);
+
+                    // Variance
+                    const tdVar = document.createElement('td');
+                    tdVar.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    tdVar.textContent = formatCurrency(r.varNum);
+                    if (r.varNum < -0.01) tdVar.classList.add('text-error');
+                    else if (r.varNum > 0.01) tdVar.classList.add('text-primary');
+                    tr.appendChild(tdVar);
+
+                    // Status badge
+                    const tdStatus = document.createElement('td');
+                    tdStatus.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
+                    const badge = document.createElement('span');
+                    const statusLc = r.status.toLowerCase();
+                    badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full font-label-caps text-label-caps border';
+                    if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
+                        badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
+                    } else if (statusLc === 'underpaid' || statusLc === 'short' || statusLc === 'missing') {
+                        badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
+                    } else if (statusLc === 'clawback') {
+                        badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
+                    } else if (statusLc === 'overpaid' || statusLc === 'over') {
+                        badge.classList.add('bg-secondary/10', 'text-secondary', 'border-secondary/30');
+                    } else {
+                        badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
+                    }
+                    badge.textContent = r.status;
+                    tdStatus.appendChild(badge);
+                    tr.appendChild(tdStatus);
+
+                    tbody.appendChild(tr);
                 }
-                tr.appendChild(tdPolicy);
-
-                // Carrier
-                const tdCarrier = document.createElement('td');
-                tdCarrier.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                tdCarrier.textContent = r.carrier;
-                tr.appendChild(tdCarrier);
-
-                // Expected
-                const tdExp = document.createElement('td');
-                tdExp.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                tdExp.textContent = formatCurrency(r.expNum);
-                tr.appendChild(tdExp);
-
-                // Received
-                const tdRec = document.createElement('td');
-                tdRec.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                tdRec.textContent = formatCurrency(r.recNum);
-                tr.appendChild(tdRec);
-
-                // Variance
-                const tdVar = document.createElement('td');
-                tdVar.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                tdVar.textContent = formatCurrency(r.varNum);
-                if (r.varNum < -0.01) tdVar.classList.add('text-error');
-                else if (r.varNum > 0.01) tdVar.classList.add('text-primary');
-                tr.appendChild(tdVar);
-
-                // Status badge
-                const tdStatus = document.createElement('td');
-                tdStatus.className = 'px-6 py-4 font-body-sm text-body-sm text-on-surface';
-                const badge = document.createElement('span');
-                const statusLc = r.status.toLowerCase();
-                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full font-label-caps text-label-caps border';
-                if (statusLc === 'match' || statusLc === 'matched' || statusLc === 'paid') {
-                    badge.classList.add('bg-primary/10', 'text-primary', 'border-primary/30');
-                } else if (statusLc === 'underpaid' || statusLc === 'short' || statusLc === 'missing') {
-                    badge.classList.add('bg-error/10', 'text-error', 'border-error/30');
-                } else if (statusLc === 'clawback') {
-                    badge.classList.add('bg-tertiary/10', 'text-tertiary', 'border-tertiary/30');
-                } else if (statusLc === 'overpaid' || statusLc === 'over') {
-                    badge.classList.add('bg-secondary/10', 'text-secondary', 'border-secondary/30');
-                } else {
-                    badge.classList.add('bg-outline/10', 'text-outline', 'border-outline/30');
-                }
-                badge.textContent = r.status;
-                tdStatus.appendChild(badge);
-                tr.appendChild(tdStatus);
-
-                tbody.appendChild(tr);
             }
 
             // ── 2. EC-53: Reconciliation integrity validation ──
@@ -3336,7 +3618,7 @@
                 
                 let auditName = 'kingspoint.xlsx';
                 try {
-                    const stored = localStorage.getItem('drecon_recent_audits');
+                    const stored = safeStorage.getItem('drecon_recent_audits');
                     if (stored) {
                         const audits = JSON.parse(stored);
                         const match = audits.find(a => a.auditId === filterAuditId);
@@ -3375,18 +3657,11 @@
             // ── 6. Revenue Leakage by Carrier Summary Table ──
             renderCarrierSummary();
 
-            // ── 7. Collapsible Data Quality Panel ──
-            renderDataQualityPanel();
+            // ── 7. Carrier Cards (B5 — always render when data exists) ──
+            renderCarrierCards();
 
-            // ── 8. Gating carrier cards and revenue leakage ──
-            const carrierCards = document.getElementById('carrier-cards');
-            if (carrierCards) {
-                carrierCards.classList.add('hidden');
-            }
-            const leakageSection = document.getElementById('revenue-leakage-section');
-            if (leakageSection) {
-                leakageSection.classList.add('hidden');
-            }
+            // ── 8. Collapsible Data Quality Panel ──
+            renderDataQualityPanel();
 
             // ── 9. Enable action buttons ──
             const mainSection = document.getElementById('main-dashboard-content');
@@ -3444,6 +3719,9 @@
             // Group rows by carrier to get expected, received, underpaid, overpaid, clawback
             const carrierMap = new Map();
             for (const r of allRows) {
+                if (r.isDuplicate === true) continue;
+                if (r.status.toLowerCase() === 'missing data') continue;
+
                 const cKey = r.carrier;
                 const cKeyLc = cKey.toLowerCase();
                 if (!carrierMap.has(cKeyLc)) {
@@ -3468,10 +3746,7 @@
                     c.overpaid += Math.abs(r.varNum);
                 } else if (statusLc === 'clawback') {
                     c.clawback += Math.abs(r.recNum);
-                    if (r.expNum > 0) {
-                        c.underpaid += r.expNum;
-                        c.affectedPolicies++;
-                    }
+                    c.affectedPolicies++;
                 }
             }
 
@@ -3623,14 +3898,17 @@
                 }
             }
 
-            // 2. Populate Revenue Leakage Table (Keep hidden for chaos test compatibility)
+            // 2. Populate Revenue Leakage Table (B5 — show when leakage carriers exist)
             if (tableSection && tbody) {
                 tbody.innerHTML = '';
                 const leakageCarriers = carrierList.filter(c => c.underpaid > 0);
                 leakageCarriers.sort((a, b) => b.underpaid - a.underpaid);
 
-                // Ensure it remains hidden visually
-                tableSection.classList.add('hidden');
+                if (allRows.length > 0) {
+                    tableSection.classList.remove('hidden');
+                } else {
+                    tableSection.classList.add('hidden');
+                }
                 
                 if (leakageCarriers.length === 0) {
                     const tr = document.createElement('tr');
@@ -3750,6 +4028,36 @@
                 });
             }
 
+            // 6. Duplicate rows excluded (B4)
+            const dupRowCount = allRows.filter(r => r.isDuplicate === true).length;
+            if (dupRowCount > 0) {
+                warningItems.push({
+                    icon: 'content_copy',
+                    iconClass: 'text-yellow-400',
+                    buildText: (span) => {
+                        const strong = document.createElement('strong');
+                        strong.textContent = `${dupRowCount} duplicate row(s)`;
+                        span.appendChild(strong);
+                        span.appendChild(document.createTextNode(' excluded from calculations.'));
+                    }
+                });
+            }
+
+            // 7. Missing expected data rows (B4)
+            const missingDataCount = allRows.filter(r => r.status.toLowerCase() === 'missing data').length;
+            if (missingDataCount > 0) {
+                warningItems.push({
+                    icon: 'help_outline',
+                    iconClass: 'text-orange-400',
+                    buildText: (span) => {
+                        const strong = document.createElement('strong');
+                        strong.textContent = `${missingDataCount} row(s)`;
+                        span.appendChild(strong);
+                        span.appendChild(document.createTextNode(' with missing expected commission data.'));
+                    }
+                });
+            }
+
             const heroWarningBadge = document.getElementById('hero-warning-badge');
             const heroWarningText = document.getElementById('hero-warning-badge-text');
 
@@ -3805,6 +4113,9 @@
 
             const map = new Map();
             for (const r of allRows) {
+                if (r.isDuplicate === true) continue;
+                if (r.status.toLowerCase() === 'missing data') continue;
+
                 const key = r.carrier.toLowerCase();
                 if (!map.has(key)) {
                     map.set(key, {
@@ -3897,6 +4208,67 @@
             });
 
             strip.classList.remove('hidden');
+        }
+
+        // ── Empty filter state (B3) ────────────────────────────────────
+        function renderEmptyResultsState(reason) {
+            const msgs = {
+                'no-search-matches':  { icon: 'search_off',     title: 'No policies match your search',        body: 'Try a different policy number, carrier name, or status.' },
+                'no-carrier-matches': { icon: 'business_center', title: 'No policies for this carrier',          body: 'Select a different carrier or clear the carrier filter.' },
+                'no-status-matches':  { icon: 'filter_alt_off',  title: 'No policies with this status',         body: 'Try a different status filter or clear all filters.' },
+                'all-filtered-out':   { icon: 'inbox',           title: 'No policies match the active filters', body: 'Try broadening your search or clearing all filters.' }
+            };
+            const { icon, title, body } = msgs[reason] || msgs['all-filtered-out'];
+
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.setAttribute('colspan', '6');
+            td.className = 'px-6 py-16';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-col items-center justify-center text-center max-w-sm mx-auto';
+
+            const iconEl = document.createElement('span');
+            iconEl.className = 'material-symbols-outlined text-[48px] text-outline mb-4';
+            iconEl.setAttribute('aria-hidden', 'true');
+            iconEl.textContent = icon;
+
+            const h = document.createElement('p');
+            h.className = 'font-title-sm text-white font-bold mb-2';
+            h.textContent = title;
+
+            const p = document.createElement('p');
+            p.className = 'font-body-md text-outline mb-6';
+            p.textContent = body;
+
+            const clearBtn2 = document.createElement('button');
+            clearBtn2.className = 'text-[12px] font-bold uppercase tracking-wider text-primary hover:text-white px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20';
+            clearBtn2.style.cursor = 'pointer';
+            clearBtn2.textContent = 'Clear All Filters';
+            clearBtn2.addEventListener('click', () => {
+                searchQuery = '';
+                filterCarrier = null;
+                filterStatus = 'Underpaid';
+                filterAuditId = null;
+                filterFileName = null;
+                exceptionsOnlyMode = true;
+                if (searchInput) searchInput.value = '';
+                if (searchClearBtn) searchClearBtn.classList.add('hidden');
+                const fileBadge = document.getElementById('file-filter-badge');
+                if (fileBadge) fileBadge.classList.add('hidden');
+                const badgesContainer = document.getElementById('filter-badges-container');
+                if (badgesContainer) badgesContainer.classList.add('hidden');
+                renderAll();
+            });
+
+            wrapper.appendChild(iconEl);
+            wrapper.appendChild(h);
+            wrapper.appendChild(p);
+            wrapper.appendChild(clearBtn2);
+            td.appendChild(wrapper);
+            tr.appendChild(td);
+            tbody.innerHTML = '';
+            tbody.appendChild(tr);
         }
 
         // ── Empty state ────────────────────────────────────────────────
@@ -4141,8 +4513,12 @@
         }
 
         function processMultipleFiles(files) {
+            const seen = new Set();
             for (let i = 0; i < files.length; i++) {
-                fileQueue.push(files[i]);
+                if (!seen.has(files[i].name)) {
+                    seen.add(files[i].name);
+                    fileQueue.push(files[i]);
+                }
             }
             if (!isProcessingQueue) {
                 isProcessingQueue = true;
@@ -4157,15 +4533,21 @@
             }
 
             const nextFile = fileQueue.shift();
-
-            try {
-                processFile(nextFile, () => {
-                    setTimeout(processNextFileInQueue, 0); // Defer to prevent deep callstack
+            
+            queuePromise = queuePromise.then(() => {
+                return new Promise((resolve) => {
+                    try {
+                        processFile(nextFile, () => {
+                            resolve();
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        resolve();
+                    }
                 });
-            } catch (err) {
-                console.error(err);
-                setTimeout(processNextFileInQueue, 0);
-            }
+            }).then(() => {
+                processNextFileInQueue();
+            });
         }
 
         function addUniqueWarning(array, warning) {
@@ -4181,17 +4563,46 @@
                 return;
             }
 
+            // Bug 2 fix: duplicate-file protection.
+            // Warn and abort if this filename has already been loaded in this session.
+            if (!file.name) {
+                throw new TypeError("Cannot read properties of undefined (reading 'toLowerCase')");
+            }
+
+            const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+            if (file.size > MAX_FILE_SIZE) {
+                showToast(`File "${file.name}" exceeds the 25MB limit.\n\nTry:\n• Export fewer statement periods\n• Split workbook into multiple files\n• Upload carrier statements separately`, 'error');
+                if (onComplete) onComplete();
+                return;
+            }
+            
+            const validTypes = ['text/csv', 'text/plain', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/octet-stream'];
+            const validExtensions = ['.csv', '.xlsx', '.xls'];
+            const hasValidExt = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+            const hasValidType = validTypes.includes(file.type) || file.type === '' || file.type === undefined;
+            
+            if (!hasValidExt || (!hasValidType && file.type !== '')) {
+                showToast(`File "${file.name}" is not supported. Upload .csv, .xlsx, or .xls.`, 'error');
+                if (onComplete) onComplete();
+                return;
+            }
+
             let completed = false;
+            activeFinishProcessing = completeFileProcessing;
 
             const watchdog = setTimeout(() => {
                 console.error('File processing watchdog timeout for ' + file.name);
-                finishProcessing();
+                completeFileProcessing();
             }, 30000);
 
-            function finishProcessing() {
+            function completeFileProcessing() {
                 if (completed) return;
                 completed = true;
                 clearTimeout(watchdog);
+                activeMappingConfirmCallback = null;
+                activeMappingCancelCallback = null;
+                activeRateCalculatorConfirmCallback = null;
+                activeRateCalculatorCancelCallback = null;
                 if (typeof onComplete === 'function') {
                     onComplete();
                 }
@@ -4202,21 +4613,14 @@
                     try {
                         if (fn) fn(...args);
                     } finally {
-                        finishProcessing();
+                        completeFileProcessing();
                     }
                 };
             }
 
-            // Bug 2 fix: duplicate-file protection.
-            // Warn and abort if this filename has already been loaded in this session.
-            if (!file.name) {
-                clearTimeout(watchdog);
-                throw new TypeError("Cannot read properties of undefined (reading 'toLowerCase')");
-            }
-
             if (uploadedFiles.has(file.name)) {
                 showToast('This file has already been uploaded. Clear all data first to re-upload.', 'error');
-                finishProcessing();
+                completeFileProcessing();
                 return;
             }
 
@@ -4227,7 +4631,7 @@
                 // ── Excel path: SheetJS → all data sheets → existing parser ──
                 if (typeof XLSX === 'undefined') {
                     showToast('Excel library not loaded. Please refresh and try again.', 'error');
-                    finishProcessing();
+                    completeFileProcessing();
                     return;
                 }
                 const reader = new FileReader();
@@ -4243,13 +4647,13 @@
                             sn => !SKIP_PATTERN.test(sn)
                         );
 
-                        const sheetsToProcess = dataSheets.length > 0 ? dataSheets : workbook.SheetNames;
-
-                        if (sheetsToProcess.length === 0) {
-                            showToast('No sheets found in Excel file.', 'error');
-                            finishProcessing();
+                        if (dataSheets.length === 0) {
+                            showToast('Failed to import: No data sheets found. All sheets match skip patterns (Summary, Overview, Master, etc.) and were skipped.', 'error');
+                            completeFileProcessing();
                             return;
                         }
+
+                        const sheetsToProcess = dataSheets;
 
                         // EC-17 FIX: Use sheet_to_json with raw:true to preserve native
                         // numeric values and prevent scientific notation corruption.
@@ -4302,17 +4706,18 @@
 
                         if (!firstValidSheetName) {
                             showToast('Could not find any sheet with compatible headers and valid data.', 'error');
-                            finishProcessing();
+                            completeFileProcessing();
                             return;
                         }
 
+                        clearTimeout(watchdog);
                         showMappingConfirmationModal({
                             fileName: file.name,
                             isExcel: true,
                             mapping: firstValidSheetMapping,
                             headers: firstValidSheetHeaders,
                             carrierOverride: firstValidSheetMapping.carrier === -1 ? firstValidSheetName : null,
-                            onConfirm: wrapCallback(function(finalMapping) {
+                            onConfirm: function(finalMapping) {
                                 currentAuditId = generateAuditId();
                                 currentIngestAmbiguousWarnings = [];
                                 
@@ -4530,6 +4935,7 @@ return;
                                             exceptionsOnlyMode = true;
                                             filterStatus = 'Underpaid';
                                         }
+                                        completeFileProcessing();
                                         return; // Reject import completely, do not mutate state
                                     }
 
@@ -4539,9 +4945,9 @@ return;
                                     activeRejectedRowsCount += rejectedRowsInThisImport;
                                     currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
 
-                                    // Save to audit history
-                                    const metrics = computeSummaryMetrics(allRows);
-                                    saveAuditToHistory(file.name, allRows.length, metrics.underpaid, currentAuditId);
+                                    // Save to audit history (file-level counts and metrics)
+                                    const fileMetrics = computeSummaryMetrics(proposedNewRows);
+                                    saveAuditToHistory(file.name, proposedNewRows.length, fileMetrics.underpaid, currentAuditId);
 
                                     // Commit temporary skip audit logs to the audit trail
                                     tempAuditEvents.forEach(evt => logAuditEvent(evt));
@@ -4595,50 +5001,66 @@ return;
                                     } else {
                                         showToast(toastMsg, 'success');
                                     }
+                                    completeFileProcessing();
                                 };
 
                                 if (finalMapping.expected === 'Not mapped') {
                                     const uniqueCarriers = Array.from(new Set(proposedNewRows.map(r => r.carrier))).filter(c => c && c !== 'Unknown');
                                     showRateCalculatorModal(uniqueCarriers, function(rates) {
-                                        proposedNewRows.forEach(row => {
-                                            const rate = findRateForCarrier(row.carrier, rates);
-                                            row.expNum = row.premNum * rate;
-                                            row.varNum = row.recNum - row.expNum;
-                                            row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
-                                            if (row.recNum < 0) {
-                                                row.status = 'Clawback';
-                                            } else if (Math.abs(row.varNum) < 0.01) {
-                                                row.status = 'Match';
-                                            } else if (row.varNum < 0) {
-                                                row.status = 'Underpaid';
-                                            } else {
-                                                row.status = 'Overpaid';
-                                            }
-                                        });
-                                        commitExcelImport();
+                                        try {
+                                            proposedNewRows.forEach(row => {
+                                                const rate = findRateForCarrier(row.carrier, rates);
+                                                row.expNum = row.premNum * rate;
+                                                row.varNum = row.recNum - row.expNum;
+                                                row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
+                                                if (row.recNum < 0) {
+                                                    row.status = 'Clawback';
+                                                } else if (Math.abs(row.varNum) < 0.01) {
+                                                    row.status = 'Match';
+                                                } else if (row.varNum < 0) {
+                                                    row.status = 'Underpaid';
+                                                } else {
+                                                    row.status = 'Overpaid';
+                                                }
+                                            });
+                                            commitExcelImport();
+                                        } catch (err) {
+                                            console.error(err);
+                                            completeFileProcessing();
+                                        }
                                     }, function() {
                                         showToast('Upload cancelled. No data processed.', 'info');
                                         if (allRows.length === 0) {
                                             exceptionsOnlyMode = true;
                                             filterStatus = 'Underpaid';
                                         }
+                                        completeFileProcessing();
                                     });
                                 } else {
                                     commitExcelImport();
                                 }
-                            }),
-                            onCancel: wrapCallback(function() {
+                            },
+                            onCancel: function() {
                                 showToast('Upload cancelled. No data processed.', 'info');
                                 if (allRows.length === 0) {
                                     exceptionsOnlyMode = true;
                                     filterStatus = 'Underpaid';
                                 }
-                            })
+                                completeFileProcessing();
+                            }
                         });
                     } catch (err) {
                         showToast('Could not read Excel file: ' + err.message, 'error');
-                        finishProcessing();
+                        completeFileProcessing();
                     }
+                };
+                reader.onerror = function() {
+                    showToast('Could not read Excel file: File access error or corrupt format.', 'error');
+                    completeFileProcessing();
+                };
+                reader.onabort = function() {
+                    showToast('File reading was cancelled.', 'info');
+                    completeFileProcessing();
                 };
                 reader.readAsArrayBuffer(file);
             } else {
@@ -4651,7 +5073,7 @@ return;
 
                         if (parsedRows.length < 2) {
                             showToast('The file appears to be empty or has no data rows.', 'error');
-                            finishProcessing();
+                            completeFileProcessing();
                             return;
                         }
 
@@ -4662,10 +5084,11 @@ return;
                         const mappedCount = Object.values(mapping).filter(v => v !== -1).length;
                         if (mappedCount === 0) {
                             showToast('Could not map any columns. Expected: policy, carrier, expected, received.', 'error');
-                            finishProcessing();
+                            completeFileProcessing();
                             return;
                         }
 
+                        clearTimeout(watchdog);
                         // Show confirmation modal
                         showMappingConfirmationModal({
                             fileName: file.name,
@@ -4673,22 +5096,31 @@ return;
                             mapping: mapping,
                             headers: headers,
                             carrierOverride: null,
-                            onConfirm: wrapCallback(function(finalMapping) {
+                            onConfirm: function(finalMapping) {
                                 // Ingest data (filename added inside ingestCSV upon success)
                                 ingestCSV(csvText, file.name, { chosenHeaders: finalMapping });
-                            }),
-                            onCancel: wrapCallback(function() {
+                            },
+                            onCancel: function() {
                                 showToast('Upload cancelled. No data processed.', 'info');
                                 if (allRows.length === 0) {
                                     exceptionsOnlyMode = true;
                                     filterStatus = 'Underpaid';
                                 }
-                            })
+                                completeFileProcessing();
+                            }
                         });
                     } catch (err) {
                         showToast('Could not read CSV file: ' + err.message, 'error');
-                        finishProcessing();
+                        completeFileProcessing();
                     }
+                };
+                reader.onerror = function() {
+                    showToast('Could not read CSV file: File access error or corrupt format.', 'error');
+                    completeFileProcessing();
+                };
+                reader.onabort = function() {
+                    showToast('File reading was cancelled.', 'info');
+                    completeFileProcessing();
                 };
                 reader.readAsText(file);
             }
@@ -4709,6 +5141,7 @@ return;
 
             if (rows.length < 2) {
                 if (!silent) showToast('The file appears to be empty or has no data rows.', 'error');
+                finishProcessing();
                 return;
             }
 
@@ -4745,6 +5178,7 @@ return;
                 if (!silent) {
                     showToast('Import rejected: Policy, Received, and either Expected or Premium columns must be mapped.', 'error');
                 }
+                finishProcessing();
                 return;
             }
 
@@ -4754,6 +5188,7 @@ return;
                 if (!silent) {
                     showToast('Import rejected: Duplicate header columns detected.', 'error');
                 }
+                finishProcessing();
                 return;
             }
 
@@ -4830,6 +5265,7 @@ return;
                         exceptionsOnlyMode = true;
                         filterStatus = 'Underpaid';
                     }
+                    finishProcessing();
                     return; // Rollback: no state mutated, no audit logged
                 }
 
@@ -4839,9 +5275,9 @@ return;
                 activeRejectedRowsCount += skipped;
                 currentIngestAmbiguousWarnings.forEach(w => addUniqueWarning(activeAmbiguousWarnings, w));
 
-                // Save to audit history
-                const metrics = computeSummaryMetrics(allRows);
-                saveAuditToHistory(fileName, allRows.length, metrics.underpaid, currentAuditId);
+                // Save to audit history (file-level counts and metrics)
+                const fileMetrics = computeSummaryMetrics(newRows);
+                saveAuditToHistory(fileName, newRows.length, fileMetrics.underpaid, currentAuditId);
 
                 // EC-52: Audit trail logging
                 let finalWarnings = '';
@@ -4861,7 +5297,10 @@ return;
                     warnings: finalWarnings
                 });
 
-                if (silent) return; // caller handles render + toast
+                if (silent) {
+                    finishProcessing();
+                    return; // caller handles render + toast
+                }
 
                 // Single-file (CSV) path: render and toast immediately
                 exceptionsOnlyMode = true;
@@ -4879,33 +5318,40 @@ return;
                 } else {
                     showToast(msg, 'success');
                 }
+                finishProcessing();
             };
 
             if (mapping.expected === -1) {
                 const uniqueCarriers = Array.from(new Set(newRows.map(r => r.carrier))).filter(c => c && c !== 'Unknown');
                 showRateCalculatorModal(uniqueCarriers, function(rates) {
-                    newRows.forEach(row => {
-                        const rate = findRateForCarrier(row.carrier, rates);
-                        row.expNum = row.premNum * rate;
-                        row.varNum = row.recNum - row.expNum;
-                        row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
-                        if (row.recNum < 0) {
-                            row.status = 'Clawback';
-                        } else if (Math.abs(row.varNum) < 0.01) {
-                            row.status = 'Match';
-                        } else if (row.varNum < 0) {
-                            row.status = 'Underpaid';
-                        } else {
-                            row.status = 'Overpaid';
-                        }
-                    });
-                    commitCSVImport();
+                    try {
+                        newRows.forEach(row => {
+                            const rate = findRateForCarrier(row.carrier, rates);
+                            row.expNum = row.premNum * rate;
+                            row.varNum = row.recNum - row.expNum;
+                            row.varRaw = (row.varNum >= 0 ? '+' : '') + row.varNum.toFixed(2);
+                            if (row.recNum < 0) {
+                                row.status = 'Clawback';
+                            } else if (Math.abs(row.varNum) < 0.01) {
+                                row.status = 'Match';
+                            } else if (row.varNum < 0) {
+                                row.status = 'Underpaid';
+                            } else {
+                                row.status = 'Overpaid';
+                            }
+                        });
+                        commitCSVImport();
+                    } catch (err) {
+                        console.error(err);
+                        finishProcessing();
+                    }
                 }, function() {
                     showToast('Upload cancelled. No data processed.', 'info');
                     if (allRows.length === 0) {
                         exceptionsOnlyMode = true;
                         filterStatus = 'Underpaid';
                     }
+                    finishProcessing();
                 });
             } else {
                 commitCSVImport();
@@ -4925,7 +5371,6 @@ return;
 
         // ── Clear all data ─────────────────────────────────────────────
         function clearAllData() {
-            if (clearBtn.disabled) return;
             allRows = [];
             uploadedFiles = new Set(); // reset duplicate-file tracking
             auditTrail = []; // EC-52: reset audit trail
@@ -4933,6 +5378,19 @@ return;
             // Cancel any pending search debounce timers
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = null;
+            
+            // Remove dynamic event listeners to prevent memory leaks
+            const dynamicElements = document.querySelectorAll('[data-dynamic-listener]');
+            dynamicElements.forEach(el => {
+                const listeners = el._dynamicListeners;
+                if (listeners) {
+                    listeners.forEach(({ event, handler }) => {
+                        el.removeEventListener(event, handler);
+                    });
+                    delete el._dynamicListeners;
+                    el.removeAttribute('data-dynamic-listener');
+                }
+            });
 
             // Reset all global filter and sprint state variables
             searchQuery = '';
@@ -4950,6 +5408,7 @@ return;
             activeRejectedRowsCount = 0;
             fileQueue = [];
             isProcessingQueue = false;
+            queuePromise = Promise.resolve();
 
             // Hide trust indicators (F6.3)
             const trustContainer = document.getElementById('trust-indicators-container');
@@ -4986,6 +5445,19 @@ return;
             if (lastAuditBadge) {
                 lastAuditBadge.textContent = 'No audit yet';
             }
+
+            // Archive all history entries (B2: data is gone, filter is no longer valid)
+            try {
+                const storedAudits = safeStorage.getItem('drecon_recent_audits');
+                if (storedAudits) {
+                    const auditList = JSON.parse(storedAudits);
+                    if (Array.isArray(auditList)) {
+                        auditList.forEach(a => { a.status = 'archived'; });
+                        safeStorage.setItem('drecon_recent_audits', JSON.stringify(auditList));
+                    }
+                }
+            } catch (e) {}
+            renderRecentAudits();
 
             // Restore body scroll lock just in case
             document.body.style.overflow = '';
@@ -5115,6 +5587,12 @@ return;
                 showToast('No data to export yet.', 'error');
                 return;
             }
+            
+            const MAX_XLSX_ROWS = 50000;
+            if (allRows.length > MAX_XLSX_ROWS) {
+                showToast(`Dataset too large for XLSX export (${allRows.length.toLocaleString()} rows). Maximum: ${MAX_XLSX_ROWS.toLocaleString()}. Use PDF or split files.`, 'error');
+                return;
+            }
 
             const audit   = serializeAudit();
             const metrics = audit.metrics;
@@ -5153,7 +5631,7 @@ return;
 
             const summaryData = [
                 ['Field', 'Value'],
-                ['Audit ID',                    audit.auditId],
+                ['Audit ID',                    escapeFormulaInjection(audit.auditId)],
                 ['Audit Date',                  dateStr],
                 ['Files Processed',             escapeFormulaInjection(Array.from(uploadedFiles).join(', ') || '—')],
                 ['Rows Processed',              metrics.totalRows],
@@ -5182,7 +5660,7 @@ return;
             const exHeaders2 = ['Policy','Carrier','Expected','Received','Variance','Status','File Name','Sheet Name','Audit ID'];
             const exceptData = [exHeaders2, ...exceptionRows.map(r => [
                 escapeFormulaInjection(r.policy), escapeFormulaInjection(r.carrier), r.expNum, r.recNum, r.varNum, r.status,
-                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), r.auditId || ''
+                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), escapeFormulaInjection(r.auditId || '')
             ])];
             const ws2 = XLSX.utils.aoa_to_sheet(exceptData);
             ws2['!cols'] = colWidths([25, 25, 18, 18, 18, 15, 25, 20, 25]);
@@ -5192,7 +5670,7 @@ return;
             const exHeaders3 = ['Policy','Carrier','Expected','Received','Variance','Status','File Name','Sheet Name','Audit ID'];
             const fullData = [exHeaders3, ...allRows.map(r => [
                 escapeFormulaInjection(r.policy), escapeFormulaInjection(r.carrier), r.expNum, r.recNum, r.varNum, r.status,
-                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), r.auditId || ''
+                escapeFormulaInjection(r.fileName || ''), escapeFormulaInjection(r.sheetName || ''), escapeFormulaInjection(r.auditId || '')
             ])];
             const ws3 = XLSX.utils.aoa_to_sheet(fullData);
             ws3['!cols'] = colWidths([25, 25, 18, 18, 18, 15, 25, 20, 25]);
@@ -5216,7 +5694,7 @@ return;
             // ── Sheet 5: Data Quality ──
             const dqRows = [['Issue Type', 'Detail']];
             const dupes = audit.rows.reduce((acc, r) => {
-                const k = `${r.policy}||${r.carrier}`.toLowerCase();
+                const k = `${r.policy}||${r.carrier}||${r.expected}||${r.received}`.toLowerCase();
                 acc[k] = (acc[k] || 0) + 1;
                 return acc;
             }, {});
@@ -5244,7 +5722,7 @@ return;
             // ── Sheet 6: Metadata ──
             const metaData = [
                 ['Key', 'Value'],
-                ['Audit ID',       audit.auditId],
+                ['Audit ID',       escapeFormulaInjection(audit.auditId)],
                 ['Generated Date', dateStr],
                 ['Generated Time', timeStr],
                 ['Version',        '1.0'],
@@ -5380,6 +5858,10 @@ return;
             const DATE_STR = new Date().toLocaleDateString('en-US', {
                 year: 'numeric', month: 'long', day: 'numeric'
             });
+            const DATE_LONG = new Date().toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
             const DATE_SHORT = new Date().toISOString().split('T')[0];
 
             // ── Helpers ─────────────────────────────────────────────────
@@ -5407,8 +5889,9 @@ return;
             // ── Page state ──────────────────────────────────────────────
             let y = 0;   // current Y cursor (mm)
             let pageNum = 1;
+            let currentTableType = null;
 
-            function addFooterToPage(pNum) {
+            function addFooterToPage(pNum, totalPages) {
                 const footerY = PAGE_H - 12;
                 doc.setDrawColor(...GREY_MID);
                 doc.setLineWidth(0.3);
@@ -5438,6 +5921,11 @@ return;
                     doc.addPage();
                     pageNum++;
                     y = MARGIN + 6;
+                    if (currentTableType === 'exceptions') {
+                        y = drawTableHeader(y);
+                    } else if (currentTableType === 'full') {
+                        y = drawFullHeader(y);
+                    }
                 }
             }
 
@@ -5464,7 +5952,7 @@ return;
             doc.text(exportExceptionsOnly ? 'Commission Audit Report (Exceptions)' : 'Commission Audit Report', PAGE_W - MARGIN, 14, { align: 'right' });
 
             setFont('normal', 8.5, GREY_MID);
-            doc.text(`Generated: ${DATE_STR}`, PAGE_W - MARGIN, 21, { align: 'right' });
+            doc.text(`Generated: ${DATE_LONG}`, PAGE_W - MARGIN, 21, { align: 'right' });
             setFont('italic', 7.5, GREY_MID);
             doc.text('Prepared by DRecon — drecon-orpin.vercel.app', PAGE_W - MARGIN, 27, { align: 'right' });
 
@@ -5740,6 +6228,7 @@ return;
 
                     // 1. Underpaid table
                     if (uCount > 0) {
+                        currentTableType = 'exceptions';
                         ensureSpace(12 + TABLE_HDR_H + TABLE_ROW_H);
                         setFont('bold', 8, TEXT_DK);
                         doc.text('Underpaid Commission Rate Discrepancies', MARGIN, y + 4);
@@ -5757,10 +6246,12 @@ return;
                         ensureSpace(TABLE_ROW_H + 6);
                         y = drawSubtotalRow('UNDERPAID SUBTOTAL', carrier.totalUnderpaidExp, carrier.totalUnderpaidRec, carrier.totalUnderpaidVar, y);
                         y += 6;
+                        currentTableType = null;
                     }
 
                     // 2. Clawback table
                     if (cCount > 0) {
+                        currentTableType = 'exceptions';
                         ensureSpace(12 + TABLE_HDR_H + TABLE_ROW_H);
                         setFont('bold', 8, TEXT_DK);
                         doc.text('Clawbacks & Recoupments', MARGIN, y + 4);
@@ -5778,6 +6269,7 @@ return;
                         ensureSpace(TABLE_ROW_H + 6);
                         y = drawSubtotalRow('CLAWBACK SUBTOTAL', carrier.totalClawbackExp, carrier.totalClawbackRec, carrier.totalClawbackVar, y);
                         y += 6;
+                        currentTableType = null;
                     }
 
                     y += 6; // gap between carriers
@@ -5876,6 +6368,7 @@ return;
             );
 
             // Draw full table header
+            currentTableType = 'full';
             ensureSpace(TABLE_HDR_H + TABLE_ROW_H);
             y = drawFullHeader(y);
 
@@ -5887,6 +6380,7 @@ return;
                 doc.setLineWidth(0.15);
                 doc.line(MARGIN, y, PAGE_W - MARGIN, y);
             });
+            currentTableType = null;
 
             // Audit Totals Breakdown Panel
             const panelH = 22;
@@ -5940,7 +6434,7 @@ return;
             const totalPages = doc.getNumberOfPages();
             for (let p = 1; p <= totalPages; p++) {
                 doc.setPage(p);
-                addFooterToPage(p);
+                addFooterToPage(p, totalPages);
             }
 
             // ── Save ────────────────────────────────────────────────────
@@ -6067,7 +6561,8 @@ return;
 
         // Hero Warning Badge Click to Scroll and Expand Data Quality Panel
         const heroWarningBadge = document.getElementById('hero-warning-badge');
-        if (heroWarningBadge) {
+        if (heroWarningBadge && !heroWarningBadge._dreconListenerAdded) {
+            heroWarningBadge._dreconListenerAdded = true;
             heroWarningBadge.addEventListener('click', function() {
                 const panel = document.getElementById('data-quality-panel');
                 const content = document.getElementById('data-quality-content');
@@ -6122,7 +6617,7 @@ return;
                 agencyName = agencyEl ? agencyEl.value.trim() : '';
             }
             if (!agencyName) {
-                try { const u = JSON.parse(localStorage.getItem('drecon_user') || '{}'); agencyName = u.agency || ''; } catch(_) {}
+                try { const u = JSON.parse(safeStorage.getItem('drecon_user') || '{}'); agencyName = u.agency || ''; } catch(_) {}
             }
             agencyName = agencyName || 'Your Agency Name';
 
@@ -6132,7 +6627,7 @@ return;
                 producerCode = prodEl ? prodEl.value.trim() : '';
             }
             if (!producerCode) {
-                try { producerCode = localStorage.getItem('drecon_producer_code') || ''; } catch(_) {}
+                try { producerCode = safeStorage.getItem('drecon_producer_code') || ''; } catch(_) {}
             }
             const producerLine = producerCode ? `\nProducer Code: ${escapeFormulaInjection(producerCode)}` : '';
             
@@ -6190,13 +6685,13 @@ Generated Date: ${dateStr}`;
             const producerInput = document.getElementById('dispute-producer-code');
             if (agencyInput && !agencyInput.value.trim()) {
                 try {
-                    const u = JSON.parse(localStorage.getItem('drecon_user') || '{}');
+                    const u = JSON.parse(safeStorage.getItem('drecon_user') || '{}');
                     if (u.agency) agencyInput.value = u.agency;
                 } catch(_) {}
             }
             if (producerInput && !producerInput.value.trim()) {
                 try {
-                    const stored = localStorage.getItem('drecon_producer_code');
+                    const stored = safeStorage.getItem('drecon_producer_code');
                     if (stored) producerInput.value = stored;
                 } catch(_) {}
             }
@@ -6209,9 +6704,9 @@ Generated Date: ${dateStr}`;
             if (agencyInput) {
                 agencyInput.addEventListener('change', function() {
                     try {
-                        const u = JSON.parse(localStorage.getItem('drecon_user') || '{}');
+                        const u = JSON.parse(safeStorage.getItem('drecon_user') || '{}');
                         u.agency = agencyInput.value.trim();
-                        localStorage.setItem('drecon_user', JSON.stringify(u));
+                        safeStorage.setItem('drecon_user', JSON.stringify(u));
                     } catch(_) {}
                     generateDisputeLetterPreview();
                 });
@@ -6219,7 +6714,7 @@ Generated Date: ${dateStr}`;
             }
             if (producerInput) {
                 producerInput.addEventListener('change', function() {
-                    try { localStorage.setItem('drecon_producer_code', producerInput.value.trim()); } catch(_) {}
+                    try { safeStorage.setItem('drecon_producer_code', producerInput.value.trim()); } catch(_) {}
                     generateDisputeLetterPreview();
                 });
                 producerInput.addEventListener('input', generateDisputeLetterPreview);
@@ -6529,7 +7024,7 @@ Generated Date: ${dateStr}`;
         function migrateAuditHistory() {
             let audits = [];
             try {
-                const stored = localStorage.getItem('drecon_recent_audits');
+                const stored = safeStorage.getItem('drecon_recent_audits');
                 if (stored) {
                     audits = JSON.parse(stored);
                     if (!Array.isArray(audits)) audits = [];
@@ -6560,7 +7055,7 @@ Generated Date: ${dateStr}`;
 
             if (mutated) {
                 try {
-                    localStorage.setItem('drecon_recent_audits', JSON.stringify(audits));
+                    safeStorage.setItem('drecon_recent_audits', JSON.stringify(audits));
                 } catch (e) {}
             }
         }
@@ -6568,7 +7063,7 @@ Generated Date: ${dateStr}`;
         function saveAuditToHistory(fileName, policyCount, recoveryAmount, auditId) {
             let audits = [];
             try {
-                const stored = localStorage.getItem('drecon_recent_audits');
+                const stored = safeStorage.getItem('drecon_recent_audits');
                 if (stored) audits = JSON.parse(stored);
             } catch (e) {}
             if (!Array.isArray(audits)) audits = [];
@@ -6582,14 +7077,15 @@ Generated Date: ${dateStr}`;
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
                 rowCount: policyCount,
                 carrierCount: carriers,
-                recoveryAmount: recoveryAmount
+                recoveryAmount: recoveryAmount,
+                status: 'active'
             };
 
             audits.unshift(newEntry);
             audits = audits.slice(0, MAX_AUDIT_HISTORY);
 
             try {
-                localStorage.setItem('drecon_recent_audits', JSON.stringify(audits));
+                safeStorage.setItem('drecon_recent_audits', JSON.stringify(audits));
             } catch (e) {}
 
             renderRecentAudits();
@@ -6601,7 +7097,7 @@ Generated Date: ${dateStr}`;
 
             let audits = [];
             try {
-                const stored = localStorage.getItem('drecon_recent_audits');
+                const stored = safeStorage.getItem('drecon_recent_audits');
                 if (stored) audits = JSON.parse(stored);
             } catch (e) {}
             if (!Array.isArray(audits)) audits = [];
@@ -6679,23 +7175,44 @@ Generated Date: ${dateStr}`;
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'flex items-center gap-1.5 ml-2 border-l border-outline-variant/20 pl-2';
 
-                const filterBtn = document.createElement('button');
+                const auditStatus = a.status; // 'active', 'archived', 'unavailable', or undefined (legacy)
                 const auditDataLoaded = uploadedFiles.has(a.auditName);
-                if (auditDataLoaded) {
-                    filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-primary hover:text-white px-2 py-1 rounded bg-primary/10 hover:bg-primary/20 transition-colors';
-                    filterBtn.style.border = 'none';
-                    filterBtn.style.cursor = 'pointer';
-                    filterBtn.textContent = 'Filter';
-                    filterBtn.addEventListener('click', () => {
-                        runHistoryAuditFilter(a.auditId, a.auditName);
-                    });
+
+                if (auditStatus === 'unavailable') {
+                    const warningIcon = document.createElement('span');
+                    warningIcon.className = 'material-symbols-outlined text-[20px] text-error';
+                    warningIcon.title = 'Audit data unavailable';
+                    warningIcon.textContent = 'warning';
+                    actionsDiv.appendChild(warningIcon);
                 } else {
-                    filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-outline/50 px-2 py-1 rounded bg-surface-variant/10 cursor-not-allowed';
-                    filterBtn.style.border = 'none';
-                    filterBtn.textContent = 'Filter';
-                    filterBtn.disabled = true;
-                    filterBtn.title = 'Re-upload this file to filter';
-                    filterBtn.setAttribute('aria-disabled', 'true');
+                    const filterBtn = document.createElement('button');
+                    if (auditStatus === 'archived') {
+                        // Data was cleared — grayed disabled button
+                        filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-outline/50 px-2 py-1 rounded bg-surface-variant/10 cursor-not-allowed';
+                        filterBtn.style.border = 'none';
+                        filterBtn.textContent = 'Filter';
+                        filterBtn.disabled = true;
+                        filterBtn.title = 'Data cleared — re-upload to filter';
+                        filterBtn.setAttribute('aria-disabled', 'true');
+                    } else if (auditDataLoaded || auditStatus === 'active' || auditStatus === undefined) {
+                        // Active or legacy entry with data loaded
+                        filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-primary hover:text-white px-2 py-1 rounded bg-primary/10 hover:bg-primary/20 transition-colors';
+                        filterBtn.style.border = 'none';
+                        filterBtn.style.cursor = 'pointer';
+                        filterBtn.textContent = 'Filter';
+                        filterBtn.addEventListener('click', () => {
+                            runHistoryAuditFilter(a.auditId, a.auditName);
+                        });
+                    } else {
+                        // File not currently loaded
+                        filterBtn.className = 'text-[10px] font-bold uppercase tracking-wider text-outline/50 px-2 py-1 rounded bg-surface-variant/10 cursor-not-allowed';
+                        filterBtn.style.border = 'none';
+                        filterBtn.textContent = 'Filter';
+                        filterBtn.disabled = true;
+                        filterBtn.title = 'Re-upload this file to filter';
+                        filterBtn.setAttribute('aria-disabled', 'true');
+                    }
+                    actionsDiv.appendChild(filterBtn);
                 }
 
                 const summaryBtn = document.createElement('button');
@@ -6707,7 +7224,6 @@ Generated Date: ${dateStr}`;
                     viewHistoryAuditSummary(a.auditId);
                 });
 
-                actionsDiv.appendChild(filterBtn);
                 actionsDiv.appendChild(summaryBtn);
 
                 metricsDiv.appendChild(polDiv);
@@ -6724,6 +7240,21 @@ Generated Date: ${dateStr}`;
 
         // Global functions for inline onclick handlers
         window.runHistoryAuditFilter = function(auditId, name) {
+            // B2: Guard — check if audit is still active
+            try {
+                const stored = safeStorage.getItem('drecon_recent_audits');
+                if (stored) {
+                    const audits = JSON.parse(stored);
+                    if (Array.isArray(audits)) {
+                        const entry = audits.find(a => a.auditId === auditId);
+                        if (entry && entry.status === 'archived') {
+                            showToast('This audit is no longer available. Please re-upload the file.', 'error');
+                            return;
+                        }
+                    }
+                }
+            } catch (e) {}
+
             filterAuditId = auditId;
             // Clear other filters
             filterCarrier = null;
@@ -6743,7 +7274,7 @@ Generated Date: ${dateStr}`;
         window.viewHistoryAuditSummary = function(auditId) {
             let audits = [];
             try {
-                const stored = localStorage.getItem('drecon_recent_audits');
+                const stored = safeStorage.getItem('drecon_recent_audits');
                 if (stored) audits = JSON.parse(stored);
             } catch (e) {}
             if (!Array.isArray(audits)) audits = [];
